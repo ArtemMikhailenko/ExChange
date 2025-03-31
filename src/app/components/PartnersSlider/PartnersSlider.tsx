@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import Image from 'next/image';
+
 
 type Partner = {
   name: string;
@@ -10,7 +9,6 @@ type Partner = {
 };
 
 export default function PartnersSlider() {
-  const { t } = useTranslation('common');
 
   const partners: Partner[] = [
     {

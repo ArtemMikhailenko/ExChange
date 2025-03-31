@@ -14,7 +14,7 @@ export default function MobileAppSection() {
           {/* Левая колонка с текстом */}
           <div className="lg:w-2/3 mb-12 lg:mb-0">
             <h2 className="text-4xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-              Trade Anywhere<br />with the ExChange
+              {t('tradeAnywhereTitle')}    
             </h2>
           </div>
           
