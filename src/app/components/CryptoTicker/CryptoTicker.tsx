@@ -16,6 +16,7 @@ export default function CryptoTicker() {
         key.slice(0, key.length - 5).toUpperCase() +
         '/USDT';
       // Преобразуем change24h в число
+      //@ts-ignore
       const change = parseFloat(value.change24h);
       return { pair, change };
     });
