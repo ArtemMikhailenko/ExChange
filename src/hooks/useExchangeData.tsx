@@ -16,6 +16,7 @@ export type ExchangeData = {
     price: string;
     change24h: string;
   };
+  //@ts-ignore
   tradingBots?: TradingBotData[];
 };
 
