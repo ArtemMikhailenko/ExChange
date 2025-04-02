@@ -106,7 +106,27 @@
     "aboutAds": "О рекламе",
     "accessibility": "Доступность",
     "yourPrivacyChoice": "Ваш выбор конфиденциальности",
-    "allRightsReserved": "Все права защищены"
-
+    "allRightsReserved": "Все права защищены",
+    "join": "Присоединяйтесь к",
+  "today": "сегодня",
+  "welcomeBonus": "Выиграйте приветственный бонус до",
+  "upTo": "До",
+  "welcomeBack": "С возвращением!",
+  "emailOrPhone": "Email / Номер телефона",
+  "logIn": "Войти",
+  "orContinueWith": "или продолжить с",
+  "dontHaveAccount": "Нет аккаунта?",
+"welcomeToExchange": "Добро пожаловать в ExChange!",
+  "password": "Пароль",
+  "referralCode": "Реферальный код",
+  "optional": "необязательно",
+  "iHaveRead": "Я прочитал",
+  "andAgreedTo": "и согласен с",
+  "bioFin": "BioFin",
+  "termsOfService": "Условиями использования",
+  "privatePolicy": "Политикой конфиденциальности",
+  "riskDisclosure": "Заявлением о рисках",
+  "and": "и",
+  "alreadyHaveAccount": "Уже есть аккаунт?"
   }
   

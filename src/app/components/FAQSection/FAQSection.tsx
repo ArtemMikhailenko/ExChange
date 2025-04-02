@@ -39,7 +39,7 @@ export default function FAQSection() {
   };
 
   return (
-    <section className="py-16 bg-black">
+    <section className="py-20 bg-[var(--background)] dark:bg-[var(--background-dark)] ">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-12">
           <h2 className="text-4xl font-bold">FAQ</h2>
@@ -58,11 +58,11 @@ export default function FAQSection() {
           {faqItems.map((item, index) => (
             <div 
               key={index} 
-              className="border-b border-gray-800"
+              className="border-b border-gray-800 "
             >
               <button
                 onClick={() => toggleQuestion(index)}
-                className="py-6 w-full flex justify-between items-center text-left hover:text-gray-300 focus:outline-none"
+                className="py-6 w-full flex justify-between items-center text-left hover:text-gray-300 focus:outline-none hover:text-yellow-500"
               >
                 <span className="text-xl font-medium text-left">
                   {item.question}

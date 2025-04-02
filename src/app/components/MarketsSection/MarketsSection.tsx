@@ -233,7 +233,7 @@ export default function MarketsSection() {
   ];
 
   return (
-    <section className="py-16 bg-black text-white">
+    <section className="py-16 bg-[var(--background)] dark:bg-[var(--background-dark)]">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-4xl font-bold">{t('markets')}</h2>

@@ -57,7 +57,8 @@ export default function FeatureCards() {
   ];
 
   const CardRow = ({ cards }: { cards: FeatureCard[] }) => (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-[1080px] mt-10 mb-18 mx-auto">
+
       {cards.map((card, index) => (
         <div 
           key={index} 

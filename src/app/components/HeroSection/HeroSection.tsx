@@ -11,7 +11,7 @@ export default function HeroSection() {
   const { theme } = useContext(ThemeContext);
 
   return (
-    <section className="w-full py-16 sm:py-24 pt-10">
+    <section className="h-screen py-16 sm:py-24 pt-10">
       <div className="mx-auto max-w-7xl px-4 flex flex-col-reverse items-center justify-between gap-8 sm:flex-row">
         {/* Левая часть: Заголовок и кнопки */}
         <div className="flex flex-col items-center sm:items-start sm:w-1/2">
@@ -21,13 +21,13 @@ export default function HeroSection() {
           <div className="mt-10 flex flex-col items-center space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
             <Link
               href="/login"
-              className="rounded border border-gray-300 dark:border-gray-700 px-20 py-3 text-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors hover:text-gray-600"
-            >
+              className="rounded-[8px] border-2 border-yellow-500 bg-white text-black font-medium text-2xl px-20 py-3 text-center hover:bg-yellow-100 transition-colors"
+              >
               {t('login')}
             </Link>
             <Link
               href="/signup"
-              className="rounded bg-yellow-500 text-black px-20 py-3 text-center hover:bg-yellow-600 transition-colors"
+              className="rounded-[8px] bg-yellow-500 text-black px-20 py-3 text-center font-medium hover:bg-yellow-600 text-2xl transition-colors"
             >
               {t('signUp')}
             </Link>

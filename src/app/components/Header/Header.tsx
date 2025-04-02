@@ -2,6 +2,7 @@
 
 import { useContext, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/navigation';
 import { Sun, Moon, ChevronDown, Globe } from 'lucide-react';
@@ -23,6 +24,69 @@ export default function Header() {
     setIsLanguageDropdownOpen(!isLanguageDropdownOpen);
   };
 
+  // Futures dropdown items
+  const futuresItems = [
+    { 
+      label: t('futures'), 
+      description: t('futuresDesc'), 
+      href: '#',
+      icon: '/images/header/icon1.svg'
+    },
+    { 
+      label: t('tradingBots'), 
+      description: t('tradingBotsDesc'), 
+      href: '#',
+      icon: '/images/header/icon2.svg'
+    },
+    { 
+      label: t('demoTrading'), 
+      description: t('demoTradingDesc'), 
+      href: '#',
+      icon: '/images/header/icon3.svg',
+      tag: 'Try UTA Now!'
+    },
+  ];
+
+  // More dropdown items
+  const moreItems = [
+    { 
+      label: t('rewardsHub'), 
+      description: t('rewardsHubDesc'), 
+      href: '#',
+      icon: '/images/header/icon4.svg' 
+    },
+    { 
+      label: t('activityCenter'), 
+      description: t('activityCenterDesc'), 
+      href: '#',
+      icon: '/images/header/icon5.svg' 
+    },
+    { 
+      label: t('affiliates'), 
+      description: t('affiliatesDesc'), 
+      href: '#',
+      icon: '/images/header/icon6.svg' 
+    },
+    { 
+      label: t('referral'), 
+      description: t('referralDesc'), 
+      href: '#',
+      icon: '/images/header/icon7.svg' 
+    },
+    { 
+      label: t('news'), 
+      description: t('newsDesc'), 
+      href: '#',
+      icon: '/images/header/icon8.svg' 
+    },
+    { 
+      label: t('academy'), 
+      description: t('academyDesc'), 
+      href: '#',
+      icon: '/images/header/icon9.svg' 
+    },
+  ];
+
   return (
     <header className="bg-black text-white">
       <div className="mx-auto flex items-center justify-between px-4 py-3">
@@ -32,27 +96,78 @@ export default function Header() {
             <NavItem label={t('buyCrypto')} href="#" isActive={false} />
             <NavItem label={t('markets')} href="#" isActive={false} />
             <NavItem label={t('spot')} href="#" isActive={false} />
-            <NavDropdown
-              label={t('futures')}
-              items={[
-                { label: t('futures'), description: t('futuresDesc'), href: '#' },
-                { label: t('tradingBots'), description: t('tradingBotsDesc'), href: '#' },
-                { label: t('demoTrading'), description: t('demoTradingDesc'), href: '#' },
-              ]}
-            />
+            
+            {/* Futures dropdown */}
+            <div className="relative group">
+              <button 
+                className="flex items-center text-sm font-medium text-white group-hover:text-yellow-500"
+              >
+                {t('futures')}
+                <ChevronDown size={16} className="ml-1" />
+              </button>
+              
+              <div className="invisible absolute left-0 top-full z-10 mt-2 w-96 text-black rounded-md bg-white border border-black py-2 shadow-xl opacity-0 transform scale-95 transition-all duration-200 origin-top-left group-hover:visible group-hover:opacity-100 group-hover:scale-100">
+                <div className="invisible-divider h-4"></div>
+                {futuresItems.map((item) => (
+                  <Link key={item.label} href={item.href} className="block px-2 py-2 hover:bg-gray-100 flex items-start">
+                    <div className="w-12 h-12 mr-4 relative">
+                      <Image
+                        src={item.icon}
+                        alt=""
+                        width={40}
+                        height={40}
+                        className="object-contain"
+                      />
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium text-black hover:text-yellow-500 flex items-center">
+                        {item.label}
+                        {item.tag && (
+                          <span className="ml-2 bg-yellow-500 text-black text-xs px-2 py-1 rounded">
+                            {item.tag}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-sm text-gray-400">{item.description}</div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+            
             <NavItem label={t('copyTrading')} href="#" isActive={false} />
             <NavItem label={t('earn')} href="#" isActive={false} />
-            <NavDropdown
-              label={t('more')}
-              items={[
-                { label: t('rewardsHub'), description: t('rewardsHubDesc'), href: '#' },
-                { label: t('activityCenter'), description: t('activityCenterDesc'), href: '#' },
-                { label: t('affiliates'), description: t('affiliatesDesc'), href: '#' },
-                { label: t('referral'), description: t('referralDesc'), href: '#' },
-                { label: t('news'), description: t('newsDesc'), href: '#' },
-                { label: t('academy'), description: t('academyDesc'), href: '#' },
-              ]}
-            />
+            
+            {/* More dropdown */}
+            <div className="relative group">
+              <button 
+                className="flex items-center text-sm font-medium text-white group-hover:text-yellow-500"
+              >
+                {t('more')}
+                <ChevronDown size={16} className="ml-1" />
+              </button>
+              
+              <div className="invisible absolute left-0 top-full z-10 mt-2 w-96 text-black rounded-md bg-white border border-black py-2 shadow-xl opacity-0 transform scale-95 transition-all duration-200 origin-top-left group-hover:visible group-hover:opacity-100 group-hover:scale-100">
+                <div className="invisible-divider h-4"></div>
+                {moreItems.map((item) => (
+                  <Link key={item.label} href={item.href} className="block px-2 py-2 hover:text-yellow-500 hover:bg-gray-100 transition-colors duration-200 flex items-start">
+                    <div className="w-12 h-12 mr-4 relative">
+                      <Image
+                        src={item.icon}
+                        alt=""
+                        width={40}
+                        height={40}
+                        className="object-contain"
+                      />
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium text-black hover:text-yellow-500">{item.label}</div>
+                      <div className="text-sm text-gray-400">{item.description}</div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
           </nav>
         </div>
         
@@ -129,30 +244,5 @@ function NavItem({ label, href, isActive = false }: { label: string; href: strin
     >
       {label}
     </Link>
-  );
-}
-
-function NavDropdown({
-  label,
-  items,
-}: {
-  label: string;
-  items: { label: string; description: string; href: string }[];
-}) {
-  return (
-    <div className="relative group">
-      <button className="flex items-center text-sm font-medium text-white hover:text-yellow-500">
-        {label}
-        <ChevronDown size={16} className="ml-1" />
-      </button>
-      <div className="invisible absolute left-0 top-full z-10 mt-2 w-60 rounded bg-gray-900 py-2 opacity-0 shadow-lg transition-all duration-200 group-hover:visible group-hover:opacity-100">
-        {items.map((item) => (
-          <Link key={item.label} href={item.href} className="block px-4 py-2 hover:bg-gray-800">
-            <div className="text-sm font-medium text-white">{item.label}</div>
-            <div className="text-xs text-gray-400">{item.description}</div>
-          </Link>
-        ))}
-      </div>
-    </div>
   );
 }

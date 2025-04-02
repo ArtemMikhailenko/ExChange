@@ -19,7 +19,7 @@ export default function TradingTypesSection() {
       title: t('spot'),
       description: (
         <>
-          {t('spotDescriptionPrefix')} <span className="font-bold text-white">1000+</span> {t('spotDescriptionSuffix')}
+          {t('spotDescriptionPrefix')} <span className="font-bold ">1000+</span> {t('spotDescriptionSuffix')}
         </>
       ),
       link: '/spot'
@@ -28,7 +28,7 @@ export default function TradingTypesSection() {
       title: t('futures'),
       description: (
         <>
-          {t('futuresDescriptionPrefix')} <span className="font-bold text-white">125x</span> {t('futuresDescriptionSuffix')}
+          {t('futuresDescriptionPrefix')} <span className="font-bold ">125x</span> {t('futuresDescriptionSuffix')}
         </>
       ),
       link: '/futures'
@@ -37,7 +37,7 @@ export default function TradingTypesSection() {
       title: t('gridTrading'),
       description: (
         <>
-          {t('gridTradingDescriptionPrefix')} <span className="font-bold text-white">24/7</span> {t('gridTradingDescriptionSuffix')}
+          {t('gridTradingDescriptionPrefix')} <span className="font-bold ">24/7</span> {t('gridTradingDescriptionSuffix')}
         </>
       ),
       link: '/grid-trading'
@@ -45,7 +45,7 @@ export default function TradingTypesSection() {
   ];
 
   return (
-    <section className="py-16 bg-black">
+    <section className="py-16">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {tradingTypes.map((type, index) => (
@@ -57,7 +57,7 @@ export default function TradingTypesSection() {
               <div className="mt-auto">
                 <Link 
                   href={type.link} 
-                  className="inline-block text-gray-300 hover:text-white border-b border-gray-700 hover:border-gray-300 transition-colors"
+                  className="inline-block text-gray-300 hover:text-yellow-500 border-b border-gray-700 hover:border-gray-300 transition-colors"
                 >
                   {t('learnMore')}
                 </Link>

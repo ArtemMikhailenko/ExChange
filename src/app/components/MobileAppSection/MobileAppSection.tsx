@@ -8,7 +8,7 @@ export default function MobileAppSection() {
   const { t } = useTranslation('common');
 
   return (
-    <section className="py-20 bg-black overflow-hidden relative">
+    <section className="py-20  bg-[#0D0D0D] overflow-hidden relative mb-20">
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-center justify-between">
           {/* Левая колонка с текстом */}

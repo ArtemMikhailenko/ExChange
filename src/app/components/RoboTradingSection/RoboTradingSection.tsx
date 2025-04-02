@@ -89,19 +89,19 @@ export default function RoboTradingSection() {
   ];
 
   return (
-    <section className="py-20 bg-black relative overflow-hidden">
+    <section className="py-20 bg-[var(--background)] dark:bg-[var(--background-dark)] relative overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="flex flex-col lg:flex-row items-start justify-between gap-8">
           {/* Левая колонка с заголовком и статистикой */}
           <div className="lg:w-1/3">
-            <h2 className="text-4xl font-bold mb-10 text-white">
+            <h2 className="text-4xl font-bold mb-10 ">
               Robo Trading: Invest Less, Earn More
             </h2>
             
             <div className="grid grid-cols-3 gap-4 mb-10">
               {platformStats.map((stat, index) => (
                 <div key={index} className="flex flex-col">
-                  <span className="text-3xl font-bold text-white">{stat.value}</span>
+                  <span className="text-3xl font-bold ">{stat.value}</span>
                   <span className="text-gray-400 text-sm">{stat.label}</span>
                 </div>
               ))}

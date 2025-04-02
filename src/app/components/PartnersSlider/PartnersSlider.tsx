@@ -47,8 +47,8 @@ export default function PartnersSlider() {
   const duplicatedPartners = [...partnerIcons, ...partnerIcons, ...partnerIcons];
 
   return (
-    <section className="py-10 bg-black overflow-hidden">
-      <div className="container mx-auto px-4">
+    <section className="py-10  bg-[#0D0D0D] overflow-hidden  w-full">
+      <div className="w-full">
         <div className="flex flex-col">
           <div className="relative overflow-hidden">
             {/* Создаем бесконечную бегущую строку */}
@@ -56,17 +56,13 @@ export default function PartnersSlider() {
               {duplicatedPartners.map((partner, index) => (
                 <div key={`logo-${index}`} className="flex items-center justify-center px-8 mx-4">
                   <div 
-                    className="h-48 w-32 rounded flex items-center justify-center text-gray-400"
+                    className="h-24 w-32 rounded flex items-center justify-center text-gray-400"
                   >
                     <img src={partner} alt="" />
                   </div>
                 </div>
               ))}
             </div>
-            
-            {/* Градиентные overlay по бокам для плавного перехода */}
-            <div className="absolute top-0 left-0 h-full w-16 bg-gradient-to-r from-black to-transparent z-10"></div>
-            <div className="absolute top-0 right-0 h-full w-16 bg-gradient-to-l from-black to-transparent z-10"></div>
           </div>
         </div>
       </div>

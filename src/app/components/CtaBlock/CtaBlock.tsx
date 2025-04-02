@@ -9,9 +9,9 @@ export default function CtaBlock() {
   const { t } = useTranslation('common');
   
   return (
-    <section className="py-20 bg:[0d0d0d] ">
+    <section className="py-20 ">
       <div className="container mx-auto px-4 flex flex-col items-center">
-        <h2 className="text-4xl md:text-5xl font-bold text-white text-center mb-10">
+        <h2 className="text-4xl md:text-5xl font-bold  text-center mb-10">
           {t('startCryptoJourney')}
         </h2>
         
