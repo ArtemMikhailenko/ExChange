@@ -63,7 +63,7 @@ export default function CryptoTicker() {
         .ticker-track {
           display: inline-flex;
           white-space: nowrap;
-          animation: ticker 60s linear infinite;
+          animation: ticker 130s linear infinite;
         }
         
         @keyframes ticker {

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { useExchangeData } from '@/hooks/useExchangeData';
+import styles from './MarketsSection.module.css';
 
 type CryptoCoin = {
   id: string;
@@ -16,185 +17,174 @@ type CryptoCoin = {
   volume24h: number;
 };
 
-// Маппинг имен и данных монет
-const coinMetadata: Record<string, { name: string; image: string; volume24h: number }> = {
-  btcusdt: {
-    name: 'Bitcoin',
-    image: '/images/crypto/btc.svg',
-    volume24h: 123460000
-  },
-  ethusdt: {
-    name: 'Ethereum',
-    image: '/images/crypto/eth.svg',
-    volume24h: 69530000
-  },
-  solusdt: {
-    name: 'Solana',
-    image: '/images/crypto/sol.svg',
-    volume24h: 35790000
-  },
-  bnbusdt: {
-    name: 'BNB',
-    image: '/images/crypto/bnb.svg',
-    volume24h: 28460000
-  },
-  xrpusdt: {
-    name: 'XRP',
-    image: '/images/crypto/xrp.svg',
-    volume24h: 15230000
-  },
-  dogeusdt: {
-    name: 'Dogecoin',
-    image: '/images/crypto/doge.svg',
-    volume24h: 9875000
-  },
-  adausdt: {
-    name: 'Cardano',
-    image: '/images/crypto/ada.svg',
-    volume24h: 8450000
-  },
-  avaxusdt: {
-    name: 'Avalanche',
-    image: '/images/crypto/avax.svg',
-    volume24h: 7650000
-  }
+// Default volume data for common coins
+const coinVolumes: Record<string, number> = {
+  btc: 123460000,
+  eth: 69530000,
+  sol: 35790000,
+  bnb: 28460000,
+  xrp: 15230000,
+  doge: 9875000,
+  ada: 8450000,
+  avax: 7650000,
+  dot: 6540000,
+  ltc: 5670000,
+  shib: 4980000,
+  matic: 4320000,
+  uni: 3450000,
+  link: 2870000,
+  atom: 2340000
 };
-
-// Резервное изображение для неизвестных монет
-const fallbackCoinData = {
-  name: 'Unknown',
-  image: '/images/crypto/generic.svg',
-  volume24h: 500000
-};
-
-// Резервные данные для когда WebSocket еще не предоставил информацию
-const fallbackData: CryptoCoin[] = [
-  {
-    id: 'bitcoin',
-    symbol: 'BTC/USDT',
-    name: 'Bitcoin',
-    image: '/images/crypto/btc.svg',
-    price: 83738.1,
-    change24h: -2.89,
-    volume24h: 123460000
-  },
-  {
-    id: 'ethereum',
-    symbol: 'ETH/USDT',
-    name: 'Ethereum',
-    image: '/images/crypto/eth.svg',
-    price: 2119.99,
-    change24h: -2.48,
-    volume24h: 69530000
-  },
-  {
-    id: 'solana',
-    symbol: 'SOL/USDT',
-    name: 'Solana',
-    image: '/images/crypto/sol.svg',
-    price: 179.21,
-    change24h: -3.75,
-    volume24h: 35790000
-  },
-  {
-    id: 'bnb',
-    symbol: 'BNB/USDT',
-    name: 'BNB',
-    image: '/images/crypto/bnb.svg',
-    price: 610.48,
-    change24h: -1.22,
-    volume24h: 28460000
-  },
-  {
-    id: 'xrp',
-    symbol: 'XRP/USDT',
-    name: 'XRP',
-    image: '/images/crypto/xrp.svg',
-    price: 0.5864,
-    change24h: -1.98,
-    volume24h: 15230000
-  }
-];
 
 export default function MarketsSection() {
   const { t } = useTranslation('common');
   const [activeTab, setActiveTab] = useState('top');
   const exchangeData = useExchangeData();
 
-  // Получаем изображение для монеты из локальных файлов
-  // const getCoinImage = (symbol: string): string => {
-  //   const baseCurrency = symbol.split('/')[0].toLowerCase();
-  //   // Проверяем, есть ли у нас изображение для этой валюты
-  //   return `/images/crypto/${baseCurrency}.svg`;
-  // };
+  // Helper function to get CDN image URL
+  const getCoinImageUrl = (symbol: string): string => {
+    // Extract the base currency
+    let baseCurrency;
+    
+    if (symbol.includes('/')) {
+      baseCurrency = symbol.split('/')[0];
+    } else {
+      // Remove the quote currency part (like USDT)
+      baseCurrency = symbol.replace(/usdt$|busd$|usdc$/i, '');
+    }
+    
+    return `https://cdnexchange.ymca.one/${baseCurrency.toUpperCase()}.png`;
+  };
+
+  // Helper function to format symbol
+  const formatSymbol = (symbol: string): string => {
+    if (symbol.includes('/')) {
+      return symbol.toUpperCase();
+    }
+    
+    const quoteRegex = /([A-Za-z0-9]+)([A-Za-z0-9]{4})$/;
+    return symbol.replace(quoteRegex, (_, base, quote) => {
+      return `${base.toUpperCase()}/${quote.toUpperCase()}`;
+    });
+  };
+
+  // Estimate default volume based on currency
+  const getEstimatedVolume = (symbol: string): number => {
+    const base = symbol.toLowerCase().replace(/\/.*$/, '');
+    return coinVolumes[base] || Math.floor(Math.random() * 1000000) + 500000;
+  };
 
   // Transform exchange data to CryptoCoin array
   const cryptoCoins = useMemo(() => {
     if (!exchangeData) return [];
 
     return Object.entries(exchangeData)
+      .filter(([key]) => typeof key === 'string' && key.length > 0 && !key.startsWith('trading'))
       .map(([symbol, data]) => {
-        const lowercaseSymbol = symbol.toLowerCase();
+        // Skip entries that might be other data from the WebSocket
+        //@ts-ignore
+        if (!data.price || !data.change24h) return null;
         
-        // Преобразуем формат символа (например, btcusdt -> BTC/USDT)
-        const formattedSymbol = symbol.replace(/([A-Za-z0-9]+)([A-Za-z0-9]{4})$/, (_, base, quote) => {
-          return `${base.toUpperCase()}/${quote.toUpperCase()}`;
-        });
-        
-        const metadata = coinMetadata[lowercaseSymbol] || { 
-          name: formattedSymbol.split('/')[0],
-          // image: getCoinImage(formattedSymbol),
-          volume24h: fallbackCoinData.volume24h
-        };
+        const formattedSymbol = formatSymbol(symbol);
+        const baseCurrency = formattedSymbol.split('/')[0];
         
         return {
-          id: lowercaseSymbol,
+          id: symbol.toLowerCase(),
           symbol: formattedSymbol,
-          name: metadata.name,
-          image: metadata.image,
+          name: baseCurrency,
+          image: getCoinImageUrl(symbol),
           //@ts-ignore
           price: parseFloat(data.price),
-                    //@ts-ignore
-
+          //@ts-ignore
           change24h: parseFloat(data.change24h),
-          volume24h: metadata.volume24h
+          volume24h: getEstimatedVolume(formattedSymbol)
         };
-      });
+      })
+      .filter(Boolean) as CryptoCoin[];
   }, [exchangeData]);
 
-  // Фильтрация данных на основе активной вкладки
+  // Fallback data when WebSocket has not yet provided data
+  const fallbackData: CryptoCoin[] = [
+    {
+      id: 'btcusdt',
+      symbol: 'BTC/USDT',
+      name: 'Bitcoin',
+      image: 'https://cdnexchange.ymca.one/BTC.png',
+      price: 83738.1,
+      change24h: -2.89,
+      volume24h: 123460000
+    },
+    {
+      id: 'ethusdt',
+      symbol: 'ETH/USDT',
+      name: 'Ethereum',
+      image: 'https://cdnexchange.ymca.one/ETH.png',
+      price: 2119.99,
+      change24h: -2.48,
+      volume24h: 69530000
+    },
+    {
+      id: 'solusdt',
+      symbol: 'SOL/USDT',
+      name: 'Solana',
+      image: 'https://cdnexchange.ymca.one/SOL.png',
+      price: 179.21,
+      change24h: -3.75,
+      volume24h: 35790000
+    },
+    {
+      id: 'bnbusdt',
+      symbol: 'BNB/USDT',
+      name: 'BNB',
+      image: 'https://cdnexchange.ymca.one/BNB.png',
+      price: 610.48,
+      change24h: -1.22,
+      volume24h: 28460000
+    },
+    {
+      id: 'xrpusdt',
+      symbol: 'XRP/USDT',
+      name: 'XRP',
+      image: 'https://cdnexchange.ymca.one/XRP.png',
+      price: 0.5864,
+      change24h: -1.98,
+      volume24h: 15230000
+    }
+  ];
+
+  // Filter coins based on active tab
   const filteredCoins = useMemo(() => {
     if (cryptoCoins.length === 0) return fallbackData;
     
     switch (activeTab) {
       case 'hot': 
-        // Сортировка по объему торгов
+        // Sort by trading volume
         return [...cryptoCoins].sort((a, b) => b.volume24h - a.volume24h).slice(0, 5);
       case 'gainers':
-        // Сортировка по положительному изменению цены
+        // Sort by positive price change
         return [...cryptoCoins]
           .filter(coin => coin.change24h > 0)
           .sort((a, b) => b.change24h - a.change24h)
           .slice(0, 5);
       case 'losers':
-        // Сортировка по отрицательному изменению цены
+        // Sort by negative price change
         return [...cryptoCoins]
           .filter(coin => coin.change24h < 0)
           .sort((a, b) => a.change24h - b.change24h)
           .slice(0, 5);
       case 'new':
-        // Просто берем случайные монеты (имитация новых листингов)
+        // Randomly select some coins (simulating new listings)
         return [...cryptoCoins]
           .sort(() => Math.random() - 0.5)
           .slice(0, 5);
       case 'top':
       default:
-        // Топ-5 по объему торгов
+        // Top by trading volume
         return [...cryptoCoins].sort((a, b) => b.volume24h - a.volume24h).slice(0, 5);
     }
-  }, [cryptoCoins, activeTab]);
+  }, [cryptoCoins, activeTab, fallbackData]);
 
-  // Функции форматирования для отображения данных
+  // Formatting functions
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat('en-US').format(num);
   };
@@ -223,40 +213,36 @@ export default function MarketsSection() {
     }
   };
 
-  // Табы для типов рынков
+  // Market types tabs
   const tabs = [
-    { id: 'top', label: t('top') },
-    { id: 'hot', label: t('hot') },
-    { id: 'gainers', label: t('gainers') },
-    { id: 'losers', label: t('losers') },
-    { id: 'new', label: t('new') }
+    { id: 'top', label: t('top', 'Top') },
+    { id: 'hot', label: t('hot', 'Hot') },
+    { id: 'gainers', label: t('gainers', 'Gainers') },
+    { id: 'losers', label: t('losers', 'Losers') },
+    { id: 'new', label: t('new', 'New') }
   ];
 
   return (
-    <section className="py-16 bg-[var(--background)] dark:bg-[var(--background-dark)]">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-4xl font-bold">{t('markets')}</h2>
-          <Link href="/markets" className="text-yellow-500 hover:text-yellow-400 text-sm font-medium flex items-center">
-            {t('seeAllMarkets')} 
-            <svg className="ml-1 w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <section className={styles.section}>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <h2 className={styles.title}>{t('markets', 'Markets')}</h2>
+          <Link href="/markets" className={styles.viewAllLink}>
+            {t('seeAllMarkets', 'See all markets')} 
+            <svg className={styles.arrowIcon} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </Link>
         </div>
 
         {/* Tabs */}
-        <div className="border-b border-gray-800 mb-4">
-          <nav className="flex space-x-8">
+        <div className={styles.tabsContainer}>
+          <nav className={styles.tabsList}>
             {tabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === tab.id 
-                    ? 'border-yellow-500 text-yellow-500' 
-                    : 'border-transparent text-gray-400 hover:text-gray-300'
-                }`}
+                className={`${styles.tabButton} ${activeTab === tab.id ? styles.activeTabButton : ''}`}
               >
                 {tab.label}
               </button>
@@ -264,43 +250,71 @@ export default function MarketsSection() {
           </nav>
         </div>
 
-        {/* Таблица */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
+        {/* Table */}
+        <div className={styles.tableContainer}>
+          <table className={styles.marketsTable}>
             <thead>
-              <tr className="text-gray-400 text-sm">
-                <th className="pb-4 font-normal">{t('contract')}</th>
-                <th className="pb-4 font-normal text-right">{t('lastPrice')}</th>
-                <th className="pb-4 font-normal text-right">{t('24hChange')}</th>
-                <th className="pb-4 font-normal text-right">{t('volume24h')}</th>
+              <tr>
+                <th className={styles.tableHeader}>{t('contract', 'Contract')}</th>
+                <th className={`${styles.tableHeader} ${styles.headerAlignRight}`}>{t('lastPrice', 'Last Price')}</th>
+                <th className={`${styles.tableHeader} ${styles.headerAlignRight}`}>{t('24hChange', '24h Change')}</th>
+                <th className={`${styles.tableHeader} ${styles.headerAlignRight} ${styles.volumeHeader}`}>{t('volume24h', '24h Volume')}</th>
               </tr>
             </thead>
             <tbody>
-              {filteredCoins.map((coin) => (
-                <tr key={coin.id} className="border-t border-gray-800 hover:bg-gray-900/50">
-                  <td className="py-4">
-                    <div className="flex items-center">
-                      <div className="w-8 h-8 mr-3 relative">
-                        <Image 
-                          src={coin.image} 
-                          alt={coin.name}
-                          width={32}
-                          height={32}
-                          className="rounded-full object-contain"
-                        />
+              {!exchangeData && cryptoCoins.length === 0 ? (
+                // Loading state
+                Array(5).fill(0).map((_, index) => (
+                  <tr key={`loading-${index}`} className={`${styles.tableRow} ${styles.loadingRow}`}>
+                    <td className={`${styles.tableCell} ${styles.loadingCell}`}>
+                      <div className={`${styles.skeletonLoader} ${styles.coinSkeleton}`}></div>
+                    </td>
+                    <td className={`${styles.tableCell} ${styles.loadingCell} ${styles.alignRight}`}>
+                      <div className={`${styles.skeletonLoader} ${styles.priceSkeleton}`}></div>
+                    </td>
+                    <td className={`${styles.tableCell} ${styles.loadingCell} ${styles.alignRight}`}>
+                      <div className={`${styles.skeletonLoader} ${styles.changeSkeleton}`}></div>
+                    </td>
+                    <td className={`${styles.tableCell} ${styles.loadingCell} ${styles.alignRight} ${styles.volumeCell}`}>
+                      <div className={`${styles.skeletonLoader} ${styles.volumeSkeleton}`}></div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                // Actual data
+                filteredCoins.map((coin) => (
+                  <tr key={coin.id} className={styles.tableRow}>
+                    <td className={styles.tableCell}>
+                      <div className={styles.coinInfo}>
+                        <div className={styles.coinImageContainer}>
+                          <Image 
+                            src={coin.image} 
+                            alt={coin.name}
+                            width={32}
+                            height={32}
+                            className={styles.coinImage}
+                            onError={(e) => {
+                              // Fallback to generic image if CDN image fails to load
+                              const target = e.target as HTMLImageElement;
+                              target.src = '/images/crypto/generic.svg';
+                            }}
+                          />
+                        </div>
+                        <span className={styles.coinSymbol}>{coin.symbol}</span>
                       </div>
-                      <span className="font-medium">{coin.symbol}</span>
-                    </div>
-                  </td>
-                  <td className="py-4 text-right">{formatPrice(coin.price)}</td>
-                  <td className={`py-4 text-right ${
-                    coin.change24h >= 0 ? 'text-green-500' : 'text-red-500'
-                  }`}>
-                    {coin.change24h >= 0 ? '+' : ''}{coin.change24h.toFixed(2)}%
-                  </td>
-                  <td className="py-4 text-right">{formatVolume(coin.volume24h)}</td>
-                </tr>
-              ))}
+                    </td>
+                    <td className={`${styles.tableCell} ${styles.alignRight}`}>
+                      {formatPrice(coin.price)}
+                    </td>
+                    <td className={`${styles.tableCell} ${styles.alignRight} ${coin.change24h >= 0 ? styles.positiveChange : styles.negativeChange}`}>
+                      {coin.change24h >= 0 ? '+' : ''}{coin.change24h.toFixed(2)}%
+                    </td>
+                    <td className={`${styles.tableCell} ${styles.alignRight} ${styles.volumeCell}`}>
+                      {formatVolume(coin.volume24h)}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

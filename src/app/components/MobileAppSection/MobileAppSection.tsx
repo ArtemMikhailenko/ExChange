@@ -1,33 +1,33 @@
-'use client';
-
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import Image from 'next/image';
+"use client";
+import React from "react";
+import Image from "next/image";
+import { useTranslation } from "react-i18next";
+import styles from "./MobileAppSection.module.css";
 
 export default function MobileAppSection() {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation("common");
 
   return (
-    <section className="py-20  bg-[#0D0D0D] overflow-hidden relative mb-20">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col lg:flex-row items-center justify-between">
+    <section className={styles.section}>
+      <div className={styles.container}>
+        <div className={styles.row}>
           {/* Левая колонка с текстом */}
-          <div className="lg:w-2/3 mb-12 lg:mb-0">
-            <h2 className="text-4xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-              {t('tradeAnywhereTitle')}    
+          <div className={styles.leftColumn}>
+            <h2 className={styles.title}>
+              {t("tradeAnywhereTitle")}
             </h2>
           </div>
           
           {/* Правая колонка с изображением */}
-          <div className="lg:w-2/3 flex justify-center">
-            <div className="relative w-full lg:max-w-[600px]">
+          <div className={styles.rightColumn}>
+            <div className={styles.imageWrapper}>
               <Image
                 src="/images/mobile-light.png"
                 alt="Exchange Mobile App"
                 layout="responsive"
                 width={600}  // задаем 600 для десктопа
                 height={600} // устанавливаем квадратное соотношение 1:1
-                className="object-cover"
+                className={styles.image}
                 priority
               />
             </div>

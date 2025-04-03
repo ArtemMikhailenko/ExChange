@@ -169,15 +169,6 @@ export default function LoginPage() {
             : 'bg-white/80 border border-gray-100'
         }`}>
           <div className="text-center mb-8 relative">
-            <div className="absolute right-0 top-0">
-              <Image 
-                src={isDark ? "/images/login/qr-dark.png" : "/images/login/qr.png"}
-                alt="QR Code"
-                width={40}
-                height={40}
-                className="rounded-lg shadow-sm"
-              />
-            </div>
             <h2 className={`text-3xl font-bold mb-2 ${
               isDark ? 'text-white' : 'text-gray-800'
             }`}>

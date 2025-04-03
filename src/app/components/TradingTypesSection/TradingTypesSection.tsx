@@ -1,65 +1,66 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-import Link from 'next/link';
+import React from "react";
+import { useTranslation } from "react-i18next";
+import Link from "next/link";
+import styles from "./TradingTypesSection.module.css";
 
 type TradingType = {
   title: string;
-  description: React.ReactNode;
+  subtitle: React.ReactNode;
   link: string;
 };
 
 export default function TradingTypesSection() {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation("common");
 
-  // Создаем типы торговли с ReactNode для частей текста с выделением
   const tradingTypes: TradingType[] = [
     {
-      title: t('spot'),
-      description: (
+      title: t("spot"),
+      subtitle: (
         <>
-          {t('spotDescriptionPrefix')} <span className="font-bold ">1000+</span> {t('spotDescriptionSuffix')}
+          {t("spotDescriptionPrefix")}{" "}
+          <span className={styles.bold}>1000+</span>{" "}
+          {t("spotDescriptionSuffix")}
         </>
       ),
-      link: '/spot'
+      link: "/spot",
     },
     {
-      title: t('futures'),
-      description: (
+      title: t("futures"),
+      subtitle: (
         <>
-          {t('futuresDescriptionPrefix')} <span className="font-bold ">125x</span> {t('futuresDescriptionSuffix')}
+          {t("futuresDescriptionPrefix")}{" "}
+          <span className={styles.bold}>125x</span>{" "}
+          {t("futuresDescriptionSuffix")}
         </>
       ),
-      link: '/futures'
+      link: "/futures",
     },
     {
-      title: t('gridTrading'),
-      description: (
+      title: t("gridTrading"),
+      subtitle: (
         <>
-          {t('gridTradingDescriptionPrefix')} <span className="font-bold ">24/7</span> {t('gridTradingDescriptionSuffix')}
+          {t("gridTradingDescriptionPrefix")}{" "}
+          <span className={styles.bold}>24/7</span>{" "}
+          {t("gridTradingDescriptionSuffix")}
         </>
       ),
-      link: '/grid-trading'
-    }
+      link: "/grid-trading",
+    },
   ];
 
   return (
-    <section className="py-16">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <section className={styles.section}>
+      <div className={styles.container}>
+        <div className={styles.grid}>
           {tradingTypes.map((type, index) => (
-            <div key={index} className="flex flex-col">
-              <h2 className="text-3xl font-bold mb-4">{type.title}</h2>
-              <p className="text-gray-400 mb-8">
-                {type.description}
-              </p>
-              <div className="mt-auto">
-                <Link 
-                  href={type.link} 
-                  className="inline-block text-gray-300 hover:text-yellow-500 border-b border-gray-700 hover:border-gray-300 transition-colors"
-                >
-                  {t('learnMore')}
+            <div key={index} className={styles.card}>
+              <h2 className={styles.title}>{type.title}</h2>
+              <p className={styles.description}>{type.subtitle}</p>
+              <div className={styles.linkWrapper}>
+                <Link href={type.link} className={styles.link}>
+                  {t("learnMore")}
                 </Link>
               </div>
             </div>

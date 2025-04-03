@@ -7,63 +7,71 @@ import {
   Twitter, 
   Facebook, 
   Instagram, 
-  Globe,
   Linkedin
 } from 'lucide-react';
+import styles from './Footer.module.css';
 
 export default function Footer() {
   const { t } = useTranslation('common');
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-black text-gray-400 pt-16 pb-8">
-      <div className="container mx-auto px-4">
-        {/* Main footer content */}
-        <div className="flex flex-col lg:flex-row">
+    <footer className={styles.footer}>
+      <div className={styles.container}>
+        {/* Simple Mobile Footer (visible only on mobile) */}
+        <div className={styles.simpleMobileFooter}>
+          <div className={styles.mobileLogo}>LOGO</div>
+          <div className={styles.mobileCopyright}>
+            © 2023-2025 ExChange.COM
+          </div>
+        </div>
+        
+        {/* Desktop Footer (hidden on small mobile screens) */}
+        <div className={styles.flexContainer}>
           {/* Logo column */}
-          <div className="lg:w-1/4 mb-8 lg:mb-0">
-            <Link href="/" className="inline-block mb-8">
-              <div className="flex items-center text-white">
+          <div className={styles.logoColumn}>
+            <Link href="/" className={styles.logo}>
+              <div className={styles.logoWrapper}>
                 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="20" cy="20" r="19" stroke="currentColor" strokeWidth="2" />
                   <path d="M20 1C30.493 1 39 9.507 39 20C39 30.493 30.493 39 20 39" stroke="currentColor" strokeWidth="2" />
                 </svg>
-                <span className="ml-2 text-xl font-bold">Logoipsum</span>
+                <span className={styles.logoText}>Logoipsum</span>
               </div>
             </Link>
           </div>
 
           {/* Center navigation columns */}
-          <div className="lg:w-2/4 grid grid-cols-1 md:grid-cols-3 gap-8 mb-8 lg:mb-0">
+          <div className={styles.navGridContainer}>
             {/* COMMUNITIES */}
             <div>
-              <h3 className="text-white font-medium mb-6 text-sm uppercase tracking-wider">
-                {t('communities')}
+              <h3 className={styles.sectionTitle}>
+                {t('communities', 'Communities')}
               </h3>
-              <ul className="space-y-4">
+              <ul className={styles.navList}>
                 <li>
-                  <Link href="/for-companies" className="hover:text-white transition-colors">
-                    {t('forCompanies')}
+                  <Link href="/for-companies" className={styles.navLink}>
+                    {t('forCompanies', 'For Companies')}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/developers" className="hover:text-white transition-colors">
-                    {t('developers')}
+                  <Link href="/developers" className={styles.navLink}>
+                    {t('developers', 'Developers')}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/advertising" className="hover:text-white transition-colors">
-                    {t('advertising')}
+                  <Link href="/advertising" className={styles.navLink}>
+                    {t('advertising', 'Advertising')}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/investors" className="hover:text-white transition-colors">
-                    {t('investors')}
+                  <Link href="/investors" className={styles.navLink}>
+                    {t('investors', 'Investors')}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/vendors" className="hover:text-white transition-colors">
-                    {t('vendors')}
+                  <Link href="/vendors" className={styles.navLink}>
+                    {t('vendors', 'Vendors')}
                   </Link>
                 </li>
               </ul>
@@ -71,23 +79,23 @@ export default function Footer() {
 
             {/* COMPANY */}
             <div>
-              <h3 className="text-white font-medium mb-6 text-sm uppercase tracking-wider">
-                {t('company')}
+              <h3 className={styles.sectionTitle}>
+                {t('company', 'Company')}
               </h3>
-              <ul className="space-y-4">
+              <ul className={styles.navList}>
                 <li>
-                  <Link href="/about" className="hover:text-white transition-colors">
-                    {t('about')}
+                  <Link href="/about" className={styles.navLink}>
+                    {t('about', 'About')}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/jobs" className="hover:text-white transition-colors">
-                    {t('jobs')}
+                  <Link href="/jobs" className={styles.navLink}>
+                    {t('jobs', 'Jobs')}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/for-the-record" className="hover:text-white transition-colors">
-                    {t('forTheRecord')}
+                  <Link href="/for-the-record" className={styles.navLink}>
+                    {t('forTheRecord', 'For The Record')}
                   </Link>
                 </li>
               </ul>
@@ -95,18 +103,18 @@ export default function Footer() {
 
             {/* USEFUL LINKS */}
             <div>
-              <h3 className="text-white font-medium mb-6 text-sm uppercase tracking-wider">
-                {t('usefulLinks')}
+              <h3 className={styles.sectionTitle}>
+                {t('usefulLinks', 'Useful Links')}
               </h3>
-              <ul className="space-y-4">
+              <ul className={styles.navList}>
                 <li>
-                  <Link href="/support" className="hover:text-white transition-colors">
-                    {t('support')}
+                  <Link href="/support" className={styles.navLink}>
+                    {t('support', 'Support')}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/mobile-app" className="hover:text-white transition-colors">
-                    {t('freeMobileApp')}
+                  <Link href="/mobile-app" className={styles.navLink}>
+                    {t('freeMobileApp', 'Free Mobile App')}
                   </Link>
                 </li>
               </ul>
@@ -114,13 +122,13 @@ export default function Footer() {
           </div>
 
           {/* Social Media Icons aligned to the right */}
-          <div className="lg:w-1/4 flex lg:justify-end">
-            <div className="flex space-x-4">
+          <div className={styles.socialContainer}>
+            <div className={styles.socialIconsWrapper}>
               <Link
                 href="https://twitter.com/exchange"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 flex items-center justify-center text-white hover:text-gray-300 transition-colors"
+                className={styles.socialLink}
                 aria-label="Twitter"
               >
                 <Twitter size={24} />
@@ -129,7 +137,7 @@ export default function Footer() {
                 href="https://facebook.com/exchange"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 flex items-center justify-center text-white hover:text-gray-300 transition-colors"
+                className={styles.socialLink}
                 aria-label="Facebook"
               >
                 <Facebook size={24} />
@@ -138,25 +146,16 @@ export default function Footer() {
                 href="https://instagram.com/exchange"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 flex items-center justify-center text-white hover:text-gray-300 transition-colors"
+                className={styles.socialLink}
                 aria-label="Instagram"
               >
                 <Instagram size={24} />
               </Link>
               <Link
-                href="https://t.me/exchange"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 flex items-center justify-center text-white hover:text-gray-300 transition-colors"
-                aria-label="Telegram"
-              >
-                <Twitter size={24} />
-              </Link>
-              <Link
                 href="https://linkedin.com/company/exchange"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-10 h-10 flex items-center justify-center text-white hover:text-gray-300 transition-colors"
+                className={styles.socialLink}
                 aria-label="LinkedIn"
               >
                 <Linkedin size={24} />
@@ -166,35 +165,32 @@ export default function Footer() {
         </div>
 
         {/* Separator line */}
-        <div className="border-t border-gray-800 my-8"></div>
+        <div className={styles.divider}></div>
 
         {/* Bottom footer with legal links */}
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="flex flex-wrap gap-6 mb-4 md:mb-0">
-            <Link href="/legal" className="text-sm hover:text-white transition-colors">
-              {t('legal')}
+        <div className={styles.footerBottom}>
+          <div className={styles.legalLinks}>
+            <Link href="/legal" className={styles.legalLink}>
+              {t('legal', 'Legal')}
             </Link>
-            <Link href="/privacy-center" className="text-sm hover:text-white transition-colors">
-              {t('privacyCenter')}
+            <Link href="/privacy-center" className={styles.legalLink}>
+              {t('privacyCenter', 'Privacy Center')}
             </Link>
-            <Link href="/privacy-policy" className="text-sm hover:text-white transition-colors">
-              {t('privacyPolicy')}
+            <Link href="/privacy-policy" className={styles.legalLink}>
+              {t('privacyPolicy', 'Privacy Policy')}
             </Link>
-            <Link href="/cookies" className="text-sm hover:text-white transition-colors">
-              {t('cookies')}
+            <Link href="/cookies" className={styles.legalLink}>
+              {t('cookies', 'Cookies')}
             </Link>
-            <Link href="/about-ads" className="text-sm hover:text-white transition-colors">
-              {t('aboutAds')}
+            <Link href="/about-ads" className={styles.legalLink}>
+              {t('aboutAds', 'About Ads')}
             </Link>
-            <Link href="/accessibility" className="text-sm hover:text-white transition-colors">
-              {t('accessibility')}
-            </Link>
-            <Link href="/your-privacy-choice" className="text-sm hover:text-white transition-colors">
-              {t('yourPrivacyChoice')}
+            <Link href="/accessibility" className={styles.legalLink}>
+              {t('accessibility', 'Accessibility')}
             </Link>
           </div>
-          <div className="text-sm">
-            © 2023 Figma Template | {t('allRightsReserved')}
+          <div className={styles.copyright}>
+            © 2023-{currentYear} ExChange.COM
           </div>
         </div>
       </div>

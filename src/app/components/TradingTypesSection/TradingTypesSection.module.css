@@ -1,0 +1,86 @@
+/* Корневая секция */
+.section {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+  
+  /* Контейнер по центру */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  /* Сетка карточек */
+  /* По умолчанию: одна колонка, всё по центру */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: left; /* Выравниваем текст по центру */
+  }
+  
+  /* При экранах от 768px и выше: три колонки (можно убрать, если не нужно) */
+  @media (min-width: 768px) {
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  /* Карточка */
+  .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: start; /* Центрируем контент по горизонтали */
+    min-height: 200px;
+    /* Можно добавить дополнительные стили при желании */
+  }
+  
+  /* Заголовок карточки */
+  .title {
+    font-size: 1.875rem; /* ~ text-3xl */
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  
+  /* Описание карточки */
+  .description {
+    font-size: 1rem; /* ~ text-base */
+    margin-bottom: 2rem;
+    max-width: 18rem; /* чтобы текст не растягивался слишком широко */
+    line-height: 1.4;
+  }
+  
+  /* Выделенный текст в описании */
+  .bold {
+    font-weight: 700;
+  }
+  
+  /* Обёртка для ссылки */
+  .linkWrapper {
+    margin-top: auto; /* позволяет ссылке "прилипать" к низу, если нужно */
+  }
+  
+  /* Ссылка "Learn More" */
+  .link {
+    display: inline-block;
+    color: #d1d5db; /* text-gray-300 */
+    border-bottom: 1px solid #374151; /* border-gray-700 */
+    text-decoration: none;
+    transition: all 0.3s;
+    font-size: 0.95rem;
+  }
+  
+  .link:hover {
+    color: #f59e0b; /* yellow-500 */
+    border-bottom-color: #d1d5db; /* border-gray-300 */
+  }
+  @media (max-width: 768px) {
+    .card {
+        align-items: center;
+    }
+    .grid{
+        text-align: center;
+    }
+  }

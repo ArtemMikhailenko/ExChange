@@ -1,0 +1,209 @@
+.section {
+    padding: 4rem 0;
+  }
+  
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .title {
+    font-size: 2.25rem;
+    font-weight: 700;
+  }
+  
+  .viewAllLink {
+    display: flex;
+    align-items: center;
+    color: #f8ca36;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  
+  .viewAllLink:hover {
+    color: #e6b518;
+  }
+  
+  .arrowIcon {
+    margin-left: 0.25rem;
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  .tabsContainer {
+    border-bottom: 1px solid #1f2937;
+    margin-bottom: 1rem;
+  }
+  
+  .tabsList {
+    display: flex;
+  }
+  
+  .tabButton {
+    padding: 1rem 0.25rem;
+    margin-right: 2rem;
+    border-bottom: 2px solid transparent;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #9ca3af;
+    background: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .tabButton:hover {
+    color: #d1d5db;
+  }
+  
+  .activeTabButton {
+    color: #f8ca36;
+    border-bottom-color: #f8ca36;
+  }
+  
+  .tableContainer {
+    overflow-x: auto;
+  }
+  
+  .marketsTable {
+    width: 100%;
+    text-align: left;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  
+  .tableHeader {
+    color: #9ca3af;
+    font-size: 0.875rem;
+    font-weight: normal;
+    padding-bottom: 1rem;
+  }
+  
+  .headerAlignRight {
+    text-align: right;
+  }
+  
+  .tableRow {
+    border-top: 1px solid #1f2937;
+    transition: background-color 0.2s;
+  }
+  
+  .tableRow:hover {
+    background-color: rgba(31, 41, 55, 0.5);
+  }
+  
+  .tableCell {
+    padding: 1rem 0;
+  }
+  
+  .alignRight {
+    text-align: right;
+  }
+  
+  .coinInfo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .coinImageContainer {
+    width: 2rem;
+    height: 2rem;
+    margin-right: 0.75rem;
+    position: relative;
+  }
+  
+  .coinImage {
+    border-radius: 9999px;
+    object-fit: contain;
+  }
+  
+  .coinSymbol {
+    font-weight: 500;
+  }
+  
+  .positiveChange {
+    color: #10b981;
+  }
+  
+  .negativeChange {
+    color: #ef4444;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .title {
+      font-size: 1.75rem;
+    }
+    
+    .tabButton {
+      margin-right: 1rem;
+      padding: 0.75rem 0.25rem;
+    }
+    
+    .tabsList {
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      white-space: nowrap;
+    }
+    
+    /* Hide last column on mobile */
+    .volumeHeader, .volumeCell {
+      display: none;
+    }
+  }
+  
+  /* Loading state styles */
+  .loadingRow {
+    height: 64px;
+  }
+  
+  .loadingCell {
+    padding: 1rem 0;
+  }
+  
+  .skeletonLoader {
+    height: 1rem;
+    background: linear-gradient(90deg, #1f2937 25%, #374151 50%, #1f2937 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: 0.25rem;
+  }
+  
+  .coinSkeleton {
+    width: 8rem;
+  }
+  
+  .priceSkeleton {
+    width: 5rem;
+    margin-left: auto;
+  }
+  
+  .changeSkeleton {
+    width: 4rem;
+    margin-left: auto;
+  }
+  
+  .volumeSkeleton {
+    width: 5rem;
+    margin-left: auto;
+  }
+  
+  @keyframes loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }

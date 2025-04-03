@@ -1,0 +1,84 @@
+.featureSection {
+    padding: 3rem 0;
+  }
+  
+  .container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  .sectionTitle {
+    font-size: 2.5rem; /* примерно 40px */
+    font-weight: bold;
+    text-align: center;
+    padding-bottom: 2rem;
+  }
+  
+  /* Контейнер для всех рядов карточек */
+  .cardRows {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  
+  /* Сетка для каждой строки карточек */
+  .cardRow {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 22px;
+    max-width: 1080px;
+
+  }
+  
+  /* При экранах от 768px используем три колонки */
+  @media (min-width: 768px) {
+    .cardRow {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  
+  .card {
+    border: 2px solid #333; /* аналог border-gray-800 */
+    background-color: #000;  /* аналог bg-black */
+    border-radius: 0.5rem;   /* rounded-lg */
+    padding: 1.5rem;
+    transition: border-color 0.3s;
+  }
+  
+  .card:hover {
+    border-color: #4a4a4a; /* hover:border-gray-700 */
+  }
+  
+  .cardContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .textContainer {
+    flex: 1;
+  }
+  
+  .cardTitle {
+    font-size: 1.25rem; /* text-xl */
+    font-weight: 600;
+    color: #ffffff; /* белый */
+    margin-bottom: 0.75rem;
+  }
+  
+  .cardSubtitle {
+    font-size: 0.875rem; /* text-sm */
+    color: #cccccc; /* светло-серый, можно настроить */
+  }
+  
+  .iconContainer {
+    position: relative;
+    width: 6rem;  /* 96px */
+    height: 6rem; /* 96px */
+  }
+  
+  .iconImage {
+    object-fit: contain;
+  }
+  

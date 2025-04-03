@@ -1,0 +1,93 @@
+/* Корневой контейнер секции */
+.section {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+    background-color: #0D0D0D;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 5rem;
+  }
+  
+  /* Контейнер по центру */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+  
+  /* Ряд для левой и правой колонок */
+  .row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  /* На больших экранах - горизонтальное расположение */
+  @media (min-width: 1024px) {
+    .row {
+      flex-direction: row;
+    }
+  }
+  
+  /* Левая колонка с текстом */
+  .leftColumn {
+    width: 100%;
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+  
+  /* На больших экранах текст выравнивается по левому краю */
+  @media (min-width: 1024px) {
+    .leftColumn {
+      width: 66.66%;
+      margin-bottom: 0;
+      text-align: left;
+    }
+  }
+  
+  /* Заголовок */
+  .title {
+    font-weight: 700;
+    font-size: 54px;
+    line-height: 148%;
+    color: #fcfdff;
+  }
+  
+  /* На больших экранах увеличиваем размер */
+  @media (min-width: 1024px) {
+    .title {
+      font-size: 3.75rem; /* примерно text-6xl */
+    }
+  }
+  
+  /* Правая колонка с изображением */
+  .rightColumn {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  /* На больших экранах - 2/3 ширины */
+  @media (min-width: 1024px) {
+    .rightColumn {
+      width: 66.66%;
+    }
+  }
+  
+  /* Обёртка для изображения */
+  .imageWrapper {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+  }
+  
+  /* Само изображение */
+  .image {
+    object-fit: cover;
+  }
+  @media (max-width: 767px) {
+    .section {
+      display: none;
+    }
+  }
