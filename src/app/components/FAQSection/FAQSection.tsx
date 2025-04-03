@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Link from 'next/link';
+import styles from './FAQSection.module.css';
 
 type FAQItem = {
   question: string;
@@ -39,47 +40,51 @@ export default function FAQSection() {
   };
 
   return (
-    <section className="py-20 bg-[var(--background)] dark:bg-[var(--background-dark)] ">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-12">
-          <h2 className="text-4xl font-bold">FAQ</h2>
+    <section className={styles.section}>
+      <div className={styles.container}>
+        <div className={styles.header}>
+          <h2 className={styles.title}>FAQ</h2>
           <Link 
             href="/faq" 
-            className="text-yellow-500 hover:text-yellow-400 flex items-center"
+            className={styles.moreLink}
           >
             {t('more')}
-            <svg className="ml-2 w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg className={styles.arrowIcon} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </Link>
         </div>
         
-        <div className="space-y-6">
+        <div className={styles.faqList}>
           {faqItems.map((item, index) => (
             <div 
               key={index} 
-              className="border-b border-gray-800 "
+              className={styles.faqItem}
             >
               <button
                 onClick={() => toggleQuestion(index)}
-                className="py-6 w-full flex justify-between items-center text-left hover:text-gray-300 focus:outline-none hover:text-yellow-500"
+                className={styles.questionButton}
               >
-                <span className="text-xl font-medium text-left">
+                <span className={styles.questionText}>
                   {item.question}
                 </span>
-                <span className="text-2xl">
-                  {openIndex === index ? 
-                    <PlusIcon className="rotate-45 transition-transform duration-300" /> : 
-                    <PlusIcon className="transition-transform duration-300" />
-                  }
+                <span className={styles.iconWrapper}>
+                  <PlusIcon 
+                    className={openIndex === index ? 
+                      `${styles.plusIcon} ${styles.rotated}` : 
+                      styles.plusIcon
+                    } 
+                  />
                 </span>
               </button>
               <div 
-                className={`overflow-hidden transition-all duration-300 ${
-                  openIndex === index ? 'max-h-96 pb-6' : 'max-h-0'
-                }`}
+                className={
+                  openIndex === index ? 
+                  `${styles.answerContainer} ${styles.open}` : 
+                  styles.answerContainer
+                }
               >
-                <p className="text-gray-400">
+                <p className={styles.answerText}>
                   {item.answer}
                 </p>
               </div>
