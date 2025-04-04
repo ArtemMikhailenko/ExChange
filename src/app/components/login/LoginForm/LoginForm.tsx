@@ -24,7 +24,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ isDark, t, openResetModal }) => {
     setError('');
 
     try {
-      // Базовая валидация
       if (!email.trim()) {
         throw new Error('Пожалуйста, введите email');
       }
@@ -32,7 +31,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ isDark, t, openResetModal }) => {
         throw new Error('Пожалуйста, введите пароль');
       }
 
-      // Mock reCAPTCHA response (в реальном приложении интегрируйте настоящую reCAPTCHA)
       const recaptchaResponse = '03AGdBq26u-dummy-response';
       console.log('Отправка данных для входа:', { email, password: '********' });
 
@@ -45,7 +43,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ isDark, t, openResetModal }) => {
       console.log('Ответ API:', result);
 
       if (result.status === 'success' && result.data) {
-        // Сохраняем токен
         authService.saveAuthToken(result.data.token);
       } else {
         throw new Error(result.error || 'Ошибка входа. Пожалуйста, попробуйте снова.');
@@ -65,7 +62,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ isDark, t, openResetModal }) => {
       const result = await authService.googleLogin();
 
       if (result.status === 'success' && result.data?.url) {
-        // Перенаправляем на URL аутентификации Google
         window.location.href = result.data.url;
       } else {
         throw new Error(result.error || 'Не удалось начать аутентификацию через Google');
@@ -84,7 +80,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ isDark, t, openResetModal }) => {
         ? 'bg-gray-900/70 border border-gray-800'
         : 'bg-white/80 border border-gray-100'
     }`}>
-      {/* Заголовок формы */}
       <div className="text-center mb-8 relative">
         <h2 className={`text-3xl font-bold mb-2 ${isDark ? 'text-white' : 'text-gray-800'}`}>
           {t('welcomeBack')}
@@ -101,7 +96,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ isDark, t, openResetModal }) => {
       )}
 
       <form className="space-y-5" onSubmit={handleLogin}>
-        {/* Email Input */}
         <div className={`relative transition-all duration-300 ${isInputFocused ? 'scale-[1.02]' : ''}`}>
           <div className={`absolute inset-y-0 left-4 flex items-center pointer-events-none ${
             isDark ? 'text-gray-500' : 'text-gray-400'
@@ -128,7 +122,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ isDark, t, openResetModal }) => {
           />
         </div>
 
-        {/* Password Input */}
         <div className="relative">
           <div className={`absolute inset-y-0 left-4 flex items-center pointer-events-none ${
             isDark ? 'text-gray-500' : 'text-gray-400'
@@ -153,7 +146,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ isDark, t, openResetModal }) => {
           />
         </div>
 
-        {/* Forgot Password */}
         <div className="flex justify-end">
           <a 
             href="#" 
@@ -164,7 +156,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ isDark, t, openResetModal }) => {
           </a>
         </div>
 
-        {/* Submit Button */}
         <button
           type="submit"
           disabled={loading}
@@ -183,7 +174,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ isDark, t, openResetModal }) => {
           ) : t('logIn')}
         </button>
 
-        {/* Divider */}
         <div className="relative my-6">
           <div className={`absolute inset-0 flex items-center ${isDark ? 'text-gray-700' : 'text-gray-300'}`}>
             <div className="w-full border-t border-current"></div>
@@ -195,7 +185,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ isDark, t, openResetModal }) => {
           </div>
         </div>
 
-        {/* Social Buttons */}
         <div className="grid grid-cols-2 gap-4">
           <button
             type="button"
@@ -234,7 +223,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ isDark, t, openResetModal }) => {
           </button>
         </div>
 
-        {/* Sign Up Section */}
         <div className="mt-8 text-center">
           <p className={isDark ? 'text-gray-400' : 'text-gray-600'}>
             {t('dontHaveAccount')}{' '}

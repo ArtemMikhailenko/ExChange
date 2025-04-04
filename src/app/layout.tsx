@@ -1,4 +1,3 @@
-// src/app/layout.tsx
 import './globals.css';
 import type { Metadata } from 'next';
 import { ThemeProviderWrapper } from './theme-provider-wrapper';
@@ -20,7 +19,6 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        {/* Оборачиваем children в клиентский провайдер */}
         <ThemeProviderWrapper>
         <AuthProvider>
           <div className="min-h-screen">

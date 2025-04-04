@@ -1,10 +1,6 @@
-// src/services/api.ts
-// Fixed version with proper response handling
 
-// Base API URL
 const API_BASE_URL = 'https://virtserver.swaggerhub.com/woronaweb/ExChange/1.0.0';
 
-// Interfaces for requests and responses
 export interface RegisterPayload {
   email: string;
   password: string;
@@ -22,7 +18,7 @@ export interface ApiResponse<T> {
   data?: T;
   message?: string;
   error?: string;
-  success?: boolean; // Added for compatibility with useAuth
+  success?: boolean; 
 }
 
 export interface AuthResponse {
@@ -34,7 +30,6 @@ export interface AuthResponse {
   };
 }
 
-// API configuration
 export const apiConfig = {
   baseURL: API_BASE_URL,
   headers: {
@@ -50,7 +45,6 @@ export const apiConfig = {
   }
 };
 
-// API error handler
 class ApiError extends Error {
   statusCode: number;
   

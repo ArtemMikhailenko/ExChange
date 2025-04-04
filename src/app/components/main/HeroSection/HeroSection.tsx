@@ -14,7 +14,6 @@ export default function HeroSection() {
   return (
     <section className={styles.heroSection}>
       <div className={styles.heroContainer}>
-        {/* Левая часть: Заголовок и кнопки */}
         <div className={styles.textColumn}>
           <h1 className={styles.heroTitle}>{t('heroTitle')}</h1>
           <div className={styles.buttonGroup}>
@@ -33,7 +32,6 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Правая часть: Картинка */}
         <div className={styles.imageColumn}>
           <div className={styles.imageWrapper}>
             <Image

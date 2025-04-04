@@ -33,8 +33,7 @@ export default function PartnersSlider() {
     }
   ];
 
-  // Для демонстрации используем заглушки для изображений
-  // Если изображения в /images/partners/ недоступны, примените этот подход
+  
   const partnerIcons = [
     '/images/partners/certify-vasp-logo.svg',
     '/images/partners/sumsub-logo.svg', 
@@ -43,7 +42,6 @@ export default function PartnersSlider() {
     '/images/partners/cointelegraph-logo.svg'
   ];
 
-  // Дублируем список партнеров для создания бесконечной бегущей строки
   const duplicatedPartners = [...partnerIcons, ...partnerIcons, ...partnerIcons];
 
   return (
@@ -51,7 +49,6 @@ export default function PartnersSlider() {
       <div className="w-full">
         <div className="flex flex-col">
           <div className="relative overflow-hidden">
-            {/* Создаем бесконечную бегущую строку */}
             <div className="flex logos-slider">
               {duplicatedPartners.map((partner, index) => (
                 <div key={`logo-${index}`} className="flex items-center justify-center px-8 mx-4">

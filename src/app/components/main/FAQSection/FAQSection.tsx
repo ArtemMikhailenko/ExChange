@@ -14,7 +14,6 @@ export default function FAQSection() {
   const { t } = useTranslation('common');
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  // Список часто задаваемых вопросов
   const faqItems: FAQItem[] = [
     {
       question: t('faqProductsQuestion'),
@@ -34,7 +33,6 @@ export default function FAQSection() {
     }
   ];
 
-  // Функция для переключения состояния открытия/закрытия вопроса
   const toggleQuestion = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
@@ -96,7 +94,6 @@ export default function FAQSection() {
   );
 }
 
-// Компонент иконки "Плюс"
 function PlusIcon({ className = '' }: { className?: string }) {
   return (
     <svg 

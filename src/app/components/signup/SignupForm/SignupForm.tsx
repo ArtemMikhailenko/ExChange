@@ -1,4 +1,3 @@
-// src/app/signup/components/SignupForm.tsx
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -16,14 +15,12 @@ const SignupForm: React.FC<SignupFormProps> = ({ isDark, t }) => {
   const router = useRouter();
   const { register, loading, error: authError, clearError } = useAuth();
   
-  // Form state
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     referralCode: ''
   });
   
-  // UI state
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [isReferralFocused, setIsReferralFocused] = useState(false);
@@ -33,7 +30,6 @@ const SignupForm: React.FC<SignupFormProps> = ({ isDark, t }) => {
   const [localError, setLocalError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   
-  // Combined error from auth hook and local validation
   const error = authError || localError;
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,12 +51,10 @@ const SignupForm: React.FC<SignupFormProps> = ({ isDark, t }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Reset states
     clearError();
     setLocalError(null);
     setSuccessMessage(null);
     
-    // Validate form
     if (!formData.email) {
       setLocalError(t('emailRequired'));
       return;
@@ -76,20 +70,17 @@ const SignupForm: React.FC<SignupFormProps> = ({ isDark, t }) => {
       return;
     }
     
-    // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setLocalError(t('invalidEmail'));
       return;
     }
     
-    // Basic password strength check
     if (formData.password.length < 8) {
       setLocalError(t('passwordTooShort'));
       return;
     }
     
-    // Call the register function from our auth hook
     const success = await register({
       email: formData.email,
       password: formData.password,
@@ -97,10 +88,8 @@ const SignupForm: React.FC<SignupFormProps> = ({ isDark, t }) => {
     });
     
     if (success) {
-      // Success - show message and redirect
       setSuccessMessage(t('registrationSuccess'));
       
-      // Simulate email verification process - in real app you'd redirect to a verification page
       setTimeout(() => {
         router.push('/login');
       }, 2000);
@@ -204,7 +193,6 @@ const SignupForm: React.FC<SignupFormProps> = ({ isDark, t }) => {
           </button>
         </div>
         
-        {/* Referral code toggle button */}
         <div>
           <button
             type="button"
@@ -232,7 +220,6 @@ const SignupForm: React.FC<SignupFormProps> = ({ isDark, t }) => {
             )}
           </button>
 
-          {/* Collapsible referral field */}
           <div className={`mt-3 overflow-hidden transition-all duration-300 ${
             showReferralField ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0'
           }`}>
@@ -301,7 +288,6 @@ const SignupForm: React.FC<SignupFormProps> = ({ isDark, t }) => {
           </div>
         </div>
         
-        {/* Signup button */}
         <button
           type="submit"
           disabled={!agreedToTerms || loading}
@@ -339,7 +325,6 @@ const SignupForm: React.FC<SignupFormProps> = ({ isDark, t }) => {
           </div>
         </div>
         
-        {/* Social signup options */}
         <div className="grid grid-cols-2 gap-4">
           <button
             type="button"
@@ -376,7 +361,6 @@ const SignupForm: React.FC<SignupFormProps> = ({ isDark, t }) => {
         </div>
       </form>
       
-      {/* Already have an account link */}
       <div className="mt-8 text-center">
         <p className={isDark ? 'text-gray-400' : 'text-gray-600'}>
           {t('alreadyHaveAccount')}{' '}

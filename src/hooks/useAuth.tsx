@@ -1,4 +1,3 @@
-// src/hooks/useAuth.ts
 'use client';
 
 import { useState, useEffect, createContext, useContext } from 'react';
@@ -57,10 +56,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const token = authService.getAuthToken();
         
         if (token) {
-          // In a real app, you would verify the token by calling a me/profile API endpoint
-          // For now, we'll just assume the token is valid if it exists
-          
-          // Simulating user data - in a real app, you would fetch this from the API
           setUser({
             id: 'user-1',
             email: 'user@example.com',
@@ -90,10 +85,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const result = await authService.register(data);
       
       if (result.status === 'success' && result.data) {
-        // Store the auth token
         authService.saveAuthToken(result.data.token);
-        
-        // Set the user data
         setUser(result.data.user);
         
         return true;
@@ -109,7 +101,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // Login a user
   const login = async (data: LoginPayload): Promise<boolean> => {
     setLoading(true);
     clearError();
@@ -118,10 +109,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const result = await authService.login(data);
       
       if (result.status === 'success' && result.data) {
-        // Store the auth token
         authService.saveAuthToken(result.data.token);
         
-        // Set the user data
         setUser(result.data.user);
         
         return true;

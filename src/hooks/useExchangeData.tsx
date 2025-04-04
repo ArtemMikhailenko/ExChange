@@ -44,15 +44,11 @@ export function useExchangeData() {
     ws.onmessage = (event) => {
       try {
         const json = JSON.parse(event.data);
-        // console.log('Received WebSocket data:', Object.keys(json).length);
-        
-        // If data contains trading bots info, transform it to the required format
+       
         if (json.tradingBots) {
           const tradingBotsData = json.tradingBots.map((bot: any) => {
-            // Replace bot icon URLs with CDN URLs if they don't already use the CDN
             let iconUrl = bot.icon;
             if (iconUrl && !iconUrl.includes('cdnexchange.ymca.one')) {
-              // Extract icon name from path and use CDN URL
               const iconName = iconUrl.split('/').pop()?.split('.')[0];
               if (iconName) {
                 iconUrl = `https://cdnexchange.ymca.one/${iconName}.png`;
@@ -81,19 +77,16 @@ export function useExchangeData() {
     
     ws.onerror = (error) => {
       console.error('WebSocket connection error', error);
-      // Fallback to mock data when WebSocket fails
       provideFallbackData();
     };
     
     ws.onclose = (event) => {
       console.log(`WebSocket connection closed: ${event.code} ${event.reason}`);
-      // Fallback to mock data if WebSocket closes unexpectedly
       if (event.code !== 1000) {
         provideFallbackData();
       }
     };
 
-    // Provide fallback data if WebSocket fails or times out
     const timeoutId = setTimeout(() => {
       if (!data) {
         provideFallbackData();

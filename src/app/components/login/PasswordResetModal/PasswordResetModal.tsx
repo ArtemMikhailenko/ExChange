@@ -1,4 +1,3 @@
-// src/components/PasswordResetModal/PasswordResetModal.tsx
 'use client';
 
 import React, { useState } from 'react';
@@ -19,7 +18,6 @@ const PasswordResetModal: React.FC<PasswordResetModalProps> = ({ isOpen, onClose
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -33,13 +31,11 @@ const PasswordResetModal: React.FC<PasswordResetModalProps> = ({ isOpen, onClose
     setSuccess(null);
     
     try {
-      // Call the password service to request a password reset
       const { passwordService } = await import('@/services/passwordService');
       const response = await passwordService.requestPasswordReset(email);
       
       if (response.status === 'success') {
         setSuccess(t('passwordResetLinkSent'));
-        // After successful submission, we might want to close the modal after a delay
         setTimeout(() => {
           onClose();
           setEmail('');

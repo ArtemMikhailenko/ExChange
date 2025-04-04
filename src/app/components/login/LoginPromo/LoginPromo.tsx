@@ -1,4 +1,3 @@
-// src/app/login/components/LoginPromo.tsx
 import React from 'react';
 import Image from 'next/image';
 import { TFunction } from 'i18next';
@@ -33,7 +32,6 @@ const LoginPromo: React.FC<LoginPromoProps> = ({ isDark, t }) => {
         
         <FeaturesList isDark={isDark} />
         
-        {/* 3D crypto illustration */}
         <div className="relative w-full h-80">
           <Image 
             src="/images/login/login.png" 

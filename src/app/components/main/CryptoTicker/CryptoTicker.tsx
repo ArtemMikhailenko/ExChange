@@ -6,12 +6,10 @@ import { useExchangeData } from '@/hooks/useExchangeData';
 export default function CryptoTicker() {
   const data = useExchangeData();
 
-  // Преобразуем данные в массив (если они уже есть)
   const cryptoPairs = React.useMemo(() => {
     if (!data) return [];
-    // Преобразуем ключ, например: "solusdt" -> "SOL/USDT"
     return Object.entries(data)
-      .filter(([key]) => key !== 'tradingBots') // исключаем tradingBots если есть
+      .filter(([key]) => key !== 'tradingBots') 
       .map(([key, value]) => {
         const pair = key.slice(0, key.length - 5).toUpperCase() + '/USDT';
         //@ts-ignore
@@ -28,7 +26,6 @@ export default function CryptoTicker() {
     );
   }
 
-  // Дублируем данные для создания непрерывной анимации
   const duplicatedPairs = [...cryptoPairs, ...cryptoPairs, ...cryptoPairs];
 
   return (
@@ -52,7 +49,6 @@ export default function CryptoTicker() {
         </div>
       </div>
 
-      {/* Встроенные стили для плавной анимации */}
       <style jsx>{`
         .ticker-container {
           position: relative;

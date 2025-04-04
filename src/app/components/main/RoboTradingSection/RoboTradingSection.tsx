@@ -12,7 +12,6 @@ export default function RoboTradingSection() {
   const exchangeData = useExchangeData();
   const [isMobile, setIsMobile] = useState(false);
 
-  // Check if we're on mobile
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -26,10 +25,8 @@ export default function RoboTradingSection() {
     };
   }, []);
 
-  // Create chart from chartData if available
   const createChartSVG = (data?: number[]) => {
     if (!data || data.length < 2) {
-      // Default chart path if no data
       return (
         <svg width="100%" height="40" viewBox="0 0 200 40" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M10 35C20 30 30 25 40 28C50 31 60 34 70 33C80 32 90 28 100 25C110 22 120 20 130 22C140 24 150 30 160 32C170 34 180 30 190 25" 
@@ -38,19 +35,16 @@ export default function RoboTradingSection() {
       );
     }
     
-    // Calculate SVG path points
     const width = 200;
     const height = 50;
     const padding = 5;
     const availableWidth = width - 2 * padding;
     const availableHeight = height - 2 * padding;
     
-    // Find min and max to normalize
     const min = Math.min(...data);
     const max = Math.max(...data);
     const range = max - min;
     
-    // Create points
     const points = data.map((value, index) => {
       const x = padding + (index / (data.length - 1)) * availableWidth;
       const normalizedValue = range === 0 ? 0.5 : (value - min) / range;
@@ -72,7 +66,6 @@ export default function RoboTradingSection() {
     );
   };
 
-  // Trading bots data with fallback
   const tradingBots = useMemo(() => {
     const defaultBots = [
       {
@@ -99,7 +92,6 @@ export default function RoboTradingSection() {
     return defaultBots;
   }, [exchangeData]);
 
-  // Platform statistics
   const platformStats = [
     {
       value: '17,000+',
@@ -115,7 +107,6 @@ export default function RoboTradingSection() {
     }
   ];
 
-  // Mobile version
   if (isMobile) {
     return (
       <section className={styles.mobileSection}>
@@ -191,12 +182,10 @@ export default function RoboTradingSection() {
     );
   }
 
-  // Desktop version
   return (
     <section className={styles.section}>
       <div className={styles.container}>
         <div className={styles.flexContainer}>
-          {/* Left column with title and statistics */}
           <div className={styles.leftColumn}>
             <h2 className={styles.title}>
               {t('roboTradingTitle', 'Robo Trading: Invest Less, Earn More')}
@@ -216,10 +205,8 @@ export default function RoboTradingSection() {
             </Link>
           </div>
           
-          {/* Right column with bot cards */}
           <div className={styles.rightColumn}>
             <div className={styles.botsContainer}>
-              {/* First bot card */}
               <div className={styles.botCard}>
                 <div className={styles.botIdentity}>
                   <div className={styles.botIconWrapper}>
@@ -257,7 +244,6 @@ export default function RoboTradingSection() {
                 </div>
               </div>
               
-              {/* Second bot card */}
               <div className={styles.botCardSecondary}>
                 <div className={styles.botIdentity}>
                   <div className={styles.botIconWrapper}>

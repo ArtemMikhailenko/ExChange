@@ -17,7 +17,6 @@ type CryptoCoin = {
   volume24h: number;
 };
 
-// Default volume data for common coins
 const coinVolumes: Record<string, number> = {
   btc: 123460000,
   eth: 69530000,
@@ -41,22 +40,18 @@ export default function MarketsSection() {
   const [activeTab, setActiveTab] = useState('top');
   const exchangeData = useExchangeData();
 
-  // Helper function to get CDN image URL
   const getCoinImageUrl = (symbol: string): string => {
-    // Extract the base currency
     let baseCurrency;
     
     if (symbol.includes('/')) {
       baseCurrency = symbol.split('/')[0];
     } else {
-      // Remove the quote currency part (like USDT)
       baseCurrency = symbol.replace(/usdt$|busd$|usdc$/i, '');
     }
     
     return `https://cdnexchange.ymca.one/${baseCurrency.toUpperCase()}.png`;
   };
 
-  // Helper function to format symbol
   const formatSymbol = (symbol: string): string => {
     if (symbol.includes('/')) {
       return symbol.toUpperCase();
@@ -68,20 +63,17 @@ export default function MarketsSection() {
     });
   };
 
-  // Estimate default volume based on currency
   const getEstimatedVolume = (symbol: string): number => {
     const base = symbol.toLowerCase().replace(/\/.*$/, '');
     return coinVolumes[base] || Math.floor(Math.random() * 1000000) + 500000;
   };
 
-  // Transform exchange data to CryptoCoin array
   const cryptoCoins = useMemo(() => {
     if (!exchangeData) return [];
 
     return Object.entries(exchangeData)
       .filter(([key]) => typeof key === 'string' && key.length > 0 && !key.startsWith('trading'))
       .map(([symbol, data]) => {
-        // Skip entries that might be other data from the WebSocket
         //@ts-ignore
         if (!data.price || !data.change24h) return null;
         
@@ -103,7 +95,6 @@ export default function MarketsSection() {
       .filter(Boolean) as CryptoCoin[];
   }, [exchangeData]);
 
-  // Fallback data when WebSocket has not yet provided data
   const fallbackData: CryptoCoin[] = [
     {
       id: 'btcusdt',
@@ -213,7 +204,6 @@ export default function MarketsSection() {
     }
   };
 
-  // Market types tabs
   const tabs = [
     { id: 'top', label: t('top', 'Top') },
     { id: 'hot', label: t('hot', 'Hot') },
@@ -235,7 +225,6 @@ export default function MarketsSection() {
           </Link>
         </div>
 
-        {/* Tabs */}
         <div className={styles.tabsContainer}>
           <nav className={styles.tabsList}>
             {tabs.map(tab => (
@@ -250,7 +239,6 @@ export default function MarketsSection() {
           </nav>
         </div>
 
-        {/* Table */}
         <div className={styles.tableContainer}>
           <table className={styles.marketsTable}>
             <thead>
@@ -263,7 +251,6 @@ export default function MarketsSection() {
             </thead>
             <tbody>
               {!exchangeData && cryptoCoins.length === 0 ? (
-                // Loading state
                 Array(5).fill(0).map((_, index) => (
                   <tr key={`loading-${index}`} className={`${styles.tableRow} ${styles.loadingRow}`}>
                     <td className={`${styles.tableCell} ${styles.loadingCell}`}>
@@ -281,7 +268,6 @@ export default function MarketsSection() {
                   </tr>
                 ))
               ) : (
-                // Actual data
                 filteredCoins.map((coin) => (
                   <tr key={coin.id} className={styles.tableRow}>
                     <td className={styles.tableCell}>
@@ -294,7 +280,6 @@ export default function MarketsSection() {
                             height={32}
                             className={styles.coinImage}
                             onError={(e) => {
-                              // Fallback to generic image if CDN image fails to load
                               const target = e.target as HTMLImageElement;
                               target.src = '/images/crypto/generic.svg';
                             }}

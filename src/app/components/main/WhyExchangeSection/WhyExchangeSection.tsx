@@ -12,7 +12,6 @@ type FeatureItem = {
 export default function WhyExchangeSection() {
   const { t } = useTranslation("common");
 
-  // Верхний ряд преимуществ
   const topRowFeatures: FeatureItem[] = [
     {
       iconSrc: "/images/why/icon1.svg",
@@ -36,7 +35,6 @@ export default function WhyExchangeSection() {
     },
   ];
 
-  // Нижний ряд преимуществ
   const bottomRowFeatures: FeatureItem[] = [
     {
       iconSrc: "/images/why/icon5.svg",
@@ -67,7 +65,6 @@ export default function WhyExchangeSection() {
           {t("whyExchange")}
         </h2>
         
-        {/* Верхний ряд преимуществ */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           {topRowFeatures.map((feature, index) => (
             <div key={`top-${index}`} className="flex flex-col items-center text-center">
@@ -89,7 +86,6 @@ export default function WhyExchangeSection() {
           ))}
         </div>
         
-        {/* Нижний ряд преимуществ */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {bottomRowFeatures.map((feature, index) => (
             <div key={`bottom-${index}`} className="flex flex-col items-center text-center">
