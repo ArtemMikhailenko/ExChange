@@ -1,0 +1,208 @@
+.container {
+    width: 100%;
+    border-radius: 10px;
+    padding: 20px;
+    color: #ffffff;
+    background-color: rgba(30, 30, 30, 0.5);
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .title {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+  }
+  
+  .selectedCount {
+    font-size: 14px;
+    color: #F2C94C;
+  }
+  
+  .pairsGrid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
+    background-color: rgba(18, 18, 18, 0.5);
+    padding: 15px;
+    border-radius: 8px;
+  }
+  
+  .pairItem {
+    padding: 10px 0;
+  }
+  
+  .toggle {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .toggleInput {
+    position: absolute;
+    opacity: 0;
+    height: 0;
+    width: 0;
+  }
+  
+  .toggleTrack {
+    position: relative;
+    width: 44px;
+    height: 12px;
+    background-color: rgba(255, 195, 0, 0.3);
+    border-radius: 34px;
+    transition: background-color 0.2s;
+    margin-right: 12px;
+  }
+  
+  .toggleIndicator {
+    position: absolute;
+    left: 2px;
+    top: -6px;
+    width: 25px;
+    height: 25px;
+    background-color: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s, background-color 0.2s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* When checked */
+  .toggleInput:checked + .toggleTrack {
+    background-color: #F2C94C;
+  }
+  
+  .toggleInput:checked + .toggleTrack .toggleIndicator {
+    transform: translateX(20px);
+    background-color: #ffc300;
+  }
+  
+  .pairName {
+    font-size: 16px;
+    font-weight: 500;
+  }
+  
+  /* For focus state */
+  .toggleInput:focus + .toggleTrack {
+    box-shadow: 0 0 0 2px rgba(242, 201, 76, 0.3);
+  }
+  
+  /* Hover effect */
+  .toggle:hover .toggleTrack {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 1200px) {
+    .pairsGrid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .title {
+      font-size: 22px;
+    }
+  }
+  
+  @media (max-width: 992px) {
+    .pairsGrid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .title {
+      font-size: 20px;
+    }
+    
+    .pairName {
+      font-size: 15px;
+    }
+    
+    .toggleTrack {
+      width: 40px;
+      height: 10px;
+    }
+    
+    .toggleIndicator {
+      width: 22px;
+      height: 22px;
+      top: -6px;
+    }
+    
+    .toggleInput:checked + .toggleTrack .toggleIndicator {
+      transform: translateX(18px);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .pairsGrid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .container {
+      padding: 15px;
+    }
+    
+    .header {
+      margin-bottom: 15px;
+    }
+    
+    .title {
+      font-size: 18px;
+    }
+    
+    .selectedCount {
+      font-size: 13px;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .pairsGrid {
+      grid-template-columns: 1fr;
+    }
+    
+    .container {
+      padding: 12px;
+    }
+    
+    .pairItem {
+      padding: 8px 0;
+    }
+    
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 5px;
+    }
+    
+    .title {
+      font-size: 16px;
+    }
+    
+    .selectedCount {
+      font-size: 12px;
+    }
+    
+    .pairName {
+      font-size: 14px;
+    }
+    
+    .toggleTrack {
+      width: 36px;
+      height: 8px;
+    }
+    
+    .toggleIndicator {
+      width: 20px;
+      height: 20px;
+      top: -6px;
+    }
+    
+    .toggleInput:checked + .toggleTrack .toggleIndicator {
+      transform: translateX(16px);
+    }
+  }

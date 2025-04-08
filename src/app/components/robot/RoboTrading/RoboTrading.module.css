@@ -1,0 +1,192 @@
+/* src/components/RoboTrading/RoboTrading.module.css */
+
+.container {
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Top section styling */
+.topSection {
+  padding: 4rem 5% 3rem;
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.leftContent {
+  width: 50%;
+  padding-right: 2rem;
+}
+
+.title {
+  font-weight: 700;
+  font-size: 48px;
+  line-height: 125%;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+}
+
+.subtitle {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 144%;
+  letter-spacing: -0.03em;
+  color: #888;
+  margin-bottom: 33px;
+}
+
+.rightContent {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.illustrationTitle {
+  display: flex;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 150%;
+  width: 100%;
+}
+
+.illustrationTitle p {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.illustrationTitle p:first-child {
+  padding-right: 30px;
+  border-right: 1px #2d2d2e solid;
+}
+
+.illustrationTitle p:last-child {
+  padding-left: 30px;
+}
+
+.illustrationContainer {
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+}
+
+.chartIllustration {
+  width: 100%;
+  height: auto;
+}
+
+/* Tabs container styling */
+.tabsContainer {
+  margin: 0.5rem 5% 2rem;
+}
+
+/* Content section styling */
+.contentSection {
+  padding: 0 5% 3rem;
+}
+
+.sectionTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+/* Responsive styles */
+@media (max-width: 1200px) {
+  .title {
+    font-size: 42px;
+  }
+  
+  .subtitle {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 992px) {
+  .topSection {
+    padding: 3rem 5% 2rem;
+  }
+  
+  .title {
+    font-size: 36px;
+  }
+  
+  .illustrationTitle {
+    font-size: 11px;
+  }
+  
+  .illustrationTitle p:first-child {
+    padding-right: 20px;
+  }
+  
+  .illustrationTitle p:last-child {
+    padding-left: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .topSection {
+    flex-direction: column;
+    padding: 2rem 5% 1.5rem;
+  }
+  
+  .leftContent {
+    width: 100%;
+    padding-right: 0;
+    margin-bottom: 2rem;
+  }
+  
+  .rightContent {
+    width: 100%;
+  }
+  
+  .title {
+    font-size: 32px;
+  }
+  
+  .subtitle {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 576px) {
+  .topSection {
+    padding: 1.5rem 5% 1rem;
+  }
+  
+  .title {
+    font-size: 28px;
+  }
+  
+  .subtitle {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+  
+  .illustrationTitle {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .illustrationTitle p:first-child {
+    padding-right: 0;
+    border-right: none;
+    border-bottom: 1px #2d2d2e solid;
+    padding-bottom: 10px;
+  }
+  
+  .illustrationTitle p:last-child {
+    padding-left: 0;
+  }
+  
+  .contentSection {
+    padding: 0 5% 2rem;
+  }
+  
+  .sectionTitle {
+    font-size: 2rem;
+  }
+}

@@ -1,0 +1,113 @@
+/* src/components/RoboTrading/ConfigurationPanel/ConfigurationPanel.module.css */
+
+.configurationContent {
+  padding-top: 1.5rem;
+  width: 100%;
+}
+
+.sectionTitle {
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 115%;
+  margin-bottom: 2rem;
+}
+
+.configSection {
+  margin-bottom: 40px;
+}
+
+.licenseForm {
+  display: flex;
+  gap: 1rem;
+  max-width: 800px;
+  margin-bottom: 40px;
+}
+
+.licenseInput {
+  flex: 1;
+  background-color: rgba(30, 30, 30, 0.8);
+  border: 1px solid #333;
+  border-radius: 0.5rem;
+  color: #fff;
+  font-size: 1rem;
+  padding: 15px 20px;
+  outline: none;
+}
+
+.licenseInput::placeholder {
+  color: #666;
+}
+
+.saveButton {
+  background-color: #ffc300;
+  color: #000;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 15px 49px;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 90%;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  white-space: nowrap;
+}
+
+.saveButton:hover {
+  background-color: rgb(234, 171, 11);
+}
+
+.marketWidget, .heatmapWidget {
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.widgetTitle {
+  font-weight: 600;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.widgetPlaceholder {
+  background-color: rgba(40, 40, 40, 0.5);
+  border-radius: 8px;
+  padding: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  border: 1px dashed #555;
+}
+
+.widgetPlaceholder p {
+  color: #999;
+  font-size: 16px;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .sectionTitle {
+    font-size: 28px;
+  }
+  
+  .saveButton {
+    padding: 15px 30px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 992px) {
+  .licenseForm {
+    max-width: 100%;
+  }
+  
+  .saveButton {
+    padding: 15px 25px;
+    font-size: 16px;
+  }
+  
+  .widgetPlaceholder {
+    padding: 30px;
+    min-height: 180px;
+  }}

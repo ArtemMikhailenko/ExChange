@@ -1,0 +1,285 @@
+.container {
+  padding: 2rem 0;
+  width: 100%;
+}
+
+.title {
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 115%;
+  text-align: center;
+  margin-bottom: 75px;
+  color: #fff;
+}
+
+.plansContainer {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.planCard {
+  background: rgba(255, 195, 0, 0.1);
+  border-radius: 20px;
+  padding: 20px 22.5px;
+  width: 100%;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.planCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.popularBadge {
+  position: absolute;
+  top: -12px;
+  right: 24px;
+  background-color: #F2C94C;
+  color: #000;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.35rem 1rem;
+  border-radius: 1rem;
+  z-index: 2;
+  box-shadow: 0 2px 10px rgba(242, 201, 76, 0.3);
+}
+
+.highlightedPlan {
+  box-shadow: 0 0 20px 0 #ffc300;
+  background: rgba(255, 195, 0, 0.1);
+  border: 2px solid #ffc300;
+  position: relative;
+  animation: glowBorder 2s ease-in-out infinite;
+}
+
+.highlightedPlan::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  border-radius: 1rem;
+  border: 1px solid rgba(242, 201, 76, 0.5);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Glowing border animation */
+@keyframes glowBorder {
+  0% {
+    box-shadow: 0 0 15px rgba(242, 201, 76, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(242, 201, 76, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 15px rgba(242, 201, 76, 0.5);
+  }
+}
+
+/* Enhance glow effect on hover */
+.highlightedPlan:hover {
+  animation-duration: 1.5s;
+}
+
+.planHeader {
+  margin-bottom: 1.5rem;
+}
+
+.planTitle {
+  font-weight: 700;
+  font-size: 20px;
+  margin: 0 0 0.75rem 0;
+  color: #fff;
+}
+
+.planDescription {
+  font-weight: 400;
+  font-size: 16px;
+  color: #d9d9d9;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.planPricing {
+  margin-bottom: 1.5rem;
+}
+
+.planPrice {
+  font-weight: 600;
+  font-size: 25px;
+  color: #ffc300;
+}
+
+.planDuration {
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.buyButton {
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.25);
+  background: rgba(255, 195, 0, 0.2);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.9rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-bottom: 1.5rem;
+}
+
+.buyButton:hover {
+  background-color: rgba(226, 185, 51, 0.3);
+  transform: translateY(-2px);
+}
+
+.highlightedButton {
+  background-color: #F2C94C;
+  color: #000;
+}
+
+.highlightedButton:hover {
+  background-color: #F9BE23;
+}
+
+.featuresList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.featureItem {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.checkIcon {
+  color: #d9d9d9;
+  font-weight: 900;
+  margin-right: 0.75rem;
+  font-size: 1.1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .plansContainer {
+    gap: 1.5rem;
+  }
+  
+  .planCard {
+    max-width: 300px;
+  }
+  
+  .title {
+    font-size: 28px;
+    margin-bottom: 60px;
+  }
+}
+
+@media (max-width: 992px) {
+  .title {
+    font-size: 26px;
+    margin-bottom: 50px;
+  }
+  
+  .planTitle {
+    font-size: 18px;
+  }
+  
+  .planDescription {
+    font-size: 15px;
+  }
+  
+  .planPrice {
+    font-size: 22px;
+  }
+  
+  .planDuration {
+    font-size: 15px;
+  }
+  
+  .featureItem {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .plansContainer {
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+  
+  .planCard {
+    max-width: 400px;
+  }
+  
+  .title {
+    font-size: 24px;
+    margin-bottom: 40px;
+  }
+  
+  .buyButton {
+    padding: 0.8rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .title {
+    font-size: 22px;
+    margin-bottom: 30px;
+  }
+  
+  .planCard {
+    padding: 15px;
+  }
+  
+  .popularBadge {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.8rem;
+    right: 15px;
+  }
+  
+  .planTitle {
+    font-size: 16px;
+  }
+  
+  .planDescription {
+    font-size: 14px;
+  }
+  
+  .planPrice {
+    font-size: 20px;
+  }
+  
+  .planDuration {
+    font-size: 14px;
+  }
+  
+  .buyButton {
+    font-size: 0.9rem;
+    padding: 0.7rem;
+    margin-bottom: 1.2rem;
+  }
+  
+  .featureItem {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+  
+  .checkIcon {
+    font-size: 1rem;
+  }
+}

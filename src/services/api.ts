@@ -55,19 +55,15 @@ class ApiError extends Error {
   }
 }
 
-// Handle API response
 async function handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
-  // Clone the response before attempting to read its body
-  // This prevents the "body stream already read" error
+
   const clonedResponse = response.clone();
   
-  // Try to parse as JSON
   let data;
   try {
     data = await response.json();
   } catch (e) {
     try {
-      // If JSON parsing fails, try with the cloned response
       data = await clonedResponse.json();
     } catch (innerError) {
       // If both JSON attempts fail, try to get text
