@@ -1,5 +1,5 @@
 // src/services/robotService.ts
-const API_BASE_URL = 'https://virtserver.swaggerhub.com/woronaweb/ExChange/1.0.0';
+const API_BASE_URL = 'https://apiexchange.ymca.one';
 
 export type KeyType = 'standart' | 'premium' | 'vip';
 

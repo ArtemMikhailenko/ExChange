@@ -7,6 +7,10 @@ const nextConfig = {
   images: {
     domains: ['cdnexchange.ymca.one'], // Add the CDN domain here
   },
+  experimental: {
+    // this tells Next.js to treat "src" as the project root for app/pages
+    srcDir: true,
+  },
 };
 
 module.exports = nextConfig;

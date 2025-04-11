@@ -1,15 +1,19 @@
 .header {
+  width: 100%;
+  z-index: 50;
+  color: #fff;
+  margin: 0 auto;
+  transition: all 0.3s ease;
+  background-color: #000;
+}
+
+/* Sticky header styles for homepage only */
+.stickyHeader {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 50;
-  /* background-color: rgba(0, 0, 0, 0.8); */
   backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-  color: #fff;
-  width: 100%;
-  margin: 0 auto;
 }
 
 .headerScrolled {
@@ -23,7 +27,6 @@
 }
 
 .container {
-  /* max-width: 1280px; */
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -48,6 +51,11 @@
   font-weight: 700;
   color: #fff;
   transition: transform 0.3s ease;
+}
+
+.logo a {
+  color: #fff;
+  text-decoration: none;
 }
 
 .scrolledLogo {
@@ -159,7 +167,7 @@
 }
 
 .dropdownItem:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.05);
 }
 
 .dropdownItemIcon {
@@ -180,7 +188,7 @@
   align-items: center;
   font-size: 0.875rem;
   font-weight: 500;
-  /* color: #fff; */
+  color: #000;
   transition: color 0.2s;
 }
 

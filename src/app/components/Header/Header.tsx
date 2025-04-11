@@ -4,7 +4,7 @@ import { useContext, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
-import { useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { Sun, Moon, ChevronDown, Globe, Menu, X } from 'lucide-react';
 import i18nInstance from '@/i18n';
 import { ThemeContext } from '@/app/context/ThemeContext';
@@ -12,7 +12,7 @@ import styles from './Header.module.css';
 
 export default function Header() {
   const { t } = useTranslation('common');
-  const router = useRouter();
+  const pathname = usePathname();
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -23,8 +23,14 @@ export default function Header() {
   const [hidden, setHidden] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
 
-  // Handle scroll events
+  // Check if we're on the home page
+  const isHomePage = pathname === '/';
+
+  // Handle scroll events only on the home page
   useEffect(() => {
+    // Only apply scroll effects on the home page
+    if (!isHomePage) return;
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       
@@ -55,7 +61,7 @@ export default function Header() {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [lastScrollY]);
+  }, [lastScrollY, isHomePage]);
 
   // Prevent body scrolling when mobile menu is open
   useEffect(() => {
@@ -102,7 +108,7 @@ export default function Header() {
     { 
       label: t('tradingBots'), 
       description: t('tradingBotsDesc'), 
-      href: '/robo-trading',
+      href: '/robot',
       icon: '/images/header/icon2.svg'
     },
     { 
@@ -154,14 +160,22 @@ export default function Header() {
     },
   ];
 
+  // Determine header class names based on whether we're on the home page
+  const headerClassNames = [
+    styles.header,
+    isHomePage ? styles.stickyHeader : '',
+    isHomePage && scrolled ? styles.headerScrolled : '',
+    isHomePage && hidden ? styles.headerHidden : ''
+  ].filter(Boolean).join(' ');
+
   return (
     <>
-      <header 
-        className={`${styles.header} ${scrolled ? styles.headerScrolled : ''} ${hidden ? styles.headerHidden : ''}`}
-      >
-        <div className={`${styles.container} ${scrolled ? styles.scrolledContainer : ''}`}>
+      <header className={headerClassNames}>
+        <div className={`${styles.container} ${isHomePage && scrolled ? styles.scrolledContainer : ''}`}>
           <div className={styles.leftSection}>
-            <div className={`${styles.logo} ${scrolled ? styles.scrolledLogo : ''}`}><Link href='/'>LOGO</Link></div>
+            <div className={`${styles.logo} ${isHomePage && scrolled ? styles.scrolledLogo : ''}`}>
+              <Link href='/'>LOGO</Link>
+            </div>
             
             <nav className={styles.desktopNav}>
               <ul className={styles.navList}>
@@ -444,8 +458,8 @@ export default function Header() {
         </div>
       </header>
       
-      {/* Spacer to prevent content from being hidden under the fixed header */}
-      <div className={styles.headerSpacer}></div>
+      {/* Spacer to prevent content from being hidden under the fixed header, only on home page */}
+      {isHomePage && <div className={styles.headerSpacer}></div>}
     </>
   );
 }
