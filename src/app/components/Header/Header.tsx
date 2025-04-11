@@ -48,9 +48,9 @@ export default function Header() {
       icon: '/images/header/icon1.svg'
     },
     { 
-      label: t('tradingBots', 'Trading Bots'), 
+      label: t('tradingBots', 'Robot'), 
       description: t('tradingBotsDesc', 'Automated trading strategies'), 
-      href: '#',
+      href: '/robot',
       icon: '/images/header/icon2.svg'
     },
     { 
