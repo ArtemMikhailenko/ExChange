@@ -161,7 +161,7 @@ export default function Header() {
       >
         <div className={`${styles.container} ${scrolled ? styles.scrolledContainer : ''}`}>
           <div className={styles.leftSection}>
-            <div className={`${styles.logo} ${scrolled ? styles.scrolledLogo : ''}`}>LOGO</div>
+            <div className={`${styles.logo} ${scrolled ? styles.scrolledLogo : ''}`}><Link href='/'>LOGO</Link></div>
             
             <nav className={styles.desktopNav}>
               <ul className={styles.navList}>
