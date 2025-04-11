@@ -1,7 +1,65 @@
-import React from 'react';
+// src/components/RoboTrading/UserDashboard/UserDashboard.tsx
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import styles from './UserDashboard.module.css';
 
-const UserDashboard = () => {
+interface UserStatistics {
+  total_assets: number;
+  total_realized_pnp: number;
+}
+
+const UserDashboard: React.FC = () => {
+  const [statistics, setStatistics] = useState<UserStatistics>({
+    total_assets: 0,
+    total_realized_pnp: 0
+  });
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchStatistics = async () => {
+      try {
+        setLoading(true);
+        
+        // Make POST request to the statistics endpoint
+        const response = await fetch('https://virtserver.swaggerhub.com/woronaweb/ExChange/1.0.0/api/statistics/robot', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch statistics');
+        }
+
+        const data = await response.json();
+        
+        if (data.status === 'success') {
+          setStatistics({
+            total_assets: data.total_assets,
+            total_realized_pnp: data.total_realized_pnp
+          });
+        } else {
+          throw new Error(data.msg || 'Failed to fetch statistics');
+        }
+      } catch (err) {
+        console.error('Error fetching robot statistics:', err);
+        setError('Could not load statistics');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStatistics();
+  }, []);
+
+  // Format number with commas for thousands
+  const formatNumber = (num: number): string => {
+    return num.toLocaleString('en-US', { maximumFractionDigits: 2 });
+  };
+
   return (
     <div className={styles.userCard}>
       <div className={styles.userHead}>
@@ -21,17 +79,29 @@ const UserDashboard = () => {
       </div>
       
       <div className={styles.stats}>
-        <div className={styles.statItem}>
-          <h3 className={styles.statValue}>0</h3>
-          <p className={styles.statLabel}>Total Asset (USDT)</p>
-        </div>
-        <div className={styles.statItem}>
-          <h3 className={styles.statValue}>0</h3>
-          <p className={styles.statLabel}>Total Realized P&L (USDT)</p>
-        </div>
+        {loading ? (
+          <div className={styles.loading}>Loading statistics...</div>
+        ) : error ? (
+          <div className={styles.error}>{error}</div>
+        ) : (
+          <>
+            <div className={styles.statItem}>
+              <h3 className={styles.statValue}>
+                {formatNumber(statistics.total_assets)}
+              </h3>
+              <p className={styles.statLabel}>Total Asset (USDT)</p>
+            </div>
+            <div className={styles.statItem}>
+              <h3 className={styles.statValue}>
+                {formatNumber(statistics.total_realized_pnp)}
+              </h3>
+              <p className={styles.statLabel}>Total Realized P&L (USDT)</p>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
 };
-//жж//
+
 export default UserDashboard;

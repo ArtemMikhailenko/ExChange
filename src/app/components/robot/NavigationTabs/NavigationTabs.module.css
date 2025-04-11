@@ -45,7 +45,7 @@
   font-weight: 500;
   font-size: 20px;
   line-height: 150%;
-  color: rgba(235, 236, 245, 0.4);
+  /* color: rgba(235, 236, 245, 0.4); */
   padding: 1rem 0;
   cursor: pointer;
   position: relative;

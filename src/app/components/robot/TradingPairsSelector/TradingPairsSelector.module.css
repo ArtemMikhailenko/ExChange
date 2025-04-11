@@ -1,208 +1,232 @@
+/* src/components/RoboTrading/TradingPairsSelector/TradingPairsSelector.module.css */
+
 .container {
-    width: 100%;
-    border-radius: 10px;
-    padding: 20px;
-    color: #ffffff;
-    background-color: rgba(30, 30, 30, 0.5);
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffc300;
+  margin: 0;
+}
+
+.selectedCount {
+  background-color: rgba(242, 201, 76, 0.1);
+  color: #ffc300;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.pairsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.pairItem {
+  background-color: rgba(20, 20, 20, 0.5);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  transition: background-color 0.2s ease;
+}
+
+.pairItem:hover {
+  background-color: rgba(30, 30, 30, 0.8);
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  width: 100%;
+}
+
+.toggleInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleTrack {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  background-color: #ffc300;
+  border-radius: 20px;
+  margin-right: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.toggleTrack.disabled {
+  opacity: 0.5;
+}
+
+.toggleInput:checked + .toggleTrack {
+  background-color: #ffc300;
+}
+
+.toggleIndicator {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 24px;
+  height: 24px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  border: 1px solid black;
+}
+
+.toggleInput:checked + .toggleTrack .toggleIndicator {
+  transform: translateX(16px);
+  background-color: #ffc300;
+}
+
+.pairName {
+  font-size: 0.9rem;
+  color: #fff;
+  flex-grow: 1;
+}
+
+/* Loading state */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: #999;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(242, 201, 76, 0.3);
+  border-radius: 50%;
+  border-top-color: #ffc300;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Error state */
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 150px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.errorMessage {
+  color: #F44336;
+  margin-bottom: 1rem;
+}
+
+.retryButton {
+  background-color: rgba(244, 67, 54, 0.2);
+  color: #F44336;
+  border: 1px solid rgba(244, 67, 54, 0.4);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1.5rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.retryButton:hover {
+  background-color: rgba(244, 67, 54, 0.3);
+}
+
+/* Status messages */
+.statusMessage {
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.success {
+  background-color: rgba(76, 175, 80, 0.15);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  color: #ffc300;
+}
+
+.error {
+  background-color: rgba(244, 67, 54, 0.15);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  color: #F44336;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Save button */
+.saveButtonContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.saveButton {
+  background-color: #F2C94C;
+  color: #000;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.saveButton:hover:not(:disabled) {
+  background-color: #F9BE23;
+  transform: translateY(-2px);
+}
+
+.saveButton:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.saveButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .pairsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   }
   
   .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
   }
-  
-  .title {
-    font-size: 24px;
-    font-weight: 600;
-    margin: 0;
-  }
-  
-  .selectedCount {
-    font-size: 14px;
-    color: #F2C94C;
-  }
-  
-  .pairsGrid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 15px;
-    background-color: rgba(18, 18, 18, 0.5);
-    padding: 15px;
-    border-radius: 8px;
-  }
-  
-  .pairItem {
-    padding: 10px 0;
-  }
-  
-  .toggle {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  }
-  
-  .toggleInput {
-    position: absolute;
-    opacity: 0;
-    height: 0;
-    width: 0;
-  }
-  
-  .toggleTrack {
-    position: relative;
-    width: 44px;
-    height: 12px;
-    background-color: rgba(255, 195, 0, 0.3);
-    border-radius: 34px;
-    transition: background-color 0.2s;
-    margin-right: 12px;
-  }
-  
-  .toggleIndicator {
-    position: absolute;
-    left: 2px;
-    top: -6px;
-    width: 25px;
-    height: 25px;
-    background-color: #fff;
-    border-radius: 50%;
-    transition: transform 0.2s, background-color 0.2s;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* When checked */
-  .toggleInput:checked + .toggleTrack {
-    background-color: #F2C94C;
-  }
-  
-  .toggleInput:checked + .toggleTrack .toggleIndicator {
-    transform: translateX(20px);
-    background-color: #ffc300;
-  }
-  
-  .pairName {
-    font-size: 16px;
-    font-weight: 500;
-  }
-  
-  /* For focus state */
-  .toggleInput:focus + .toggleTrack {
-    box-shadow: 0 0 0 2px rgba(242, 201, 76, 0.3);
-  }
-  
-  /* Hover effect */
-  .toggle:hover .toggleTrack {
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
-  }
-  
-  /* Responsive styles */
-  @media (max-width: 1200px) {
-    .pairsGrid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-    
-    .title {
-      font-size: 22px;
-    }
-  }
-  
-  @media (max-width: 992px) {
-    .pairsGrid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-    
-    .title {
-      font-size: 20px;
-    }
-    
-    .pairName {
-      font-size: 15px;
-    }
-    
-    .toggleTrack {
-      width: 40px;
-      height: 10px;
-    }
-    
-    .toggleIndicator {
-      width: 22px;
-      height: 22px;
-      top: -6px;
-    }
-    
-    .toggleInput:checked + .toggleTrack .toggleIndicator {
-      transform: translateX(18px);
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .pairsGrid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .container {
-      padding: 15px;
-    }
-    
-    .header {
-      margin-bottom: 15px;
-    }
-    
-    .title {
-      font-size: 18px;
-    }
-    
-    .selectedCount {
-      font-size: 13px;
-    }
-  }
-  
-  @media (max-width: 576px) {
-    .pairsGrid {
-      grid-template-columns: 1fr;
-    }
-    
-    .container {
-      padding: 12px;
-    }
-    
-    .pairItem {
-      padding: 8px 0;
-    }
-    
-    .header {
-      flex-direction: column;
-      align-items: flex-start;
-      margin-bottom: 12px;
-      gap: 5px;
-    }
-    
-    .title {
-      font-size: 16px;
-    }
-    
-    .selectedCount {
-      font-size: 12px;
-    }
-    
-    .pairName {
-      font-size: 14px;
-    }
-    
-    .toggleTrack {
-      width: 36px;
-      height: 8px;
-    }
-    
-    .toggleIndicator {
-      width: 20px;
-      height: 20px;
-      top: -6px;
-    }
-    
-    .toggleInput:checked + .toggleTrack .toggleIndicator {
-      transform: translateX(16px);
-    }
-  }
+}
