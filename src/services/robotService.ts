@@ -51,7 +51,8 @@ export async function fetchRobotStatistics(): Promise<RobotStatistics> {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
+      credentials: 'include' // Include cookies in the request
     });
 
     if (!response.ok) {
@@ -81,6 +82,7 @@ export async function fetchTradeHistory(params: TradeHistoryParams): Promise<Tra
       headers: {
         'Content-Type': 'application/json'
       },
+      credentials: 'include', // Include cookies in the request
       body: JSON.stringify({
         robot_type: params.type,
         page: params.page,
@@ -137,6 +139,7 @@ export async function toggleRobotState(currentState: boolean, accountType: 'demo
       headers: {
         'Content-Type': 'application/json'
       },
+      credentials: 'include', // Include cookies in the request
       body: JSON.stringify({
         robot: robotAction,
         account_type: accountType
@@ -168,6 +171,7 @@ export async function activateRobotKey(key: string): Promise<{ success: boolean;
       headers: {
         'Content-Type': 'application/json'
       },
+      credentials: 'include', // Include cookies in the request
       body: JSON.stringify({ key })
     });
 
@@ -200,6 +204,7 @@ export async function buyAndActivateKey(keyType: KeyType): Promise<BuyKeyRespons
       headers: {
         'Content-Type': 'application/json'
       },
+      credentials: 'include', // Include cookies in the request
       body: JSON.stringify({ key_type: keyType })
     });
 
@@ -225,6 +230,7 @@ export async function getRobotSettings(type: 'demo' | 'real'): Promise<RobotSett
       headers: {
         'Content-Type': 'application/json'
       },
+      credentials: 'include', // Include cookies in the request
       body: JSON.stringify({ type })
     });
 
