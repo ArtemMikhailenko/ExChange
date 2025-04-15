@@ -207,11 +207,12 @@ const TradingPairsSelector: React.FC<TradingPairsSelectorProps> = ({
       
       console.log('Saving settings:', payload);
       
-      // In a real implementation, call the API to save settings
-      // await robotService.saveRobotSettings(payload);
+      // Call the API to save settings
+      const response = await robotService.saveRobotSettings(payload);
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (response.status === 'err') {
+        throw new Error(response.msg || 'Failed to save settings');
+      }
       
       // Show success message
       setSaveStatus({

@@ -98,8 +98,8 @@ export async function fetchRobotStatistics(): Promise<RobotStatistics> {
       method: 'POST',
     });
 
-    if (result.status === false) {
-      throw new Error(result.err || 'Failed to fetch robot statistics');
+    if (result.status === "err") {
+      throw new Error(result.msg || 'Failed to fetch robot statistics');
     }
 
     return {
@@ -123,8 +123,8 @@ export async function fetchTradeHistory(params: TradeHistoryParams): Promise<Tra
       })
     });
 
-    if (data.status === false) {
-      throw new Error(data.err || 'Failed to fetch trade history');
+    if (data.status === "err") {
+      throw new Error(data.msg || 'Failed to fetch trade history');
     }
 
     // Process trade data for UI
@@ -172,8 +172,8 @@ export async function toggleRobotState(currentState: boolean, accountType: 'demo
     // Log response for debugging
     console.log('Toggle robot response:', data);
 
-    if (data.status === false) {
-      throw new Error(data.err || 'Failed to toggle robot state');
+    if (data.status === "err") {
+      throw new Error(data.msg || 'Failed to toggle robot state');
     }
 
     // The new state is the opposite of the current state
@@ -192,8 +192,8 @@ export async function activateRobotKey(key: string): Promise<{ success: boolean;
     });
 
     return {
-      success: data.status !== false,
-      message: data.msg || (data.status === false ? data.err : 'Robot key activated successfully!')
+      success: data.status !== "err",
+      message: data.msg || (data.status === "err" ? data.msg : 'Robot key activated successfully!')
     };
   } catch (error) {
     console.error('Error activating robot key:', error);
@@ -211,8 +211,8 @@ export async function buyAndActivateKey(keyType: KeyType): Promise<BuyKeyRespons
       body: JSON.stringify({ key_type: keyType })
     });
 
-    if (data.status === false) {
-      throw new Error(data.err || 'Failed to buy and activate key');
+    if (data.status === "err") {
+      throw new Error(data.msg || 'Failed to buy and activate key');
     }
 
     return data as BuyKeyResponse;
@@ -232,8 +232,8 @@ export async function getRobotSettings(type: 'demo' | 'real'): Promise<RobotSett
       body: JSON.stringify({ type })
     });
 
-    if (data.status === false) {
-      throw new Error(data.err || 'Failed to fetch robot settings');
+    if (data.status === "err") {
+      throw new Error(data.msg || 'Failed to fetch robot settings');
     }
 
     return data.settings as RobotSettings;
@@ -275,10 +275,10 @@ export async function saveRobotSettings(params: SaveRobotSettingsParams): Promis
     });
     
     // Handle API response
-    if (response.status === false) {
+    if (response.status === "err") {
       return {
         status: 'err',
-        err: response.err || 'Failed to save robot settings'
+        msg: response.msg || 'Failed to save robot settings'
       };
     }
     
