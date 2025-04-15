@@ -1,212 +1,380 @@
 /* src/app/deposit/components/DepositHistory/DepositHistory.module.css */
 
 .containerLight {
-    background-color: #ffffff;
-    border-radius: 0.5rem;
-    padding: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    max-width: 90%;
-    margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+.containerDark {
+  background: #191919;
+  border-radius: 25px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  max-width: 90%;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.viewAllLinkLight {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #4b5563;
+  text-decoration: none;
+}
+
+.viewAllLinkLight:hover {
+  color: #1f2937;
+}
+
+.viewAllLinkDark {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #9ca3af;
+  text-decoration: none;
+}
+
+.viewAllLinkDark:hover {
+  color: #f9fafb;
+}
+
+.arrowIcon {
+  width: 1rem;
+  height: 1rem;
+  margin-left: 0.25rem;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 150px;
+}
+
+.spinnerLight {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 0.25rem solid #f3f4f6;
+  border-top-color: #eab308;
+  animation: spin 1s linear infinite;
+}
+
+.spinnerDark {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 0.25rem solid #1f2937;
+  border-top-color: #eab308;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.tableContainer {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 1rem 0;
+  font-size: 0.875rem;
+  table-layout: fixed;
+}
+
+.tableHeaderLight {
+  color: #6b7280;
+}
+
+.tableHead {
+  width: 100%;
+}
+
+.tableHeaderDark {
+  color: #9ca3af;
+}
+
+.tableHeaderCell {
+  width: calc(100% / 7);
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 500;
+  margin: 10px;
+  border-radius: 6px;
+  background: #0f0f0f;
+}
+
+.tableRowLight {
+  border-top: 1px solid #e5e7eb;
+}
+
+.tableRowLight:hover {
+  background-color: #f9fafb;
+}
+
+.tableRowDark {
+  border-top: 1px solid #374151;
+}
+
+.tableRowDark:hover {
+  background-color: #111827;
+}
+
+.tableCell {
+  padding: 0.75rem;
+  white-space: nowrap;
+}
+
+.assetCell {
+  display: flex;
+  align-items: center;
+}
+
+.assetLogo {
+  margin-right: 0.5rem;
+}
+
+.txidText {
+  font-family: monospace;
+}
+
+.statusCompleted {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.statusPending {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
+}
+
+.statusFailed {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.emptyIconContainer {
+  color: #9ca3af;
+  margin-bottom: 1rem;
+}
+
+.emptyTextLight {
+  color: #6b7280;
+}
+
+.emptyTextDark {
+  color: #9ca3af;
+}
+
+/* Responsive styles */
+/* Small devices (phones) */
+@media (max-width: 767px) {
+  .containerLight,
+  .containerDark {
+    padding: 1rem;
+    max-width: 100%;
+    border-radius: 0.375rem;
   }
   
   .containerDark {
-    background: #191919;
-    border-radius: 25px;
-    padding: 1.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-    max-width: 90%;
-    margin: 0 auto;
-
-  }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
+    border-radius: 16px;
   }
   
   .title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 0;
-  }
-  
-  .viewAllLinkLight {
-    display: flex;
-    align-items: center;
-    font-size: 0.875rem;
-    color: #4b5563;
-    text-decoration: none;
-  }
-  
-  .viewAllLinkLight:hover {
-    color: #1f2937;
-  }
-  
-  .viewAllLinkDark {
-    display: flex;
-    align-items: center;
-    font-size: 0.875rem;
-    color: #9ca3af;
-    text-decoration: none;
-  }
-  
-  .viewAllLinkDark:hover {
-    color: #f9fafb;
-  }
-  
-  .arrowIcon {
-    width: 1rem;
-    height: 1rem;
-    margin-left: 0.25rem;
-  }
-  
-  .loadingContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 150px;
-  }
-  
-  .spinnerLight {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    border: 0.25rem solid #f3f4f6;
-    border-top-color: #eab308;
-    animation: spin 1s linear infinite;
-  }
-  
-  .spinnerDark {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 50%;
-    border: 0.25rem solid #1f2937;
-    border-top-color: #eab308;
-    animation: spin 1s linear infinite;
-  }
-  
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
+    font-size: 1.125rem;
   }
   
   .tableContainer {
-    overflow-x: auto;
+    margin: 0 -1rem;
+    width: calc(100% + 2rem);
   }
   
   .table {
-    width: 100%;
-    border-collapse: separate; /* отключаем collapse */
-    border-spacing: 1rem 0;     /* горизонтальный и вертикальный отступ */
-    font-size: 0.875rem;
-    table-layout: fixed; 
-  }
-  
-  .tableHeaderLight {
-    color: #6b7280;
-  }
-  .tableHead{
-    
-    width: 100%;
-
-  }
-  
-  .tableHeaderDark {
-    color: #9ca3af;
-    
+    border-spacing: 0.5rem 0;
+    font-size: 0.75rem;
   }
   
   .tableHeaderCell {
-    width: calc(100% / 7);
-    padding: 0.75rem;
-    text-align: left;
-    font-weight: 500;
-    margin: 10px;
-    border-radius: 6px;
-    background: #0f0f0f;
-  }
-  
-  .tableRowLight {
-    border-top: 1px solid #e5e7eb;
-  }
-  
-  .tableRowLight:hover {
-    background-color: #f9fafb;
-  }
-  
-  .tableRowDark {
-    border-top: 1px solid #374151;
-  }
-  
-  .tableRowDark:hover {
-    background-color: #111827;
+    padding: 0.5rem 0.375rem;
+    font-size: 0.75rem;
   }
   
   .tableCell {
-    padding: 0.75rem;
-    white-space: nowrap;
+    padding: 0.5rem 0.375rem;
   }
   
-  .assetCell {
-    display: flex;
-    align-items: center;
-  }
-  
-  .assetLogo {
-    margin-right: 0.5rem;
-  }
-  
-  .txidText {
-    font-family: monospace;
-  }
-  
-  .statusCompleted {
-    display: inline-block;
-    padding: 0.25rem 0.5rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    background-color: rgba(16, 185, 129, 0.1);
-    color: #10b981;
-  }
-  
-  .statusPending {
-    display: inline-block;
-    padding: 0.25rem 0.5rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    background-color: rgba(245, 158, 11, 0.1);
-    color: #f59e0b;
-  }
-  
+  .statusCompleted,
+  .statusPending,
   .statusFailed {
-    display: inline-block;
-    padding: 0.25rem 0.5rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    background-color: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
+    padding: 0.125rem 0.375rem;
+    font-size: 0.625rem;
   }
   
   .emptyState {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 3rem 0;
+    padding: 2rem 0;
   }
   
-  .emptyIconContainer {
-    color: #9ca3af;
+  .emptyIconContainer svg {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .loadingContainer {
+    height: 120px;
+  }
+  
+  .spinnerLight,
+  .spinnerDark {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-width: 0.188rem;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+  .containerLight,
+  .containerDark {
+    padding: 0.75rem;
+  }
+  
+  .header {
     margin-bottom: 1rem;
   }
   
-  .emptyTextLight {
-    color: #6b7280;
+  .title {
+    font-size: 1rem;
   }
   
-  .emptyTextDark {
-    color: #9ca3af;
+  .viewAllLinkLight,
+  .viewAllLinkDark {
+    font-size: 0.75rem;
   }
+  
+  .arrowIcon {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+  
+  .table {
+    border-spacing: 0.25rem 0;
+    font-size: 0.6875rem;
+  }
+  
+  .tableHeaderCell {
+    padding: 0.375rem 0.25rem;
+    font-size: 0.6875rem;
+  }
+  
+  .tableCell {
+    padding: 0.375rem 0.25rem;
+  }
+  
+  .statusCompleted,
+  .statusPending,
+  .statusFailed {
+    padding: 0.125rem 0.25rem;
+    font-size: 0.625rem;
+  }
+  
+  .loadingContainer {
+    height: 100px;
+  }
+  
+  .spinnerLight,
+  .spinnerDark {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  
+  .emptyIconContainer svg {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .emptyState {
+    padding: 1.5rem 0;
+  }
+  
+  .emptyTextLight,
+  .emptyTextDark {
+    font-size: 0.875rem;
+    text-align: center;
+  }
+}
+
+/* Special case for mobile tables */
+@media (max-width: 639px) {
+  /* Make the table responsive for very small screens */
+  .table {
+    display: block;
+    width: 100%;
+  }
+  
+  /* Optional: Add a horizontal scrollbar for the table on very small screens */
+  .tableContainer {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Reduce the size of the asset logo */
+  .assetLogo img {
+    width: 20px !important;
+    height: 20px !important;
+  }
+}
+
+/* Medium devices (tablets) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .containerLight,
+  .containerDark {
+    padding: 1.25rem;
+    max-width: 95%;
+  }
+  
+  .table {
+    border-spacing: 0.75rem 0;
+  }
+}

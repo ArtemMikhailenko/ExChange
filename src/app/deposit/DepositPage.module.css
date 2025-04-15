@@ -1,14 +1,14 @@
-.deposit{
+.deposit {
   display: flex;
   flex-direction: column;
   padding: 2rem 2rem;
 }
+
 .containerLight {
   color: #1f2937;
   display: flex;
   margin: 0 auto;
   gap: 40px;
-  
 }
 
 .containerDark {
@@ -16,7 +16,6 @@
   display: flex;
   margin: 0 auto;
   gap: 40px;
-
 }
 
 .mainContent {
@@ -51,7 +50,6 @@
   padding: 1.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
-
 
 .stepContainer {
   margin-bottom: 1.5rem;
@@ -93,6 +91,7 @@
 .historySection {
   margin-top: 2rem;
 }
+
 .tabs {
   display: flex;
   flex-direction: column;
@@ -156,4 +155,104 @@
 .inactiveTabDark:hover {
   background-color: #111827;
   color: #e5e7eb;
+}
+
+/* Responsive styles for smaller screens */
+@media (max-width: 767px) {
+  .deposit {
+    padding: 1rem;
+  }
+  
+  .containerLight, .containerDark {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .tabs {
+    flex-direction: row;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    width: 100%;
+  }
+  
+  .tabs a {
+    white-space: nowrap;
+    font-size: 14px;
+  }
+  
+  .formBoxLight, .formBoxDark {
+    padding: 1rem;
+  }
+  
+  .stepNumber {
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .stepTitle {
+    font-size: 1rem;
+  }
+  
+  .mainContent {
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  
+  .historySection {
+    margin-top: 1.5rem;
+  }
+}
+
+/* Medium devices (tablets, 768px to 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .containerLight, .containerDark {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .tabs {
+    flex-direction: row;
+    margin-bottom: 1.5rem;
+  }
+  
+  .mainContent {
+    gap: 1.75rem;
+  }
+}
+
+/* Small devices (landscape phones, 576px and below) */
+@media (max-width: 576px) {
+  .deposit {
+    padding: 0.75rem;
+  }
+  
+  .formBoxLight, .formBoxDark {
+    padding: 0.875rem;
+  }
+  
+  .stepContainer {
+    margin-bottom: 1.25rem;
+  }
+  
+  .stepHeader {
+    margin-bottom: 0.75rem;
+  }
+  
+  .stepNumber {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.75rem;
+    margin-right: 0.5rem;
+  }
+  
+  .stepTitle {
+    font-size: 0.875rem;
+  }
+  
+  .tabs a {
+    padding: 0.375rem 0.75rem;
+    font-size: 13px;
+  }
 }

@@ -1,0 +1,88 @@
+.container {
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10%;
+  }
+  
+  .breadcrumb {
+    margin-bottom: 1rem;
+  }
+  
+  .breadcrumbList {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .breadcrumbItem {
+    display: flex;
+    align-items: center;
+  }
+  
+  .breadcrumbLinkLight {
+    color: #6b7280;
+    font-size: 0.875rem;
+    text-decoration: none;
+  }
+  
+  .breadcrumbLinkLight:hover {
+    color: #1f2937;
+  }
+  
+  .breadcrumbLinkDark {
+    color: #9ca3af;
+    font-size: 0.875rem;
+    text-decoration: none;
+  }
+  
+  .breadcrumbLinkDark:hover {
+    color: #f9fafb;
+  }
+  
+  .breadcrumbDivider {
+    display: flex;
+    align-items: center;
+  }
+  
+  .breadcrumbIconLight {
+    width: 0.75rem;
+    height: 0.75rem;
+    margin: 0 0.25rem;
+    color: #9ca3af;
+  }
+  
+  .breadcrumbIconDark {
+    width: 0.75rem;
+    height: 0.75rem;
+    margin: 0 0.25rem;
+    color: #6b7280;
+  }
+  
+  .breadcrumbActiveLight {
+    color: #374151;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-left: 0.25rem;
+  }
+  
+  .breadcrumbActiveDark {
+    color: #e5e7eb;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-left: 0.25rem;
+  }
+  
+  .titleBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    margin: 0;
+  }

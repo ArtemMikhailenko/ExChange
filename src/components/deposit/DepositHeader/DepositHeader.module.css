@@ -148,3 +148,105 @@
   background-color: #111827;
   color: #e5e7eb;
 }
+
+/* Responsive styles for smaller screens */
+@media (max-width: 767px) {
+  .container {
+    margin-bottom: 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+  
+  .breadcrumb {
+    margin-bottom: 0.75rem;
+  }
+  
+  .breadcrumbLinkLight, 
+  .breadcrumbLinkDark, 
+  .breadcrumbActiveLight, 
+  .breadcrumbActiveDark {
+    font-size: 0.75rem;
+  }
+  
+  .breadcrumbIconLight,
+  .breadcrumbIconDark {
+    width: 0.625rem;
+    height: 0.625rem;
+    margin: 0 0.125rem;
+  }
+  
+  .title {
+    font-size: 1.5rem;
+  }
+  
+  .tabs {
+    flex-direction: row;
+    overflow-x: auto;
+    width: 100%;
+    padding-bottom: 0.5rem;
+  }
+  
+  .tabs a {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+    white-space: nowrap;
+  }
+  
+  .activeTabLight,
+  .activeTabDark,
+  .inactiveTabLight,
+  .inactiveTabDark {
+    padding: 0.375rem 0.75rem;
+  }
+}
+
+/* Medium devices (tablets, 768px to 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .container {
+    margin-bottom: 1.25rem;
+  }
+  
+  .title {
+    font-size: 1.75rem;
+  }
+  
+  .tabs {
+    flex-direction: row;
+  }
+}
+
+/* Small devices (landscape phones, 576px and below) */
+@media (max-width: 576px) {
+  .container {
+    margin-bottom: 0.75rem;
+  }
+  
+  .breadcrumb {
+    margin-bottom: 0.5rem;
+  }
+  
+  .title {
+    font-size: 1.25rem;
+  }
+  
+  .titleBar {
+    width: 100%;
+  }
+  
+  .tabs a {
+    font-size: 0.75rem;
+    padding: 0.3125rem 0.625rem;
+  }
+  
+  .activeTabLight,
+  .activeTabDark,
+  .inactiveTabLight,
+  .inactiveTabDark {
+    padding: 0.3125rem 0.625rem;
+  }
+  
+  .depositHead {
+    width: 100%;
+  }
+}

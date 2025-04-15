@@ -5,7 +5,6 @@
 .searchWrapper {
   position: relative;
   margin: 1rem 2rem;
-
 }
 
 .searchIconWrapper {
@@ -60,22 +59,15 @@
   box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.2);
 }
 
-.searchInputDark::placeholder,
-.searchInputLight::placeholder {
+.searchInputDark::placeholder, .searchInputLight::placeholder {
   opacity: 0.7;
 }
 
 .cryptoGrid {
   display: grid;
-  margin-left:2rem ;
+  margin-left: 2rem;
   grid-template-columns: repeat(2, 1fr);
   gap: 0.5rem;
-}
-
-@media (min-width: 640px) {
-  .cryptoGrid {
-    grid-template-columns: repeat(8, 1fr);
-  }
 }
 
 .cryptoCardLight {
@@ -187,4 +179,106 @@
   font-size: 0.75rem;
   color: #6b7280;
   margin-top: 0.25rem;
+}
+
+/* Responsive styles */
+/* Small devices (phones) */
+@media (max-width: 639px) {
+  .searchWrapper {
+    margin: 1rem 1rem;
+  }
+  
+  .cryptoGrid {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.375rem;
+  }
+  
+  .cryptoCardLight, 
+  .cryptoCardDark {
+    padding: 8px;
+    gap: 3px;
+  }
+  
+  .cryptoLogo {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .cryptoSymbol {
+    font-size: 14px;
+  }
+  
+  .loading {
+    padding: 1.5rem 0;
+  }
+  
+  .loaderLight,
+  .loaderDark {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+/* Medium devices (tablets) */
+@media (min-width: 640px) and (max-width: 767px) {
+  .cryptoGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Larger tablets */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .cryptoGrid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+/* Desktops and larger devices */
+@media (min-width: 1024px) {
+  .cryptoGrid {
+    grid-template-columns: repeat(8, 1fr);
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 375px) {
+  .searchWrapper {
+    margin: 0.75rem 0.75rem;
+  }
+  
+  .cryptoGrid {
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.25rem;
+  }
+  
+  .cryptoCardLight, 
+  .cryptoCardDark {
+    padding: 6px;
+    gap: 2px;
+  }
+  
+  .cryptoLogo {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .cryptoSymbol {
+    font-size: 12px;
+  }
+  
+  .searchInputLight,
+  .searchInputDark {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.625rem 0.5rem 2rem;
+  }
+  
+  .searchIconLight,
+  .searchIconDark {
+    width: 1rem;
+    height: 1rem;
+  }
 }

@@ -161,7 +161,7 @@
   display: flex;
   border-radius: 0.375rem;
   overflow: hidden;
-  border: l px solid #d1d5db;
+  border: 1px solid #d1d5db;
   background-color: #f9fafb;
 }
 
@@ -279,4 +279,147 @@
 
 .retryButton:hover {
   background-color: #dc2626;
+}
+
+/* Responsive styles */
+/* Small devices (phones) */
+@media (max-width: 639px) {
+  .loadingContainer {
+    height: 150px;
+  }
+  
+  .spinnerLight,
+  .spinnerDark {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .warningBoxLight,
+  .warningBoxDark {
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    flex-direction: column;
+  }
+  
+  .warningIcon {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .warningIconSvg {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+  
+  .warningTitleLight,
+  .warningTitleDark {
+    text-align: center;
+    font-size: 0.875rem;
+  }
+  
+  .warningTextLight,
+  .warningTextDark,
+  .warningNotesLight,
+  .warningNotesDark {
+    font-size: 0.75rem;
+    text-align: center;
+  }
+  
+  .walletInfoHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .balanceInfoLight,
+  .balanceInfoDark {
+    margin-top: 0.25rem;
+    margin-bottom: 0.5rem;
+    width: 100%;
+  }
+  
+  .addressInputLight,
+  .addressInputDark {
+    font-size: 0.75rem;
+    padding: 0.5rem;
+  }
+  
+  .copyButton {
+    padding: 0 0.75rem;
+  }
+  
+  .copyIcon,
+  .checkIcon {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  .qrCodeWrapper {
+    padding: 0.75rem;
+  }
+  
+  .qrCodeWrapper > div {
+    width: 120px !important;
+    height: 120px !important;
+  }
+  
+  .errorBoxLight,
+  .errorBoxDark {
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .retryButton {
+    padding: 0.3125rem 0.625rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 375px) {
+  .loadingContainer {
+    height: 120px;
+  }
+  
+  .spinnerLight,
+  .spinnerDark {
+    width: 2rem;
+    height: 2rem;
+    border-width: 0.188rem;
+  }
+  
+  .warningBoxLight,
+  .warningBoxDark {
+    padding: 0.625rem;
+  }
+  
+  .warningIconSvg {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  .qrCodeWrapper > div {
+    width: 100px !important;
+    height: 100px !important;
+  }
+  
+  .formLabelLight,
+  .formLabelDark {
+    font-size: 0.75rem;
+    margin-bottom: 0.375rem;
+  }
+  
+  .addressInputLight,
+  .addressInputDark {
+    padding: 0.4375rem;
+  }
+}
+
+/* Medium devices (tablets) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .qrCodeWrapper > div {
+    width: 130px !important;
+    height: 130px !important;
+  }
 }
