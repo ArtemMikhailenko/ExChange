@@ -14,18 +14,23 @@ interface SignupFormProps {
 const SignupForm: React.FC<SignupFormProps> = ({ isDark }) => {
   const router = useRouter();
   const { register, loading, error: authError, clearError } = useAuth();
-    const { t, lang } = useTranslation();
+  const { t, lang } = useTranslation();
   
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    password_re_entrered: '', // Добавлено для соответствия API
+    telegram: '', // Добавлено для соответствия API
     referralCode: ''
   });
   
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [isPasswordConfirmFocused, setIsPasswordConfirmFocused] = useState(false); // Добавлено для нового поля
+  const [isTelegramFocused, setIsTelegramFocused] = useState(false); // Добавлено для нового поля
   const [isReferralFocused, setIsReferralFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false); // Добавлено для нового поля
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [showReferralField, setShowReferralField] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
@@ -43,6 +48,10 @@ const SignupForm: React.FC<SignupFormProps> = ({ isDark }) => {
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+  
+  const togglePasswordConfirmVisibility = () => {
+    setShowPasswordConfirm(!showPasswordConfirm);
   };
 
   const toggleReferralField = () => {
@@ -66,6 +75,11 @@ const SignupForm: React.FC<SignupFormProps> = ({ isDark }) => {
       return;
     }
     
+    if (formData.password !== formData.password_re_entrered) {
+      setLocalError(t('passwordsDoNotMatch'));
+      return;
+    }
+    
     if (!agreedToTerms) {
       setLocalError(t('termsRequired'));
       return;
@@ -85,6 +99,8 @@ const SignupForm: React.FC<SignupFormProps> = ({ isDark }) => {
     const success = await register({
       email: formData.email,
       password: formData.password,
+      password_re_entrered: formData.password_re_entrered,
+      telegram: formData.telegram || undefined,
       referralCode: formData.referralCode || undefined
     });
     
@@ -192,6 +208,72 @@ const SignupForm: React.FC<SignupFormProps> = ({ isDark }) => {
               <Eye className="h-5 w-5" />
             )}
           </button>
+        </div>
+        
+        {/* Confirm Password field - Добавлено */}
+        <div className={`relative transition-all duration-300 ${isPasswordConfirmFocused ? 'scale-[1.02]' : ''}`}>
+          <div className={`absolute inset-y-0 left-4 flex items-center pointer-events-none ${
+            isDark ? 'text-gray-500' : 'text-gray-400'
+          }`}>
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 17C13.1 17 14 16.1 14 15C14 13.9 13.1 13 12 13C10.9 13 10 13.9 10 15C10 16.1 10.9 17 12 17ZM18 8C19.1 8 20 8.9 20 10V20C20 21.1 19.1 22 18 22H6C4.9 22 4 21.1 4 20V10C4 8.9 4.9 8 6 8H7V6C7 3.24 9.24 1 12 1C14.76 1 17 3.24 17 6V8H18ZM12 3C10.34 3 9 4.34 9 6V8H15V6C15 4.34 13.66 3 12 3Z" fill="currentColor"/>
+            </svg>
+          </div>
+          <input
+            id="password_re_entrered"
+            name="password_re_entrered"
+            type={showPasswordConfirm ? "text" : "password"}
+            value={formData.password_re_entrered}
+            onChange={handleChange}
+            required
+            onFocus={() => setIsPasswordConfirmFocused(true)}
+            onBlur={() => setIsPasswordConfirmFocused(false)}
+            className={`w-full pl-12 pr-12 py-4 rounded-xl transition-all duration-300 ${
+              isDark 
+                ? 'bg-gray-800/70 text-white border border-gray-700 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20' 
+                : 'bg-white text-gray-900 border border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/30'
+            } focus:outline-none`}
+            placeholder={t('confirmPassword')}
+          />
+          <button 
+            type="button"
+            className={`absolute right-4 top-1/2 transform -translate-y-1/2 ${
+              isDark ? 'text-gray-400 hover:text-gray-300' : 'text-gray-500 hover:text-gray-700'
+            }`}
+            onClick={togglePasswordConfirmVisibility}
+          >
+            {showPasswordConfirm ? (
+              <EyeOff className="h-5 w-5" />
+            ) : (
+              <Eye className="h-5 w-5" />
+            )}
+          </button>
+        </div>
+        
+        {/* Telegram field - Добавлено */}
+        <div className={`relative transition-all duration-300 ${isTelegramFocused ? 'scale-[1.02]' : ''}`}>
+          <div className={`absolute inset-y-0 left-4 flex items-center pointer-events-none ${
+            isDark ? 'text-gray-500' : 'text-gray-400'
+          }`}>
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM16.64 15.55C16.4 15.9 15.96 16.05 15.6 15.87L12.53 14.1C12.22 13.93 12.02 13.61 12.02 13.26V8.01C12.02 7.55 12.32 7.25 12.77 7.25C13.23 7.25 13.53 7.55 13.53 8.01V12.72L16.18 14.24C16.54 14.42 16.77 14.91 16.64 15.55Z" fill="currentColor"/>
+            </svg>
+          </div>
+          <input
+            id="telegram"
+            name="telegram"
+            type="text"
+            value={formData.telegram}
+            onChange={handleChange}
+            onFocus={() => setIsTelegramFocused(true)}
+            onBlur={() => setIsTelegramFocused(false)}
+            className={`w-full pl-12 pr-4 py-4 rounded-xl transition-all duration-300 ${
+              isDark 
+                ? 'bg-gray-800/70 text-white border border-gray-700 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/20' 
+                : 'bg-white text-gray-900 border border-gray-200 focus:border-yellow-500 focus:ring-2 focus:ring-yellow-500/30'
+            } focus:outline-none`}
+            placeholder={t('telegram')}
+          />
         </div>
         
         <div>

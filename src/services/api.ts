@@ -1,10 +1,13 @@
-
+// src/services/api.ts
 const API_BASE_URL = 'https://apiexchange.ymca.one';
 
 export interface RegisterPayload {
   email: string;
   password: string;
+  password_re_entrered: string; // Required per API documentation
+  telegram?: string; // Optional per API documentation
   referralCode?: string;
+  'g-recaptcha-response'?: string;
 }
 
 export interface LoginPayload {
@@ -13,12 +16,13 @@ export interface LoginPayload {
   'g-recaptcha-response'?: string;
 }
 
-export interface ApiResponse<T> {
+export interface ApiResponse<T = any> {
   status: string;
   data?: T;
   message?: string;
   error?: string;
-  success?: boolean; 
+  success?: boolean;
+  msg?: string; // Added for API compatibility
 }
 
 export interface AuthResponse {
@@ -41,7 +45,7 @@ export const apiConfig = {
     login: '/user/login',
     googleAuth: '/user/signin/google',
     verify: '/user/verify',
-    resetPassword: '/user/ressetPassword'
+    resetPassword: '/user/resetPassword'
   }
 };
 
@@ -55,8 +59,7 @@ class ApiError extends Error {
   }
 }
 
-async function handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
-
+async function handleResponse<T = any>(response: Response): Promise<ApiResponse<T>> {
   const clonedResponse = response.clone();
   
   let data;
@@ -100,10 +103,20 @@ export const authService = {
     try {
       console.log('Sending registration request to', `${apiConfig.baseURL}${apiConfig.endpoints.register}`);
       
+      // Transform payload to match API requirements
+      const requestPayload = {
+        email: payload.email,
+        password: payload.password,
+        password_re_entrered: payload.password_re_entrered,
+        telegram: payload.telegram || "",
+        'g-recaptcha-response': payload['g-recaptcha-response'] || ""
+        // Note: referralCode is not in API spec, so it's omitted here
+      };
+      
       const response = await fetch(`${apiConfig.baseURL}${apiConfig.endpoints.register}`, {
         method: 'POST',
         headers: apiConfig.headers,
-        body: JSON.stringify(payload),
+        body: JSON.stringify(requestPayload),
         credentials: 'include' // For saving cookies
       });
       
