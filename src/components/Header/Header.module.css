@@ -94,6 +94,7 @@
   color: #f8ca36;
 }
 
+/* Dropdown styling with improved hover behavior */
 .dropdownContainer {
   position: relative;
 }
@@ -122,7 +123,9 @@
   transition: transform 0.3s ease;
 }
 
-.dropdownContainer:hover .chevronIcon {
+/* Apply rotation to chevron when dropdown is active OR hovered */
+.dropdownContainer:hover .chevronIcon,
+.dropdownActive .chevronIcon {
   transform: rotate(180deg);
 }
 
@@ -146,15 +149,22 @@
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px);
-  transition: all 0.3s ease;
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
   pointer-events: none;
 }
 
-.dropdownContainer:hover .dropdownMenu {
+/* Show dropdown when container is hovered OR has active class */
+.dropdownContainer:hover .dropdownMenu,
+.dropdownActive .dropdownMenu {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
   pointer-events: auto;
+}
+
+/* Add a transition delay to keep dropdown open longer when moving away */
+.dropdownContainer:not(:hover) .dropdownMenu {
+  transition-delay: 0.1s; /* Small delay before starting to close */
 }
 
 .dropdownItem {
@@ -468,6 +478,38 @@
 .mobileSignupButton:hover {
   background-color: #e6b518;
   transform: translateY(-2px);
+}
+
+/* Mobile language switcher */
+.mobileLangSwitcher {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobileLangButton {
+  flex: 1;
+  padding: 0.5rem;
+  text-align: center;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.25rem;
+  color: #fff;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mobileLangButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.mobileLangButtonActive {
+  background-color: #f8ca36;
+  color: #000;
+  border-color: #f8ca36;
 }
 
 /* Space to compensate for fixed header */

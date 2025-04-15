@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -18,10 +18,21 @@ export default function Header() {
   const [mobileExpandedItems, setMobileExpandedItems] = useState<string[]>([]);
   const searchParams = useSearchParams();
   const router = useRouter();
+  
   // Scroll state variables
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+  
+  // Dropdown hover state
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  
+  // Refs for dropdown containers
+  const futuresDropdownRef = useRef<HTMLLIElement>(null);
+  const moreDropdownRef = useRef<HTMLLIElement>(null);
+  
+  // Timers for dropdown delay
+  const dropdownTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Check if we're on the home page
   const isHomePage = pathname === '/';
@@ -76,6 +87,30 @@ export default function Header() {
     };
   }, [isMobileMenuOpen]);
 
+  // Handle dropdown mouse enter with delay
+  const handleDropdownMouseEnter = (dropdownId: string) => {
+    // Clear any existing timer
+    if (dropdownTimerRef.current) {
+      clearTimeout(dropdownTimerRef.current);
+      dropdownTimerRef.current = null;
+    }
+    
+    setActiveDropdown(dropdownId);
+  };
+
+  // Handle dropdown mouse leave with delay
+  const handleDropdownMouseLeave = () => {
+    // Clear any existing timer
+    if (dropdownTimerRef.current) {
+      clearTimeout(dropdownTimerRef.current);
+    }
+    
+    // Set timer to close dropdown after delay
+    dropdownTimerRef.current = setTimeout(() => {
+      setActiveDropdown(null);
+    }, 300); // 300ms delay before closing
+  };
+
   const changeLanguage = (newLang: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("lang", newLang);
@@ -110,7 +145,7 @@ export default function Header() {
     { 
       label: t('tradingBots'), 
       description: t('tradingBotsDesc'), 
-      href: '/robo-trading',
+      href: '/robot',
       icon: '/images/header/icon2.svg'
     },
     { 
@@ -191,8 +226,13 @@ export default function Header() {
                   <NavItem label={t('spot')} href="#" />
                 </li>
                 
-                {/* Futures dropdown */}
-                <li className={styles.dropdownContainer}>
+                {/* Futures dropdown with improved hover handling */}
+                <li 
+                  ref={futuresDropdownRef}
+                  className={`${styles.dropdownContainer} ${activeDropdown === 'futures' ? styles.dropdownActive : ''}`}
+                  onMouseEnter={() => handleDropdownMouseEnter('futures')}
+                  onMouseLeave={handleDropdownMouseLeave}
+                >
                   <button className={styles.dropdownTrigger}>
                     {t('futures')}
                     <ChevronDown className={styles.chevronIcon} />
@@ -234,8 +274,13 @@ export default function Header() {
                   <NavItem label={t('earn')} href="#" />
                 </li>
                 
-                {/* More dropdown */}
-                <li className={styles.dropdownContainer}>
+                {/* More dropdown with improved hover handling */}
+                <li 
+                  ref={moreDropdownRef}
+                  className={`${styles.dropdownContainer} ${activeDropdown === 'more' ? styles.dropdownActive : ''}`}
+                  onMouseEnter={() => handleDropdownMouseEnter('more')}
+                  onMouseLeave={handleDropdownMouseLeave}
+                >
                   <button className={styles.dropdownTrigger}>
                     {t('more')}
                     <ChevronDown className={styles.chevronIcon} />
