@@ -1,4 +1,7 @@
 // src/services/robotService.ts
+
+import { getAuthToken } from "@/utils/auth";
+
 const API_BASE_URL = 'https://apiexchange.ymca.one';
 
 export type KeyType = 'standart' | 'premium' | 'vip';
@@ -45,25 +48,54 @@ interface TradeHistoryResponse {
   pages: number;
 }
 
+// Helper function to get authentication headers
+const getAuthHeaders = () => {
+  const token = getAuthToken();
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': token ? `Bearer ${token}` : '',
+  };
+};
+
+// Base fetch function with error handling and auth
+const fetchAPI = async (endpoint: string, options: RequestInit = {}) => {
+  try {
+    const url = `${API_BASE_URL}${endpoint}`;
+    const defaultOptions: RequestInit = {
+      headers: getAuthHeaders(),
+      credentials: 'include',
+    };
+
+    const response = await fetch(url, { ...defaultOptions, ...options });
+
+    // Handle HTTP errors
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`API Error (${response.status}):`, errorText);
+      throw new Error(`API error: ${response.status} - ${errorText}`);
+    }
+
+    // Parse JSON response
+    const data = await response.json();
+
+    // Handle API errors
+    if (data.status === false || data.status === 'err') {
+      console.error('API returned error status:', data);
+      throw new Error(data.err || data.msg || 'API returned error status');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('API request failed:', error);
+    throw error;
+  }
+};
+
 export async function fetchRobotStatistics(): Promise<RobotStatistics> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/statistics/robot`, {
+    const result = await fetchAPI('/api/statistics/robot', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include' // Include cookies in the request
     });
-
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-
-    const result = await response.json();
-
-    if (result.status !== 'success') {
-      throw new Error(result.msg || 'Failed to fetch robot statistics');
-    }
 
     return {
       total_assets: result.total_assets || 0,
@@ -71,18 +103,18 @@ export async function fetchRobotStatistics(): Promise<RobotStatistics> {
     };
   } catch (error) {
     console.error('Error fetching robot statistics:', error);
-    throw error;
+    // Return default values in case of error
+    return {
+      total_assets: 0,
+      total_realized_pnp: 0
+    };
   }
 }
 
 export async function fetchTradeHistory(params: TradeHistoryParams): Promise<TradeHistoryResponse> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/statistics/trades`, {
+    const data = await fetchAPI('/api/statistics/trades', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include', // Include cookies in the request
       body: JSON.stringify({
         robot_type: params.type,
         page: params.page,
@@ -90,25 +122,15 @@ export async function fetchTradeHistory(params: TradeHistoryParams): Promise<Tra
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    if (data.status !== 'success') {
-      throw new Error(data.msg || 'Failed to fetch trade history');
-    }
-
     // Process trade data for UI
     const processedTrades = data.trades.map((trade: Trade) => {
-      // Assign icon based on some logic (could be refined based on your actual data)
+      // Assign icon based on some logic
       const icons = ['btc', 'eth', 'ltc', 'bnb', 'trx'];
       const randomIcon = icons[Math.floor(Math.random() * icons.length)];
       
       return {
         ...trade,
-        icon: randomIcon // In production, you'd map this based on actual coin data
+        icon: randomIcon 
       };
     });
 
@@ -119,75 +141,47 @@ export async function fetchTradeHistory(params: TradeHistoryParams): Promise<Tra
     };
   } catch (error) {
     console.error('Error fetching trade history:', error);
-    throw error;
+    return {
+      status: 'err',
+      trades: [],
+      pages: 0
+    };
   }
 }
 
-/**
- * Toggle robot operation state (start/stop)
- * @param currentState Current running state (true = running, false = stopped)
- * @param accountType The account type ('demo' or 'real')
- * @returns A Promise resolving to the new state
- */
 export async function toggleRobotState(currentState: boolean, accountType: 'demo' | 'real'): Promise<boolean> {
   try {
     // The robot action is the opposite of current state
     const robotAction = currentState ? 'stop' : 'start';
     
-    const response = await fetch(`${API_BASE_URL}/api/robot/toggle`, {
+    const data = await fetchAPI('/api/robot/toggle', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include', // Include cookies in the request
       body: JSON.stringify({
         robot: robotAction,
         account_type: accountType
       })
     });
 
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    if (data.status !== 'success') {
-      throw new Error(data.msg || 'Failed to toggle robot state');
-    }
-
     // The new state is the opposite of the current state
     return !currentState;
   } catch (error) {
     console.error('Error toggling robot state:', error);
-    throw error;
+    // Return original state on error (no change)
+    return currentState;
   }
 }
 
 export async function activateRobotKey(key: string): Promise<{ success: boolean; message: string }> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/robot/activateKey`, {
+    const data = await fetchAPI('/api/robot/activateKey', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include', // Include cookies in the request
       body: JSON.stringify({ key })
     });
 
-    const data = await response.json();
-
-    if (data.status === 'success') {
-      return {
-        success: true,
-        message: data.msg || 'Robot key activated successfully!'
-      };
-    } else {
-      return {
-        success: false,
-        message: data.msg || 'Failed to activate robot key.'
-      };
-    }
+    return {
+      success: data.status === 'success',
+      message: data.msg || 'Robot key activated successfully!'
+    };
   } catch (error) {
     console.error('Error activating robot key:', error);
     return {
@@ -199,20 +193,11 @@ export async function activateRobotKey(key: string): Promise<{ success: boolean;
 
 export async function buyAndActivateKey(keyType: KeyType): Promise<BuyKeyResponse> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/robot/buyActivateKey`, {
+    const data = await fetchAPI('/api/robot/buyActivateKey', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include', // Include cookies in the request
       body: JSON.stringify({ key_type: keyType })
     });
 
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-
-    const data = await response.json();
     return data as BuyKeyResponse;
   } catch (error) {
     console.error('Error buying and activating key:', error);
@@ -225,29 +210,20 @@ export async function buyAndActivateKey(keyType: KeyType): Promise<BuyKeyRespons
 
 export async function getRobotSettings(type: 'demo' | 'real'): Promise<RobotSettings> {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/robot/get/settings`, {
+    const data = await fetchAPI('/api/robot/get/settings', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include', // Include cookies in the request
       body: JSON.stringify({ type })
     });
-
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    if (data.status !== 'success') {
-      throw new Error(data.msg || 'Failed to fetch robot settings');
-    }
 
     return data.settings as RobotSettings;
   } catch (error) {
     console.error('Error fetching robot settings:', error);
-    throw error;
+    // Return default values on error
+    return {
+      robot_key: null,
+      trade_currencies: [],
+      avaliable_currencies: []
+    };
   }
 }
 
