@@ -7,7 +7,7 @@ interface BackgroundDecorationProps {
 
 const BackgroundDecoration: React.FC<BackgroundDecorationProps> = ({ isDark }) => {
   return (
-    <div className="absolute inset-0 -z-10 overflow-hidden">
+    <div className="absolute inset-0 overflow-hidden">
       <div className={`absolute inset-0 ${
         isDark 
           ? 'bg-gradient-to-br from-gray-900 via-gray-800 to-black' 

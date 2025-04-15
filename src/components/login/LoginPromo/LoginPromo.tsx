@@ -11,7 +11,7 @@ const LoginPromo: React.FC<LoginPromoProps> = ({ isDark }) => {
   const { t, lang } = useTranslation();
 
   return (
-    <div className="hidden md:flex md:w-1/2 flex-col justify-center items-start p-12 relative z-10">
+    <div className="hidden md:flex md:w-1/2 flex-col justify-center items-start p-12 relative ">
       <div className="max-w-md mx-auto">
         <div className="mb-6 flex items-center">
           <span className={`inline-block w-12 h-1 bg-yellow-500 mr-4`}></span>

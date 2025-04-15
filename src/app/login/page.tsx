@@ -33,7 +33,7 @@ export default function LoginPage() {
       
       <LoginPromo isDark={isDark}  />
       
-      <div className={`w-full md:w-1/2 flex items-center justify-center p-8 z-10`}>
+      <div className={`w-full md:w-1/2 flex items-center justify-center p-8`}>
         <LoginForm 
           isDark={isDark} 
           
