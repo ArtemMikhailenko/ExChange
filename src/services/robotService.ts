@@ -158,14 +158,14 @@ export async function toggleRobotState(currentState: boolean, accountType: 'demo
     // Log request parameters for debugging
     console.log('Toggling robot state with params:', {
       robot: robotAction,
-      account_type: accountType
+      robot_type: accountType
     });
     
     const data = await fetchWithCredentials(`${API_BASE_URL}/api/robot/toggle`, {
       method: 'POST',
       body: JSON.stringify({
         robot: robotAction,
-        account_type: accountType
+        robot_type: accountType
       })
     });
 
