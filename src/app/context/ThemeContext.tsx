@@ -1,68 +1,57 @@
+// src/app/context/ThemeContext.tsx
 'use client';
 
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 
-type ThemeContextProps = {
-  theme: 'dark' | 'light';
+type Theme = 'light' | 'dark';
+
+interface ThemeContextType {
+  theme: Theme;
   toggleTheme: () => void;
-};
+}
 
-export const ThemeContext = createContext<ThemeContextProps>({
-  theme: 'dark',
+const ThemeContext = createContext<ThemeContextType>({
+  theme: 'light',
   toggleTheme: () => {},
 });
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // Инициализируем state с null, чтобы избежать гидрации при SSR
-  const [theme, setTheme] = useState<'dark' | 'light' | null>(null);
+export const useTheme = () => useContext(ThemeContext);
 
+export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [theme, setTheme] = useState<Theme>('light');
+
+  // Initialize theme from localStorage if available
   useEffect(() => {
-    // Получаем сохраненную тему из localStorage
-    const storedTheme = localStorage.getItem('theme');
-    // Получаем предпочтение системы
+    const savedTheme = localStorage.getItem('theme') as Theme | null;
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
-    // Определяем начальную тему
-    const initialTheme = storedTheme === 'light' ? 'light' : 
-                         storedTheme === 'dark' ? 'dark' : 
-                         prefersDark ? 'dark' : 'light';
-    
-    setTheme(initialTheme);
-    
-    // Применяем класс к HTML
-    if (initialTheme === 'dark') {
+    if (savedTheme) {
+      setTheme(savedTheme);
+    } else if (prefersDark) {
+      setTheme('dark');
+    }
+  }, []);
+
+  // Update HTML class and local storage when theme changes
+  useEffect(() => {
+    if (theme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
     }
-  }, []);
+    
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   const toggleTheme = () => {
-    setTheme((prevTheme) => {
-      const newTheme = prevTheme === 'dark' ? 'light' : 'dark';
-      
-      // Применяем класс к HTML
-      if (newTheme === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-      
-      // Сохраняем в localStorage
-      localStorage.setItem('theme', newTheme);
-      
-      return newTheme;
-    });
+    setTheme(theme === 'dark' ? 'light' : 'dark');
   };
-
-  // Не рендерим детей, пока не определена тема (только на клиенте)
-  if (theme === null) {
-    return null;
-  }
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
-}
+};
+
+export default ThemeContext;

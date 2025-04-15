@@ -1,18 +1,33 @@
-"use client";
+'use client';
 
-import { usePathname, useSearchParams } from "next/navigation";
-import en from "../../public/locales/en/common.json";
-import ru from "../../public/locales/ru/common.json";
+import { usePathname, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-
-const translations: Record<string, any> = { en, ru};
+type Translations = Record<string, string>;
 
 export function useTranslation() {
-  const pathname = usePathname();
   const searchParams = useSearchParams();
-  
-  // Получаем язык из URL (например, ?lang=es)
-  const lang = searchParams.get("lang") || "en";
+  const lang = searchParams.get('lang') || 'en';
+  const [t, setT] = useState<Translations>({});
 
-  return translations[lang] || translations["en"];
+  useEffect(() => {
+    // Load JSON from public/locales/{lang}/common.json
+    fetch(`/locales/${lang}/common.json`)
+      .then((res) => {
+        if (!res.ok) throw new Error(`Cannot load translations for ${lang}`);
+        return res.json();
+      })
+      .then((json) => setT(json))
+      .catch(() => {
+        // If failed, load English as fallback
+        fetch(`/locales/en/common.json`)
+          .then((res) => res.json())
+          .then((json) => setT(json));
+      });
+  }, [lang]);
+
+  // Translation function
+  const translate = (key: string) => t[key] || key;
+
+  return { t: translate, lang };
 }

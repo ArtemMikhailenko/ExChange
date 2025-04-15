@@ -1,0 +1,282 @@
+.container {
+  width: 100%;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.spinnerLight {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 0.25rem solid #f3f4f6;
+  border-top-color: #eab308;
+  animation: spin 1s linear infinite;
+}
+
+.spinnerDark {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 0.25rem solid #1f2937;
+  border-top-color: #eab308;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.warningBoxLight {
+  display: flex;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  background-color: #fef3c7;
+  margin-bottom: 1.5rem;
+}
+
+.warningBoxDark {
+  display: flex;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  background-color: rgba(234, 179, 8, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.warningIcon {
+  flex-shrink: 0;
+  margin-right: 0.75rem;
+  margin-top: 0.125rem;
+}
+
+.warningIconSvg {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #eab308;
+}
+
+.warningContent {
+  flex: 1;
+}
+
+.warningTitleLight {
+  font-weight: 500;
+  color: #92400e;
+  margin: 0 0 0.5rem 0;
+}
+
+.warningTitleDark {
+  font-weight: 500;
+  color: #fbbf24;
+  margin: 0 0 0.5rem 0;
+}
+
+.warningTextLight {
+  font-size: 0.875rem;
+  color: #78350f;
+  margin: 0 0 0.5rem 0;
+}
+
+.warningTextDark {
+  font-size: 0.875rem;
+  color: #d1d5db;
+  margin: 0 0 0.5rem 0;
+}
+
+.warningNotesLight {
+  font-size: 0.875rem;
+  color: #92400e;
+  margin: 0.5rem 0 0 0;
+}
+
+.warningNotesDark {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  margin: 0.5rem 0 0 0;
+}
+
+.depositFormContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .depositFormContainer {
+    flex-direction: row;
+    gap: 1.5rem;
+  }
+}
+
+.addressContainer {
+  flex: 1;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .addressContainer {
+    margin-bottom: 0;
+  }
+}
+
+.walletInfoHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.formLabelLight {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.formLabelDark {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #9ca3af;
+}
+
+.balanceInfoLight {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.balanceInfoDark {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.addressFieldLight {
+  display: flex;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  border: l px solid #d1d5db;
+  background-color: #f9fafb;
+}
+
+.addressFieldDark {
+  display: flex;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  border: 1px solid #4b5563;
+  background-color: #374151;
+}
+
+.addressInputLight {
+  flex: 1;
+  padding: 0.625rem;
+  border: none;
+  background-color: #f9fafb;
+  color: #1f2937;
+  font-size: 0.875rem;
+}
+
+.addressInputLight:focus {
+  outline: none;
+}
+
+.addressInputDark {
+  flex: 1;
+  padding: 0.625rem;
+  border: none;
+  background-color: #374151;
+  color: #f9fafb;
+  font-size: 0.875rem;
+}
+
+.addressInputDark:focus {
+  outline: none;
+}
+
+.copyButton {
+  padding: 0 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.copyIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #6b7280;
+}
+
+.checkIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #10b981;
+}
+
+.networkInfoLight {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.networkInfoDark {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.qrCodeContainer {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.qrCodeWrapper {
+  padding: 1rem;
+  background-color: #ffffff;
+  border-radius: 0.375rem;
+}
+
+.errorBoxLight {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.errorBoxDark {
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.retryButton {
+  margin-top: 0.75rem;
+  padding: 0.375rem 0.75rem;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.retryButton:hover {
+  background-color: #dc2626;
+}

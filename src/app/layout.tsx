@@ -1,12 +1,12 @@
 // src/app/layout.tsx (или app/layout.tsx)
 import './globals.css';
 import type { Metadata } from 'next';
-import { ThemeProviderWrapper } from './theme-provider-wrapper';
-import Header from './components/Header/Header';
-import '@/i18n';
-import Footer from './components/Footer/Footer';
 import { AuthProvider } from '@/providers/AuthProvider';
 import { Suspense } from "react";
+import { ThemeProviderWrapper } from './theme-provider-wrapper';
+import Header from '@/components/Header/Header';
+import Footer from '@/components/Footer/Footer';
+import { TranslationProvider } from '@/app/context/TranslationContext';
 
 export const metadata: Metadata = {
   title: 'ExChange',
@@ -19,11 +19,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       {/* Обязательно */}
       <head />
       <body>
       <Suspense fallback={null}>
+      <TranslationProvider>
         <ThemeProviderWrapper>
           <AuthProvider>
             <div className="min-h-screen">
@@ -33,6 +34,7 @@ export default function RootLayout({
             </div>
           </AuthProvider>
         </ThemeProviderWrapper>
+        </TranslationProvider>
         </Suspense>
       </body>
     </html>

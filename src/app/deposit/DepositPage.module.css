@@ -1,0 +1,159 @@
+.deposit{
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 2rem;
+}
+.containerLight {
+  color: #1f2937;
+  display: flex;
+  margin: 0 auto;
+  gap: 40px;
+  
+}
+
+.containerDark {
+  color: #f9fafb;
+  display: flex;
+  margin: 0 auto;
+  gap: 40px;
+
+}
+
+.mainContent {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .mainContent {
+    grid-template-columns: 2fr 1fr;
+  }
+}
+
+.depositFormSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.formBoxLight {
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.formBoxDark {
+  background-color: #191919;
+  border-radius: 21px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+
+.stepContainer {
+  margin-bottom: 1.5rem;
+}
+
+.stepHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.stepNumber {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: #eab308;
+  color: #000000;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+}
+
+.inactiveStep {
+  background-color: #9ca3af;
+  color: #1f2937;
+}
+
+.stepTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.disabledStep {
+  opacity: 0.5;
+}
+
+.historySection {
+  margin-top: 2rem;
+}
+.tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tabs a {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 150%;
+}
+
+.activeTabLight {
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  background-color: #ffffff;
+  border-bottom: 2px solid #eab308;
+  color: #111827;
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  text-decoration: none;
+}
+
+.activeTabDark {
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.inactiveTabLight {
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  background-color: #ffffff;
+  color: #6b7280;
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  text-decoration: none;
+}
+
+.inactiveTabLight:hover {
+  background-color: #f9fafb;
+  color: #374151;
+}
+
+.inactiveTabDark {
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  /* background-color: #1f2937; */
+  color: #9ca3af;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.inactiveTabDark:hover {
+  background-color: #111827;
+  color: #e5e7eb;
+}

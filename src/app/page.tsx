@@ -1,19 +1,25 @@
-import Image from "next/image";
-import HeroSection from "./components/main/HeroSection/HeroSection";
-import CryptoTicker from "./components/main/CryptoTicker/CryptoTicker";
-import FeatureCards from "./components/main/FeatureCards/FeatureCards";
-import MarketsSection from "./components/main/MarketsSection/MarketsSection";
-import RoboTradingSection from "./components/main/RoboTradingSection/RoboTradingSection";
-import TradingTypesSection from "./components/main/TradingTypesSection/TradingTypesSection";
-import MobileAppSection from "./components/main/MobileAppSection/MobileAppSection";
-import PartnersSlider from "./components/main/PartnersSlider/PartnersSlider";
-import FAQSection from "./components/main/FAQSection/FAQSection";
-import CtaBlock from "./components/main/CtaBlock/CtaBlock";
-import WhyExchangeSection from "./components/main/WhyExchangeSection/WhyExchangeSection";
+import CryptoTicker from "@/components/main/CryptoTicker/CryptoTicker";
+import CtaBlock from "@/components/main/CtaBlock/CtaBlock";
+import FAQSection from "@/components/main/FAQSection/FAQSection";
+import FeatureCards from "@/components/main/FeatureCards/FeatureCards";
+import HeroSection from "@/components/main/HeroSection/HeroSection";
+import MarketsSection from "@/components/main/MarketsSection/MarketsSection";
+import MobileAppSection from "@/components/main/MobileAppSection/MobileAppSection";
+import PartnersSlider from "@/components/main/PartnersSlider/PartnersSlider";
+import RoboTradingSection from "@/components/main/RoboTradingSection/RoboTradingSection";
+import TradingTypesSection from "@/components/main/TradingTypesSection/TradingTypesSection";
+import WhyExchangeSection from "@/components/main/WhyExchangeSection/WhyExchangeSection";
+import { Suspense } from "react";
 
-export default function Home() {
+
+export default async function Home({
+}: {
+}) {
+  // Получаем переводы с сервера
+  
   return (
     <div >
+      <Suspense fallback={null}>
       <HeroSection/>
       <CryptoTicker/>
       <FeatureCards />
@@ -25,6 +31,7 @@ export default function Home() {
       <PartnersSlider/>
       <FAQSection/>
       <CtaBlock/>
+      </Suspense>
     </div>
   );
 }

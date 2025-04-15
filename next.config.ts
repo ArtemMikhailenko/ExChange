@@ -1,15 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   i18n: {
-    locales: ['en', 'ru'], // какие языки поддерживаем
-    defaultLocale: 'en',   // язык по умолчанию
+    locales: ['en', 'ru'],
+    defaultLocale: 'en',
+    localeDetection: false,
   },
   images: {
-    domains: ['cdnexchange.ymca.one'], // Add the CDN domain here
-  },
-  experimental: {
-    // this tells Next.js to treat "src" as the project root for app/pages
-    srcDir: true,
+    domains: ['cdnexchange.ymca.one','coinicons-api.vercel.app'],
+
   },
 };
 

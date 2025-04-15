@@ -1,0 +1,93 @@
+.container {
+  width: 100%;
+}
+
+.descriptionLight {
+  margin-bottom: 1rem;
+  color: #4b5563;
+  font-size: 0.875rem;
+}
+
+.descriptionDark {
+  margin-bottom: 1rem;
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+.networkList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.networkItemLight {
+  cursor: pointer;
+  border-radius: 0.375rem;
+  border: 1px solid #e5e7eb;
+  padding: 1rem;
+  background-color: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.networkItemLight:hover {
+  border-color: #eab308;
+  background-color: #fafaf9;
+}
+
+.networkItemDark {
+  cursor: pointer;
+  border-radius: 0.375rem;
+  border: 1px solid #374151;
+  padding: 1rem;
+  background-color: #1f2937;
+  transition: all 0.2s ease;
+}
+
+.networkItemDark:hover {
+  border-color: #eab308;
+  background-color: #111827;
+}
+
+.networkContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.networkInfo {
+  flex: 1;
+}
+
+.networkName {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0 0 0.5rem 0;
+}
+
+.networkDetailsLight {
+  font-size: 0.75rem;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.networkDetailsDark {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  line-height: 1.4;
+}
+
+.radioButtonLight {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  border: 2px solid #d1d5db;
+  flex-shrink: 0;
+}
+
+.radioButtonDark {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  border: 2px solid #4b5563;
+  flex-shrink: 0;
+}
