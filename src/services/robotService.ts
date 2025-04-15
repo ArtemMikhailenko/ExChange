@@ -16,7 +16,7 @@ export interface TradeHistoryParams {
 
 export interface RobotSettings {
   robot_key: string | null;
-  trade_currencies: string[];
+  trade_currencies: string[] | 'all';
   avaliable_currencies: string[];
 }
 
@@ -37,6 +37,24 @@ export interface BuyKeyResponse {
   msg: string;
   key?: string;
   key_type?: KeyType;
+}
+
+export interface SaveRobotSettingsParams {
+  robot_type: 'demo' | 'real';
+  leverage: number;
+  minTradeAmount: number;
+  maxTradeAmount: number;
+  pairs: string[] | 'all';
+}
+
+interface SaveRobotSettingsResponse {
+  status: string;
+  settings?: {
+    robot_key: string | null;
+    trade_currencies: string[] | 'all';
+  };
+  err?: string;
+  msg?: string;
 }
 
 interface TradeHistoryResponse {
@@ -225,6 +243,58 @@ export async function getRobotSettings(type: 'demo' | 'real'): Promise<RobotSett
   }
 }
 
+export async function saveRobotSettings(params: SaveRobotSettingsParams): Promise<SaveRobotSettingsResponse> {
+  try {
+    // Validate parameters according to API spec
+    if (![3, 5, 20, 50, 100].includes(params.leverage)) {
+      throw new Error('Leverage must be one of: 3, 5, 20, 50, 100');
+    }
+    
+    if (params.minTradeAmount < 5 || params.minTradeAmount > 10000) {
+      throw new Error('Minimum trade amount must be between 5 and 10000');
+    }
+    
+    if (params.maxTradeAmount < 25 || params.maxTradeAmount > 10000) {
+      throw new Error('Maximum trade amount must be between 25 and 10000');
+    }
+    
+    if (params.minTradeAmount >= params.maxTradeAmount) {
+      throw new Error('Minimum trade amount must be less than maximum trade amount');
+    }
+    
+    // Make the API request
+    const response = await fetchWithCredentials(`${API_BASE_URL}/api/robot/set/settings`, {
+      method: 'POST',
+      body: JSON.stringify({
+        robot_type: params.robot_type,
+        leverage: params.leverage,
+        minTradeAmount: params.minTradeAmount,
+        maxTradeAmount: params.maxTradeAmount,
+        pairs: params.pairs
+      })
+    });
+    
+    // Handle API response
+    if (response.status === false) {
+      return {
+        status: 'err',
+        err: response.err || 'Failed to save robot settings'
+      };
+    }
+    
+    return {
+      status: 'success',
+      settings: response.settings
+    };
+  } catch (error) {
+    console.error('Error saving robot settings:', error);
+    return {
+      status: 'err',
+      err: error instanceof Error ? error.message : 'An unexpected error occurred'
+    };
+  }
+}
+
 // Export all functions in a service object
 export const robotService = {
   fetchRobotStatistics,
@@ -232,5 +302,6 @@ export const robotService = {
   toggleRobotState,
   activateRobotKey,
   getRobotSettings,
-  buyAndActivateKey
+  buyAndActivateKey,
+  saveRobotSettings
 };
