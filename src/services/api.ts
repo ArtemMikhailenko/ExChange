@@ -1,6 +1,6 @@
 // src/services/api.ts
-const API_BASE_URL = 'https://apiexchange.ymca.one';
-
+// const API_BASE_URL = 'https://apiexchange.ymca.one';
+const API_BASE_URL ='https://virtserver.swaggerhub.com/woronaweb/ExChange/1.0.0'
 export interface RegisterPayload {
   email: string;
   password: string;

@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 const RobotContent: React.FC = () => {
   // State management
-  const [isRunning, setIsRunning] = useState(false);
+ const [isRunning, setIsRunning] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -19,28 +19,10 @@ const RobotContent: React.FC = () => {
   const [isTogglingRobot, setIsTogglingRobot] = useState(false);
   const { t } = useTranslation('common');
   
-  // Check robot status on component mount and when trade type changes
-  useEffect(() => {
-    checkRobotStatus();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tradeType]);
-
   // Fetch trade history on component mount and when page/type changes
   useEffect(() => {
     fetchTradeHistory();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, tradeType, maxPerPage]);
-
-  // Function to check the current robot status from the API
-  const checkRobotStatus = async () => {
-    try {
-      const robotStatus = await robotService.fetchRobotStatus(tradeType);
-      setIsRunning(robotStatus);
-    } catch (err) {
-      console.error('Error checking robot status:', err);
-      // Don't show error to user for status check - just use default (false/stopped)
-    }
-  };
 
   const fetchTradeHistory = async () => {
     try {
@@ -88,9 +70,9 @@ const RobotContent: React.FC = () => {
           setIsTogglingRobot(false);
           
           // Show success message
-          const message = newState
-             ? `${t('startSuccess', 'Robot started successfully for')} ${tradeType} ${t('account', 'account')}!`
-             : `${t('stopSuccess', 'Robot stopped successfully for')} ${tradeType} ${t('account', 'account')}!`;
+          const message = newState 
+            ? `${t('startSuccess', 'Robot started successfully for')} ${tradeType} ${t('account', 'account')}!` 
+            : `${t('stopSuccess', 'Robot stopped successfully for')} ${tradeType} ${t('account', 'account')}!`;
           setSuccessMessage(message);
           
           // Auto-hide success message after 5 seconds
@@ -103,9 +85,9 @@ const RobotContent: React.FC = () => {
         setIsTogglingRobot(false);
         
         // Show success message
-        const message = newState
-           ? `${t('startSuccess', 'Robot started successfully for')} ${tradeType} ${t('account', 'account')}!`
-           : `${t('stopSuccess', 'Robot stopped successfully for')} ${tradeType} ${t('account', 'account')}!`;
+        const message = newState 
+          ? `${t('startSuccess', 'Robot started successfully for')} ${tradeType} ${t('account', 'account')}!` 
+          : `${t('stopSuccess', 'Robot stopped successfully for')} ${tradeType} ${t('account', 'account')}!`;
         setSuccessMessage(message);
         
         // Auto-hide success message after 5 seconds
@@ -188,16 +170,28 @@ const RobotContent: React.FC = () => {
         return `eq ${(numericInvestment / 100).toFixed(2)} CRYPTO`;
     }
   };
-
+  useEffect(() => {
+    const checkRobotStatus = async () => {
+      try {
+        // Получаем текущий статус робота
+        const status = await robotService.fetchRobotStatus(tradeType);
+        setIsRunning(status);
+      } catch (err) {
+        console.error('Error fetching robot status:', err);
+      }
+    };
+    
+    checkRobotStatus();
+  }, [tradeType]);
   // Generate pagination controls
   const renderPagination = () => {
     if (totalPages <= 1) return null;
-    
+
     return (
       <div className={styles.pagination}>
         <button 
-          className={`${styles.paginationButton} ${currentPage === 1 ? styles.disabled : ''}`}
-          disabled={currentPage === 1}
+          className={styles.pageButton}
+          disabled={currentPage === 1 || loading}
           onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
         >
           {t('previous', 'Previous')}
@@ -208,8 +202,8 @@ const RobotContent: React.FC = () => {
         </span>
         
         <button 
-          className={`${styles.paginationButton} ${currentPage === totalPages ? styles.disabled : ''}`}
-          disabled={currentPage === totalPages}
+          className={styles.pageButton}
+          disabled={currentPage === totalPages || loading}
           onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
         >
           {t('next', 'Next')}
@@ -238,7 +232,7 @@ const RobotContent: React.FC = () => {
         <div className={styles.titleSection}>
           <h2 className={styles.title}>{t('tradingRobot', 'Trading Robot')}</h2>
           <p className={styles.subtitle}>
-            {t('lastDaysStats', 'Last 30 days our users trading statistics.')}
+            {t('lastDaysStats', 'Last 30 days our users trading statistics.')} 
             {tradeType === 'demo' ? t('demoAccount', 'Demo Account') : t('realAccount', 'Real Account')}.
           </p>
         </div>
@@ -246,8 +240,8 @@ const RobotContent: React.FC = () => {
         <div className={styles.actionSection}>
           <button 
             onClick={toggleTradeType} 
-            disabled={isRunning}
-            className={`${styles.typeToggleButton} ${isRunning ? styles.disabled : ''}`}
+            className={styles.typeToggle}
+            aria-label={tradeType === 'demo' ? t('switchToReal', 'Switch to real account') : t('switchToDemo', 'Switch to demo account')}
           >
             {tradeType === 'demo' ? t('switchToReal', 'Switch to real account') : t('switchToDemo', 'Switch to demo account')}
           </button>
@@ -263,6 +257,7 @@ const RobotContent: React.FC = () => {
               className={`${styles.toggleButton} ${isRunning ? styles.stopButton : styles.startButton}`} 
               onClick={toggleRobotState}
               disabled={isTogglingRobot}
+              aria-label={isRunning ? t('stop', 'Stop') : t('start', 'Start')}
             >
               <span className={styles.buttonText}>
                 {isTogglingRobot ? '...' : isRunning ? t('stop', 'Stop') : t('start', 'Start')}
@@ -272,17 +267,15 @@ const RobotContent: React.FC = () => {
           </div>
         </div>
       </div>
-
+      
       {/* Error message */}
       {error && (
         <div className={styles.errorMessage}>
-          <p>{error}</p>
+          <span>{error}</span>
           <button 
-            onClick={() => {
-              setError(null);
-              fetchTradeHistory();
-            }} 
+            onClick={fetchTradeHistory} 
             className={styles.retryButton}
+            aria-label={t('retry', 'Retry')}
           >
             {t('retry', 'Retry')}
           </button>
@@ -292,8 +285,8 @@ const RobotContent: React.FC = () => {
       {/* Success message */}
       {successMessage && (
         <div className={styles.successMessage}>
-          <p>{successMessage}</p>
-          <button
+          <span>{successMessage}</span>
+          <button 
             onClick={() => setSuccessMessage(null)} 
             className={styles.closeButton}
             aria-label={t('close', 'Close')}

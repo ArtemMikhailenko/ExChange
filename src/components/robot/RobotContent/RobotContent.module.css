@@ -382,7 +382,7 @@
   text-align: center;
   padding: 3rem 0;
   color: #999;
-  background-color: rgba(30, 30, 30, 0.5);
+  /* background-color: rgba(30, 30, 30, 0.5); */
   border-radius: 0.5rem;
 }
 
@@ -425,34 +425,65 @@
   width: 100%;
   overflow-x: auto;
   margin-bottom: 2rem;
+  border-radius: 8px;
+
 }
 
 .historyTable {
   width: 100%;
   border-collapse: collapse;
   color: #fff;
+  border-radius: 8px;
+  border-collapse: separate;
+  border-spacing: 0 12px; 
+  
 }
 
 .historyTable th {
-  background-color: rgba(20, 20, 20, 0.8);
-  padding: 1rem;
+  background: #202022; /* Прозрачный фон */
+  padding: 8px 24px 8px 22px;
   text-align: left;
-  font-weight: 500;
-  color: #999;
-  border-bottom: 1px solid #333;
+  font-weight: 400;
+  
+  font-size: 15px;
+  line-height: 140%;
+  height: 37px;
+  color: #dce0e5;
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 2;
 }
-
+.historyTable tr{ 
+  border-radius: 10px ;
+}
 .historyTable td {
   padding: 1rem;
-  border-bottom: 1px solid #333;
+  background: #202022;
+  border: none;
+  
+}
+.historyTable tr th:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
 }
 
-.evenRow {
-  background-color: rgba(30, 30, 30, 0.3);
+.historyTable tr th:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
+.historyTable tr td:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.historyTable tr td:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+.historyTable tbody{
+  border-radius: 8px;
+}
+
 
 .currencyCell {
   display: flex;
@@ -520,17 +551,16 @@
 }
 
 .loss {
-  background-color: rgba(244, 67, 54, 0.2);
-  color: #F44336;
+  background-color: #df0c3d;
+
 }
 
 .profit {
-  background-color: rgba(76, 175, 80, 0.2);
-  color: #4CAF50;
+  background-color: #22ab94;
+
 }
 
 .profitText {
-  color: #4CAF50;
   font-weight: 500;
 }
 
