@@ -19,10 +19,28 @@ const RobotContent: React.FC = () => {
   const [isTogglingRobot, setIsTogglingRobot] = useState(false);
   const { t } = useTranslation('common');
   
+  // Check robot status on component mount and when trade type changes
+  useEffect(() => {
+    checkRobotStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tradeType]);
+
   // Fetch trade history on component mount and when page/type changes
   useEffect(() => {
     fetchTradeHistory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, tradeType, maxPerPage]);
+
+  // Function to check the current robot status from the API
+  const checkRobotStatus = async () => {
+    try {
+      const robotStatus = await robotService.fetchRobotStatus(tradeType);
+      setIsRunning(robotStatus);
+    } catch (err) {
+      console.error('Error checking robot status:', err);
+      // Don't show error to user for status check - just use default (false/stopped)
+    }
+  };
 
   const fetchTradeHistory = async () => {
     try {
@@ -70,9 +88,9 @@ const RobotContent: React.FC = () => {
           setIsTogglingRobot(false);
           
           // Show success message
-          const message = newState 
-            ? `${t('startSuccess', 'Robot started successfully for')} ${tradeType} ${t('account', 'account')}!` 
-            : `${t('stopSuccess', 'Robot stopped successfully for')} ${tradeType} ${t('account', 'account')}!`;
+          const message = newState
+             ? `${t('startSuccess', 'Robot started successfully for')} ${tradeType} ${t('account', 'account')}!`
+             : `${t('stopSuccess', 'Robot stopped successfully for')} ${tradeType} ${t('account', 'account')}!`;
           setSuccessMessage(message);
           
           // Auto-hide success message after 5 seconds
@@ -85,9 +103,9 @@ const RobotContent: React.FC = () => {
         setIsTogglingRobot(false);
         
         // Show success message
-        const message = newState 
-          ? `${t('startSuccess', 'Robot started successfully for')} ${tradeType} ${t('account', 'account')}!` 
-          : `${t('stopSuccess', 'Robot stopped successfully for')} ${tradeType} ${t('account', 'account')}!`;
+        const message = newState
+           ? `${t('startSuccess', 'Robot started successfully for')} ${tradeType} ${t('account', 'account')}!`
+           : `${t('stopSuccess', 'Robot stopped successfully for')} ${tradeType} ${t('account', 'account')}!`;
         setSuccessMessage(message);
         
         // Auto-hide success message after 5 seconds
@@ -174,12 +192,12 @@ const RobotContent: React.FC = () => {
   // Generate pagination controls
   const renderPagination = () => {
     if (totalPages <= 1) return null;
-
+    
     return (
       <div className={styles.pagination}>
         <button 
-          className={styles.pageButton}
-          disabled={currentPage === 1 || loading}
+          className={`${styles.paginationButton} ${currentPage === 1 ? styles.disabled : ''}`}
+          disabled={currentPage === 1}
           onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
         >
           {t('previous', 'Previous')}
@@ -190,8 +208,8 @@ const RobotContent: React.FC = () => {
         </span>
         
         <button 
-          className={styles.pageButton}
-          disabled={currentPage === totalPages || loading}
+          className={`${styles.paginationButton} ${currentPage === totalPages ? styles.disabled : ''}`}
+          disabled={currentPage === totalPages}
           onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
         >
           {t('next', 'Next')}
@@ -220,7 +238,7 @@ const RobotContent: React.FC = () => {
         <div className={styles.titleSection}>
           <h2 className={styles.title}>{t('tradingRobot', 'Trading Robot')}</h2>
           <p className={styles.subtitle}>
-            {t('lastDaysStats', 'Last 30 days our users trading statistics.')} 
+            {t('lastDaysStats', 'Last 30 days our users trading statistics.')}
             {tradeType === 'demo' ? t('demoAccount', 'Demo Account') : t('realAccount', 'Real Account')}.
           </p>
         </div>
@@ -228,8 +246,8 @@ const RobotContent: React.FC = () => {
         <div className={styles.actionSection}>
           <button 
             onClick={toggleTradeType} 
-            className={styles.typeToggle}
-            aria-label={tradeType === 'demo' ? t('switchToReal', 'Switch to real account') : t('switchToDemo', 'Switch to demo account')}
+            disabled={isRunning}
+            className={`${styles.typeToggleButton} ${isRunning ? styles.disabled : ''}`}
           >
             {tradeType === 'demo' ? t('switchToReal', 'Switch to real account') : t('switchToDemo', 'Switch to demo account')}
           </button>
@@ -245,7 +263,6 @@ const RobotContent: React.FC = () => {
               className={`${styles.toggleButton} ${isRunning ? styles.stopButton : styles.startButton}`} 
               onClick={toggleRobotState}
               disabled={isTogglingRobot}
-              aria-label={isRunning ? t('stop', 'Stop') : t('start', 'Start')}
             >
               <span className={styles.buttonText}>
                 {isTogglingRobot ? '...' : isRunning ? t('stop', 'Stop') : t('start', 'Start')}
@@ -255,15 +272,17 @@ const RobotContent: React.FC = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Error message */}
       {error && (
         <div className={styles.errorMessage}>
-          <span>{error}</span>
+          <p>{error}</p>
           <button 
-            onClick={fetchTradeHistory} 
+            onClick={() => {
+              setError(null);
+              fetchTradeHistory();
+            }} 
             className={styles.retryButton}
-            aria-label={t('retry', 'Retry')}
           >
             {t('retry', 'Retry')}
           </button>
@@ -273,8 +292,8 @@ const RobotContent: React.FC = () => {
       {/* Success message */}
       {successMessage && (
         <div className={styles.successMessage}>
-          <span>{successMessage}</span>
-          <button 
+          <p>{successMessage}</p>
+          <button
             onClick={() => setSuccessMessage(null)} 
             className={styles.closeButton}
             aria-label={t('close', 'Close')}
@@ -289,9 +308,8 @@ const RobotContent: React.FC = () => {
         <div className={styles.historyHeader}>
           <h2 className={styles.historyTitle}>{t('tradeHistory', 'Trade History')}</h2>
           
-          <div className={styles.historyControls}>
-            <select 
-              value={maxPerPage}
+          <div className={styles.pageControls}>
+            <select
               onChange={(e) => {
                 setMaxPerPage(Number(e.target.value));
                 setCurrentPage(1);
@@ -299,18 +317,17 @@ const RobotContent: React.FC = () => {
               className={styles.pageSizeSelector}
               aria-label={t('perPageSelector', 'Items per page')}
             >
-              <option value={5}>5 {t('perPage', 'per page')}</option>
-              <option value={10}>10 {t('perPage', 'per page')}</option>
-              <option value={20}>20 {t('perPage', 'per page')}</option>
-              <option value={50}>50 {t('perPage', 'per page')}</option>
+              <option value="5">5 {t('perPage', 'per page')}</option>
+              <option value="10" selected>10 {t('perPage', 'per page')}</option>
+              <option value="20">20 {t('perPage', 'per page')}</option>
+              <option value="50">50 {t('perPage', 'per page')}</option>
             </select>
           </div>
         </div>
         
         {loading ? (
-          <div className={styles.loadingContainer}>
-            <div className={styles.loadingSpinner}></div>
-            <span>{t('loadingTrades', 'Loading trades...')}</span>
+          <div className={styles.loadingState}>
+            <p>{t('loadingTrades', 'Loading trades...')}</p>
           </div>
         ) : tradeHistory.length === 0 ? (
           <div className={styles.emptyState}>
@@ -325,10 +342,10 @@ const RobotContent: React.FC = () => {
                   <tr>
                     <th>{t('trade', 'Currency/Trade')}</th>
                     <th>{t('status', 'Status')}</th>
-                    <th className={styles.hideOnMobile}>{t('investment', 'Investment')}</th>
-                    <th className={styles.hideOnTablet}>{t('profit', 'Starting balance')}</th>
-                    <th className={styles.hideOnTablet}>{t('pnl', 'Ending balance')}</th>
-                    <th className={styles.hideOnMobile}>{t('dates', 'Start date / End date')}</th>
+                    <th>{t('investment', 'Investment')}</th>
+                    <th>{t('profit', 'Starting balance')}</th>
+                    <th>{t('pnl', 'Ending balance')}</th>
+                    <th>{t('dates', 'Start date / End date')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -349,14 +366,16 @@ const RobotContent: React.FC = () => {
                     const isProfit = trade.status === 'win' || profit > 0;
                     
                     return (
-                      <tr key={trade.id || index} className={index % 2 === 0 ? styles.evenRow : ''}>
+                      <tr key={index}>
                         <td>
                           <div className={styles.currencyCell}>
-                            <div className={`${styles.currencyIcon} ${styles[trade.icon || 'btc']}`}>
+                            <div className={`${styles.currencyIcon} ${styles[trade.icon || '']}`}>
                               {/* Icon applied via CSS background */}
                             </div>
                             <div className={styles.tradeInfo}>
-                              <div className={styles.tradeId}>#{trade.id || 'N/A'}</div>
+                              <div className={styles.tradeId}>
+                                #{trade.id || 'N/A'}
+                              </div>
                               <div className={styles.tradeDate}>
                                 {formatDate(trade.start_date || '')}
                               </div>
@@ -368,7 +387,7 @@ const RobotContent: React.FC = () => {
                             {isProfit ? t('profit', 'Profit') : t('loss', 'Loss')}
                           </span>
                         </td>
-                        <td className={styles.hideOnMobile}>
+                        <td>
                           <div className={styles.investmentCell}>
                             <div>{formatCurrency(investment)}</div>
                             <div className={styles.equivCrypto}>
@@ -376,15 +395,16 @@ const RobotContent: React.FC = () => {
                             </div>
                           </div>
                         </td>
-                        <td className={styles.hideOnTablet}>
-                          {formatCurrency(Math.abs(profit))}
+                        <td>{formatCurrency(investment)}</td>
+                        <td>
+                          <div className={styles.pnlCell}>
+                            <div>{formatCurrency(Math.abs(profit))}</div>
+                            <div className={`${isProfit ? styles.profitText : styles.lossText}`}>
+                              {isProfit ? '+' : '-'}{profitPercentage}%
+                            </div>
+                          </div>
                         </td>
-                        <td className={styles.hideOnTablet}>
-                          <span className={isProfit ? styles.profitText : styles.lossText}>
-                            {isProfit ? '+' : '-'}{profitPercentage}%
-                          </span>
-                        </td>
-                        <td className={styles.hideOnMobile}>
+                        <td>
                           <div className={styles.dateCell}>
                             <div>{t('start', 'Start')}: {formatDate(trade.start_date || '')}</div>
                             <div>{t('end', 'End')}: {formatDate(trade.end_date || '')}</div>
@@ -398,7 +418,7 @@ const RobotContent: React.FC = () => {
             </div>
 
             {/* Mobile cards */}
-            <div className={styles.mobileCards}>
+            <div className={styles.mobileTradeCards}>
               {tradeHistory.map((trade, index) => {
                 // Type-safe profit calculation
                 const profit = typeof trade.profit === 'number' ? trade.profit : 0;
@@ -416,13 +436,19 @@ const RobotContent: React.FC = () => {
                 const isProfit = trade.status === 'win' || profit > 0;
                 
                 return (
-                  <div key={trade.id || index} className={styles.mobileCard}>
-                    <div className={styles.mobileCardHeader}>
-                      <div className={styles.currencyCell}>
-                        <div className={`${styles.currencyIcon} ${styles[trade.icon || 'btc']}`}></div>
+                  <div key={index} className={styles.tradeCard}>
+                    <div className={styles.cardHeader}>
+                      <div className={styles.cardCurrency}>
+                        <div className={`${styles.currencyIcon} ${styles[trade.icon || '']}`}>
+                          {/* Icon applied via CSS background */}
+                        </div>
                         <div className={styles.tradeInfo}>
-                          <div className={styles.tradeId}>#{trade.id || 'N/A'}</div>
-                          <div className={styles.tradeDate}>{formatDate(trade.start_date || '')}</div>
+                          <div className={styles.tradeId}>
+                            #{trade.id || 'N/A'}
+                          </div>
+                          <div className={styles.tradeDate}>
+                            {formatDate(trade.start_date || '')}
+                          </div>
                         </div>
                       </div>
                       <span className={`${styles.statusBadge} ${isProfit ? styles.profit : styles.loss}`}>
@@ -430,22 +456,22 @@ const RobotContent: React.FC = () => {
                       </span>
                     </div>
                     
-                    <div className={styles.mobileCardDetails}>
-                      <div className={styles.mobileDetailRow}>
-                        <span className={styles.mobileDetailLabel}>{t('investment', 'Investment')}:</span>
-                        <span className={styles.mobileDetailValue}>
+                    <div className={styles.cardDetails}>
+                      <div className={styles.detailRow}>
+                        <span className={styles.detailLabel}>{t('investment', 'Investment')}:</span>
+                        <span className={styles.detailValue}>
                           {formatCurrency(investment)} ({calculateEquivCrypto(investment, trade.icon || 'btc')})
                         </span>
                       </div>
-                      <div className={styles.mobileDetailRow}>
-                        <span className={styles.mobileDetailLabel}>{t('pnl', 'PNL')}:</span>
-                        <span className={`${styles.mobileDetailValue} ${isProfit ? styles.profitText : styles.lossText}`}>
+                      <div className={styles.detailRow}>
+                        <span className={styles.detailLabel}>{t('pnl', 'PNL')}:</span>
+                        <span className={`${styles.detailValue} ${isProfit ? styles.profitText : styles.lossText}`}>
                           {isProfit ? '+' : '-'}{formatCurrency(Math.abs(profit))} ({profitPercentage}%)
                         </span>
                       </div>
-                      <div className={styles.mobileDetailRow}>
-                        <span className={styles.mobileDetailLabel}>{t('period', 'Period')}:</span>
-                        <span className={styles.mobileDetailValue}>
+                      <div className={styles.detailRow}>
+                        <span className={styles.detailLabel}>{t('period', 'Period')}:</span>
+                        <span className={styles.detailValue}>
                           {formatDate(trade.start_date || '')} - {formatDate(trade.end_date || '')}
                         </span>
                       </div>

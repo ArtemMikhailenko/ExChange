@@ -1,4 +1,4 @@
-// src/services/robotService.ts
+// src/services/robotService.ts 
 const API_BASE_URL = 'https://apiexchange.ymca.one';
 
 export type KeyType = 'standart' | 'premium' | 'vip';
@@ -63,6 +63,13 @@ interface TradeHistoryResponse {
   pages: number;
 }
 
+interface RobotStatusResponse {
+  status: string;
+  robot_status: boolean;
+  account_type: 'demo' | 'real';
+  msg?: string;
+}
+
 // Base fetch function with proper credentials handling
 const fetchWithCredentials = async (url: string, options: RequestInit = {}) => {
   const response = await fetch(url, {
@@ -82,7 +89,7 @@ const fetchWithCredentials = async (url: string, options: RequestInit = {}) => {
       // Try to parse error response as JSON
       const errorData = await response.json();
       console.error('Error details:', errorData);
-      throw new Error(errorData.err || 'API request failed');
+      throw new Error(errorData.err || errorData.msg || 'API request failed');
     } catch (e) {
       // If can't parse as JSON, use status text
       throw new Error(`API error: ${response.status} - ${response.statusText}`);
@@ -109,6 +116,27 @@ export async function fetchRobotStatistics(): Promise<RobotStatistics> {
   } catch (error) {
     console.error('Error fetching robot statistics:', error);
     throw error;
+  }
+}
+
+export async function fetchRobotStatus(accountType: 'demo' | 'real'): Promise<boolean> {
+  try {
+    const data = await fetchWithCredentials(`${API_BASE_URL}/api/robot/status`, {
+      method: 'POST',
+      body: JSON.stringify({
+        account_type: accountType
+      })
+    });
+
+    if (data.status === "err") {
+      throw new Error(data.msg || 'Failed to fetch robot status');
+    }
+
+    return data.robot_status || false;
+  } catch (error) {
+    console.error('Error fetching robot status:', error);
+    // Return false (stopped) as a safe default in case of error
+    return false;
   }
 }
 
@@ -303,5 +331,6 @@ export const robotService = {
   activateRobotKey,
   getRobotSettings,
   buyAndActivateKey,
-  saveRobotSettings
+  saveRobotSettings,
+  fetchRobotStatus
 };
