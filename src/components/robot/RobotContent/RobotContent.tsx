@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './RobotContent.module.css';
 import { robotService, Trade, TradeHistoryParams } from '@/services/robotService';
-import { useTranslation } from '@/hooks/useTranslation';
+import { useTranslation } from 'react-i18next';
 
 const RobotContent: React.FC = () => {
   // State management
@@ -17,7 +17,8 @@ const RobotContent: React.FC = () => {
   const [tradeType, setTradeType] = useState<'demo' | 'real'>('demo');
   const [maxPerPage, setMaxPerPage] = useState(10);
   const [isTogglingRobot, setIsTogglingRobot] = useState(false);
-  const { t, lang } = useTranslation();
+  const { t } = useTranslation('common');
+  
   // Fetch trade history on component mount and when page/type changes
   useEffect(() => {
     fetchTradeHistory();
@@ -35,11 +36,11 @@ const RobotContent: React.FC = () => {
       };
 
       const data = await robotService.fetchTradeHistory(params);
-      setTradeHistory(data.trades);
-      setTotalPages(data.pages);
+      setTradeHistory(data.trades || []);
+      setTotalPages(data.pages || 1);
     } catch (err) {
       console.error('Error fetching trade history:', err);
-      setError(t('robot.failedLoadHistory'));
+      setError(t('failedLoadHistory', 'Failed to load trade history'));
     } finally {
       setLoading(false);
     }
@@ -70,8 +71,8 @@ const RobotContent: React.FC = () => {
           
           // Show success message
           const message = newState 
-            ? `${t('robot.startSuccess')} ${tradeType} ${t('robot.account')}!` 
-            : `${t('robot.stopSuccess')} ${tradeType} ${t('robot.account')}!`;
+            ? `${t('startSuccess', 'Robot started successfully for')} ${tradeType} ${t('account', 'account')}!` 
+            : `${t('stopSuccess', 'Robot stopped successfully for')} ${tradeType} ${t('account', 'account')}!`;
           setSuccessMessage(message);
           
           // Auto-hide success message after 5 seconds
@@ -85,8 +86,8 @@ const RobotContent: React.FC = () => {
         
         // Show success message
         const message = newState 
-          ? `${t('robot.startSuccess')} ${tradeType} ${t('robot.account')}!` 
-          : `${t('robot.stopSuccess')} ${tradeType} ${t('robot.account')}!`;
+          ? `${t('startSuccess', 'Robot started successfully for')} ${tradeType} ${t('account', 'account')}!` 
+          : `${t('stopSuccess', 'Robot stopped successfully for')} ${tradeType} ${t('account', 'account')}!`;
         setSuccessMessage(message);
         
         // Auto-hide success message after 5 seconds
@@ -109,7 +110,7 @@ const RobotContent: React.FC = () => {
       setIsTogglingRobot(false);
       
       // Show error message to user
-      setError(err instanceof Error ? err.message : t('robot.failedToggle'));
+      setError(err instanceof Error ? err.message : t('failedToggle', 'Failed to toggle robot state'));
     }
   };
 
@@ -117,7 +118,7 @@ const RobotContent: React.FC = () => {
   const formatDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
-      return date.toLocaleString(lang === 'ru' ? 'ru-RU' : 'en-US', {
+      return date.toLocaleString('en-US', {
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
@@ -130,27 +131,43 @@ const RobotContent: React.FC = () => {
     }
   };
 
-  // Format currency for display
-  const formatCurrency = (amount: number) => {
-    return amount.toFixed(2) + ' USDT';
+  // Format currency for display - with type safety
+  const formatCurrency = (amount: number | string | null | undefined) => {
+    // Convert to number if needed, and handle null/undefined
+    const numericAmount = typeof amount === 'string' ? parseFloat(amount) : (amount || 0);
+    
+    // Check if it's a valid number
+    if (isNaN(numericAmount)) {
+      return '0.00 USDT';
+    }
+    
+    return numericAmount.toFixed(2) + ' USDT';
   };
 
   // Calculate equivalent crypto (this would be based on actual rates in production)
-  const calculateEquivCrypto = (investment: number, icon: string) => {
+  const calculateEquivCrypto = (investment: number | string | null | undefined, icon: string) => {
+    // Convert to number if needed, and handle null/undefined
+    const numericInvestment = typeof investment === 'string' ? parseFloat(investment) : (investment || 0);
+    
+    // Check if it's a valid number
+    if (isNaN(numericInvestment)) {
+      return 'eq 0 CRYPTO';
+    }
+    
     // This is a simplified mock calculation
     switch (icon) {
       case 'btc':
-        return `eq ${(investment / 80000).toFixed(6)} BTC`;
+        return `eq ${(numericInvestment / 80000).toFixed(6)} BTC`;
       case 'eth':
-        return `eq ${(investment / 3000).toFixed(4)} ETH`;
+        return `eq ${(numericInvestment / 3000).toFixed(4)} ETH`;
       case 'ltc':
-        return `eq ${(investment / 70).toFixed(2)} LTC`;
+        return `eq ${(numericInvestment / 70).toFixed(2)} LTC`;
       case 'bnb':
-        return `eq ${(investment / 500).toFixed(4)} BNB`;
+        return `eq ${(numericInvestment / 500).toFixed(4)} BNB`;
       case 'trx':
-        return `eq ${(investment / 0.1).toFixed(1)} TRX`;
+        return `eq ${(numericInvestment / 0.1).toFixed(1)} TRX`;
       default:
-        return `eq ${(investment / 100).toFixed(2)} CRYPTO`;
+        return `eq ${(numericInvestment / 100).toFixed(2)} CRYPTO`;
     }
   };
 
@@ -165,11 +182,11 @@ const RobotContent: React.FC = () => {
           disabled={currentPage === 1 || loading}
           onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
         >
-          {t('robot.previous')}
+          {t('previous', 'Previous')}
         </button>
         
         <span className={styles.pageInfo}>
-          {t('robot.page')} {currentPage} {t('robot.of')} {totalPages}
+          {t('page', 'Page')} {currentPage} {t('of', 'of')} {totalPages}
         </span>
         
         <button 
@@ -177,7 +194,7 @@ const RobotContent: React.FC = () => {
           disabled={currentPage === totalPages || loading}
           onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
         >
-          {t('robot.next')}
+          {t('next', 'Next')}
         </button>
       </div>
     );
@@ -187,7 +204,7 @@ const RobotContent: React.FC = () => {
   const toggleTradeType = () => {
     // Prevent switching accounts if robot is running
     if (isRunning) {
-      setError(t('robot.stopBeforeSwitching'));
+      setError(t('stopBeforeSwitching', 'Please stop the robot before switching accounts'));
       return;
     }
     
@@ -201,9 +218,10 @@ const RobotContent: React.FC = () => {
       {/* Header section */}
       <div className={styles.header}>
         <div className={styles.titleSection}>
-          <h2 className={styles.title}>{t('robot.tradingRobot')}</h2>
+          <h2 className={styles.title}>{t('tradingRobot', 'Trading Robot')}</h2>
           <p className={styles.subtitle}>
-            {t('robot.lastDaysStats')} {tradeType === 'demo' ? t('robot.demoAccount') : t('robot.realAccount')}.
+            {t('lastDaysStats', 'Last 30 days our users trading statistics.')} 
+            {tradeType === 'demo' ? t('demoAccount', 'Demo Account') : t('realAccount', 'Real Account')}.
           </p>
         </div>
         
@@ -211,26 +229,26 @@ const RobotContent: React.FC = () => {
           <button 
             onClick={toggleTradeType} 
             className={styles.typeToggle}
-            aria-label={tradeType === 'demo' ? t('robot.switchToReal') : t('robot.switchToDemo')}
+            aria-label={tradeType === 'demo' ? t('switchToReal', 'Switch to real account') : t('switchToDemo', 'Switch to demo account')}
           >
-            {tradeType === 'demo' ? t('robot.switchToReal') : t('robot.switchToDemo')}
+            {tradeType === 'demo' ? t('switchToReal', 'Switch to real account') : t('switchToDemo', 'Switch to demo account')}
           </button>
           
           <div className={styles.statusBar}>
             <div className={styles.statusLabel}>
-              {t('robot.roboTrade')}:
+              {t('roboTrade', 'Robo Trade')}:
             </div>
             <div className={`${styles.statusValue} ${isRunning ? styles.running : styles.stopped}`}>
-              {isRunning ? t('robot.running') : t('robot.stopped')}
+              {isRunning ? t('running', 'Running') : t('stopped', 'Stopped')}
             </div>
             <button 
               className={`${styles.toggleButton} ${isRunning ? styles.stopButton : styles.startButton}`} 
               onClick={toggleRobotState}
               disabled={isTogglingRobot}
-              aria-label={isRunning ? t('robot.stop') : t('robot.start')}
+              aria-label={isRunning ? t('stop', 'Stop') : t('start', 'Start')}
             >
               <span className={styles.buttonText}>
-                {isTogglingRobot ? '...' : isRunning ? t('robot.stop') : t('robot.start')}
+                {isTogglingRobot ? '...' : isRunning ? t('stop', 'Stop') : t('start', 'Start')}
               </span>
               <span className={styles.buttonAnimation}></span>
             </button>
@@ -245,9 +263,9 @@ const RobotContent: React.FC = () => {
           <button 
             onClick={fetchTradeHistory} 
             className={styles.retryButton}
-            aria-label={t('robot.retry')}
+            aria-label={t('retry', 'Retry')}
           >
-            {t('robot.retry')}
+            {t('retry', 'Retry')}
           </button>
         </div>
       )}
@@ -259,7 +277,7 @@ const RobotContent: React.FC = () => {
           <button 
             onClick={() => setSuccessMessage(null)} 
             className={styles.closeButton}
-            aria-label={t('close')}
+            aria-label={t('close', 'Close')}
           >
             ✕
           </button>
@@ -269,7 +287,7 @@ const RobotContent: React.FC = () => {
       {/* History section */}
       <div className={styles.historySection}>
         <div className={styles.historyHeader}>
-          <h2 className={styles.historyTitle}>{t('robot.tradeHistory')}</h2>
+          <h2 className={styles.historyTitle}>{t('tradeHistory', 'Trade History')}</h2>
           
           <div className={styles.historyControls}>
             <select 
@@ -279,12 +297,12 @@ const RobotContent: React.FC = () => {
                 setCurrentPage(1);
               }}
               className={styles.pageSizeSelector}
-              aria-label={t('robot.perPageSelector')}
+              aria-label={t('perPageSelector', 'Items per page')}
             >
-              <option value={5}>5 {t('robot.perPage')}</option>
-              <option value={10}>10 {t('robot.perPage')}</option>
-              <option value={20}>20 {t('robot.perPage')}</option>
-              <option value={50}>50 {t('robot.perPage')}</option>
+              <option value={5}>5 {t('perPage', 'per page')}</option>
+              <option value={10}>10 {t('perPage', 'per page')}</option>
+              <option value={20}>20 {t('perPage', 'per page')}</option>
+              <option value={50}>50 {t('perPage', 'per page')}</option>
             </select>
           </div>
         </div>
@@ -292,11 +310,11 @@ const RobotContent: React.FC = () => {
         {loading ? (
           <div className={styles.loadingContainer}>
             <div className={styles.loadingSpinner}></div>
-            <span>{t('robot.loadingTrades')}</span>
+            <span>{t('loadingTrades', 'Loading trades...')}</span>
           </div>
         ) : tradeHistory.length === 0 ? (
           <div className={styles.emptyState}>
-            <p>{t('robot.noTradeHistory')}</p>
+            <p>{t('noTradeHistory', 'No trade history available')}</p>
           </div>
         ) : (
           <>
@@ -305,45 +323,56 @@ const RobotContent: React.FC = () => {
               <table className={styles.historyTable}>
                 <thead>
                   <tr>
-                    <th>{t('robot.trade')}</th>
-                    <th>{t('status')}</th>
-                    <th className={styles.hideOnMobile}>{t('robot.investment')}</th>
-                    <th className={styles.hideOnTablet}>{t('robot.profit')}</th>
-                    <th className={styles.hideOnTablet}>{t('robot.pnl')}</th>
-                    <th className={styles.hideOnMobile}>{t('robot.dates')}</th>
+                    <th>{t('trade', 'Trade')}</th>
+                    <th>{t('status', 'Status')}</th>
+                    <th className={styles.hideOnMobile}>{t('investment', 'Investment')}</th>
+                    <th className={styles.hideOnTablet}>{t('profit', 'Profit')}</th>
+                    <th className={styles.hideOnTablet}>{t('pnl', 'PNL')}</th>
+                    <th className={styles.hideOnMobile}>{t('dates', 'Dates')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {tradeHistory.map((trade, index) => {
-                    const profit = trade.profit;
-                    const profitPercentage = ((profit / trade.investment) * 100).toFixed(2);
+                    // Type-safe profit calculation
+                    const profit = typeof trade.profit === 'number' ? trade.profit : 0;
+                    
+                    // Type-safe investment handling
+                    const investment = typeof trade.investment === 'number' ? trade.investment : 0;
+                    
+                    // Safe profit percentage calculation with fallback
+                    let profitPercentage = '0.00';
+                    if (investment !== 0) {
+                      profitPercentage = ((profit / investment) * 100).toFixed(2);
+                    }
+                    
+                    // Determine profit/loss status
                     const isProfit = trade.status === 'win' || profit > 0;
                     
                     return (
-                      <tr key={trade.id} className={index % 2 === 0 ? styles.evenRow : ''}>
+                      <tr key={trade.id || index} className={index % 2 === 0 ? styles.evenRow : ''}>
                         <td>
                           <div className={styles.currencyCell}>
                             <div className={`${styles.currencyIcon} ${styles[trade.icon || 'btc']}`}>
                               {/* Icon applied via CSS background */}
                             </div>
                             <div className={styles.tradeInfo}>
-                              <div className={styles.tradeId}>#{trade.id}</div>
+                              <div className={styles.tradeId}>#{trade.id || 'N/A'}</div>
                               <div className={styles.tradeDate}>
-                                {formatDate(trade.start_date)}
+                                {formatDate(trade.start_date || '')}
                               </div>
                             </div>
                           </div>
                         </td>
                         <td>
                           <span className={`${styles.statusBadge} ${isProfit ? styles.profit : styles.loss}`}>
-                            {isProfit ? t('robot.profit') : t('robot.loss')}
+                            {isProfit ? t('profit', 'Profit') : t('loss', 'Loss')}
                           </span>
                         </td>
                         <td className={styles.hideOnMobile}>
                           <div className={styles.investmentCell}>
-                            <div>{formatCurrency(trade.investment)}</div>
+                            <div>{formatCurrency(investment)}</div>
                             <div className={styles.equivCrypto}>
-                              {calculateEquivCrypto(trade.investment, trade.icon || 'btc')}
+                              {calculateEquivCrypto(investment, trade.icon || 'btc')}
                             </div>
                           </div>
                         </td>
@@ -357,8 +386,8 @@ const RobotContent: React.FC = () => {
                         </td>
                         <td className={styles.hideOnMobile}>
                           <div className={styles.dateCell}>
-                            <div>{t('start')}: {formatDate(trade.start_date)}</div>
-                            <div>{t('end')}: {formatDate(trade.end_date)}</div>
+                            <div>{t('start', 'Start')}: {formatDate(trade.start_date || '')}</div>
+                            <div>{t('end', 'End')}: {formatDate(trade.end_date || '')}</div>
                           </div>
                         </td>
                       </tr>
@@ -370,43 +399,54 @@ const RobotContent: React.FC = () => {
 
             {/* Mobile cards */}
             <div className={styles.mobileCards}>
-              {tradeHistory.map((trade) => {
-                const profit = trade.profit;
-                const profitPercentage = ((profit / trade.investment) * 100).toFixed(2);
+              {tradeHistory.map((trade, index) => {
+                // Type-safe profit calculation
+                const profit = typeof trade.profit === 'number' ? trade.profit : 0;
+                
+                // Type-safe investment handling
+                const investment = typeof trade.investment === 'number' ? trade.investment : 0;
+                
+                // Safe profit percentage calculation with fallback
+                let profitPercentage = '0.00';
+                if (investment !== 0) {
+                  profitPercentage = ((profit / investment) * 100).toFixed(2);
+                }
+                
+                // Determine profit/loss status
                 const isProfit = trade.status === 'win' || profit > 0;
                 
                 return (
-                  <div key={trade.id} className={styles.mobileCard}>
+                  <div key={trade.id || index} className={styles.mobileCard}>
                     <div className={styles.mobileCardHeader}>
                       <div className={styles.currencyCell}>
                         <div className={`${styles.currencyIcon} ${styles[trade.icon || 'btc']}`}></div>
                         <div className={styles.tradeInfo}>
-                          <div className={styles.tradeId}>#{trade.id}</div>
-                          <div className={styles.tradeDate}>{formatDate(trade.start_date)}</div>
+                          <div className={styles.tradeId}>#{trade.id || 'N/A'}</div>
+                          <div className={styles.tradeDate}>{formatDate(trade.start_date || '')}</div>
                         </div>
                       </div>
                       <span className={`${styles.statusBadge} ${isProfit ? styles.profit : styles.loss}`}>
-                        {isProfit ? t('robot.profit') : t('robot.loss')}
+                        {isProfit ? t('profit', 'Profit') : t('loss', 'Loss')}
                       </span>
                     </div>
                     
                     <div className={styles.mobileCardDetails}>
                       <div className={styles.mobileDetailRow}>
-                        <span className={styles.mobileDetailLabel}>{t('robot.investment')}:</span>
+                        <span className={styles.mobileDetailLabel}>{t('investment', 'Investment')}:</span>
                         <span className={styles.mobileDetailValue}>
-                          {formatCurrency(trade.investment)} ({calculateEquivCrypto(trade.investment, trade.icon || 'btc')})
+                          {formatCurrency(investment)} ({calculateEquivCrypto(investment, trade.icon || 'btc')})
                         </span>
                       </div>
                       <div className={styles.mobileDetailRow}>
-                        <span className={styles.mobileDetailLabel}>{t('robot.pnl')}:</span>
+                        <span className={styles.mobileDetailLabel}>{t('pnl', 'PNL')}:</span>
                         <span className={`${styles.mobileDetailValue} ${isProfit ? styles.profitText : styles.lossText}`}>
                           {isProfit ? '+' : '-'}{formatCurrency(Math.abs(profit))} ({profitPercentage}%)
                         </span>
                       </div>
                       <div className={styles.mobileDetailRow}>
-                        <span className={styles.mobileDetailLabel}>{t('period')}:</span>
+                        <span className={styles.mobileDetailLabel}>{t('period', 'Period')}:</span>
                         <span className={styles.mobileDetailValue}>
-                          {formatDate(trade.start_date)} - {formatDate(trade.end_date)}
+                          {formatDate(trade.start_date || '')} - {formatDate(trade.end_date || '')}
                         </span>
                       </div>
                     </div>
