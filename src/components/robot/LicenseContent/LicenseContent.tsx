@@ -124,7 +124,7 @@ const LicenseContent: React.FC = () => {
       {/* Success message with copy option */}
       {purchasedKey && (
         <div style={{
-          marginBottom: '20px',
+          marginBottom: '40px',
           padding: '15px',
           background: 'rgba(76, 175, 80, 0.1)',
           border: '1px solid rgba(76, 175, 80, 0.3)',
@@ -176,7 +176,7 @@ const LicenseContent: React.FC = () => {
       {/* Error message */}
       {error && (
         <div style={{
-          marginBottom: '20px',
+          marginBottom: '40px',
           padding: '15px',
           background: 'rgba(244, 67, 54, 0.1)',
           border: '1px solid rgba(244, 67, 54, 0.3)',
