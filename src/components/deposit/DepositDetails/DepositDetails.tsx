@@ -35,7 +35,7 @@ export default function DepositDetails({ crypto, network }: DepositDetailsProps)
       
       try {
         // Make sure we're using the correct API endpoint with the selected cryptocurrency
-        const response = await fetch('https://virtserver.swaggerhub.com/woronaweb/ExChange/1.0.0/api/wallet/get', {
+        const response = await fetch('https://apiexchange.ymca.one/api/wallet/get', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

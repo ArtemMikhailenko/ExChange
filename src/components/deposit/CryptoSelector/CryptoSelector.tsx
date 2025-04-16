@@ -38,7 +38,7 @@ export default function CryptoSelector({ onSelect }: CryptoSelectorProps) {
     const fetchBalances = async () => {
       setLoading(true);
       try {
-        const response = await fetch('https://virtserver.swaggerhub.com/woronaweb/ExChange/1.0.0/api/wallet/getBalances', {
+        const response = await fetch('https://apiexchange.ymca.one/api/wallet/getBalances', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -45,7 +45,7 @@ export default function DepositHistory({ showType = 'all' }: { showType?: 'all' 
       setLoading(true);
       
       try {
-        const response = await fetch('https://virtserver.swaggerhub.com/woronaweb/ExChange/1.0.0/api/wallet/transactions');
+        const response = await fetch('https://apiexchange.ymca.one/api/wallet/transactions');
         
         if (!response.ok) {
           throw new Error('Failed to fetch transactions');
