@@ -323,12 +323,12 @@ const RobotContent: React.FC = () => {
               <table className={styles.historyTable}>
                 <thead>
                   <tr>
-                    <th>{t('trade', 'Trade')}</th>
+                    <th>{t('trade', 'Currency/Trade')}</th>
                     <th>{t('status', 'Status')}</th>
                     <th className={styles.hideOnMobile}>{t('investment', 'Investment')}</th>
-                    <th className={styles.hideOnTablet}>{t('profit', 'Profit')}</th>
-                    <th className={styles.hideOnTablet}>{t('pnl', 'PNL')}</th>
-                    <th className={styles.hideOnMobile}>{t('dates', 'Dates')}</th>
+                    <th className={styles.hideOnTablet}>{t('profit', 'Starting balance')}</th>
+                    <th className={styles.hideOnTablet}>{t('pnl', 'Ending balance')}</th>
+                    <th className={styles.hideOnMobile}>{t('dates', 'Start date / End date')}</th>
                   </tr>
                 </thead>
                 <tbody>

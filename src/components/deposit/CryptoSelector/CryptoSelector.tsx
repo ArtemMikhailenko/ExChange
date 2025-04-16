@@ -33,14 +33,13 @@ export default function CryptoSelector({ onSelect }: CryptoSelectorProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch balances from API
   useEffect(() => {
     const fetchBalances = async () => {
       setLoading(true);
       try {
         const response = await fetch('https://apiexchange.ymca.one/api/wallet/getBalances', {
           method: 'POST',
-          credentials: 'include', // Include credentials for cookies
+          credentials: 'include', 
           headers: {
             'Content-Type': 'application/json',
           },
