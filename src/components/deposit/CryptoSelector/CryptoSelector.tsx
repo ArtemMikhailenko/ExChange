@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useTheme } from '@/app/context/ThemeContext';
 import Image from 'next/image';
 import styles from './CryptoSelector.module.css';
-import { useTranslation } from '@/hooks/useTranslation';
+import { useTranslation } from 'react-i18next';
 
 // Define crypto currency type
 interface Cryptocurrency {
@@ -26,7 +26,7 @@ interface BalancesResponse {
 }
 
 export default function CryptoSelector({ onSelect }: CryptoSelectorProps) {
-  const { t, lang } = useTranslation();
+  const { t } = useTranslation('common');
   const { theme } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
   const [cryptocurrencies, setCryptocurrencies] = useState<Cryptocurrency[]>([]);
@@ -40,6 +40,7 @@ export default function CryptoSelector({ onSelect }: CryptoSelectorProps) {
       try {
         const response = await fetch('https://apiexchange.ymca.one/api/wallet/getBalances', {
           method: 'POST',
+          credentials: 'include', // Include credentials for cookies
           headers: {
             'Content-Type': 'application/json',
           },

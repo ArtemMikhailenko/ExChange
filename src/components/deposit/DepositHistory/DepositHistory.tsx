@@ -1,4 +1,3 @@
-// src/app/components/deposit/DepositHistory/DepositHistory.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -7,8 +6,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ExternalLink } from 'lucide-react';
 import styles from './DepositHistory.module.css';
+import { useTranslation } from 'react-i18next';
 import ThemeContext from '@/app/context/ThemeContext';
-import { useTranslation } from '@/hooks/useTranslation';
 
 interface Transaction {
   id: number;
@@ -33,7 +32,7 @@ interface TransactionsResponse {
 }
 
 export default function DepositHistory({ showType = 'all' }: { showType?: 'all' | 'in' | 'out' }) {
-  const { t, lang } = useTranslation();
+  const { t } = useTranslation('common');
   const { theme } = useContext(ThemeContext);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
@@ -45,7 +44,12 @@ export default function DepositHistory({ showType = 'all' }: { showType?: 'all' 
       setLoading(true);
       
       try {
-        const response = await fetch('https://apiexchange.ymca.one/api/wallet/transactions');
+        const response = await fetch('https://apiexchange.ymca.one/api/wallet/transactions', {
+          credentials: 'include', // Include credentials for cookies
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
         
         if (!response.ok) {
           throw new Error('Failed to fetch transactions');
@@ -55,7 +59,7 @@ export default function DepositHistory({ showType = 'all' }: { showType?: 'all' 
         
         if (data.status === 'success') {
           // Show all transactions
-          setTransactions(data.transactions);
+          setTransactions(data.transactions || []);
         } else {
           throw new Error('API returned an error');
         }
@@ -72,8 +76,12 @@ export default function DepositHistory({ showType = 'all' }: { showType?: 'all' 
   
   // Format date from ISO string
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString();
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleString();
+    } catch (e) {
+      return dateString;
+    }
   };
   
   // Truncate blockchain hash for display
@@ -123,8 +131,6 @@ export default function DepositHistory({ showType = 'all' }: { showType?: 'all' 
   const getDirectionLabel = (direction: 'in' | 'out') => {
     return direction === 'in' ? t('deposit') : t('withdrawal');
   };
-  
-
   
   // Get title based on showType
   const getTitle = () => {
@@ -238,7 +244,11 @@ export default function DepositHistory({ showType = 'all' }: { showType?: 'all' 
                     </div>
                   </td>
                   <td className={styles.tableCell}>{transaction.amount.toFixed(8)}</td>
-                  <td className={styles.tableCell}>{transaction.address.slice(0, 12)}…</td>
+                  <td className={styles.tableCell}>
+                    {transaction.address && transaction.address.length > 12 
+                      ? `${transaction.address.slice(0, 12)}…` 
+                      : transaction.address || '—'}
+                  </td>
                   <td className={styles.tableCell}>
                     {transaction.blockchain_hash ? (
                       <a

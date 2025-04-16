@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useTheme } from '@/app/context/ThemeContext';
 import QRCode from 'react-qr-code';
 import styles from './DepositDetails.module.css';
-import { useTranslation } from '@/hooks/useTranslation';
+import { useTranslation } from 'react-i18next';
 
 interface WalletResponse {
   status: string;
@@ -20,7 +20,7 @@ interface DepositDetailsProps {
 }
 
 export default function DepositDetails({ crypto, network }: DepositDetailsProps) {
-  const { t, lang } = useTranslation();
+  const { t } = useTranslation('common');
   const { theme } = useTheme();
   const [depositAddress, setDepositAddress] = useState('');
   const [walletBalance, setWalletBalance] = useState('');
@@ -37,6 +37,7 @@ export default function DepositDetails({ crypto, network }: DepositDetailsProps)
         // Make sure we're using the correct API endpoint with the selected cryptocurrency
         const response = await fetch('https://apiexchange.ymca.one/api/wallet/get', {
           method: 'POST',
+          credentials: 'include', // Include credentials for cookies
           headers: {
             'Content-Type': 'application/json',
           },
