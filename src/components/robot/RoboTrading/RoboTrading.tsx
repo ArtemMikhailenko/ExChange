@@ -20,7 +20,7 @@ const RoboTrading = () => {
         return <LicenseContent />;
       case 'configuration':
       default:
-        return <ConfigurationPanel />;
+        return <RobotContent />;
     }
   };
 

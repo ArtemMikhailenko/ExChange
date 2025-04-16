@@ -14,7 +14,8 @@ interface RobotSettings {
   leverage: number;
   minTradeAmount: number;
   maxTradeAmount: number;
-  pairs: string[] | 'all';
+  pairs: 'all' | string[];
+  autoSettings?: any;
 }
 
 interface TradingPairsSelectorProps {
@@ -23,6 +24,14 @@ interface TradingPairsSelectorProps {
 }
 
 const LEVERAGE_OPTIONS = [3, 5, 20, 50, 100];
+
+// Default auto settings values
+const AUTO_SETTINGS: Omit<RobotSettings, 'autoSettings'> = {
+  leverage: 20,
+  minTradeAmount: 25,
+  maxTradeAmount: 25,
+  pairs: 'all', 
+};
 
 const TradingPairsSelector: React.FC<TradingPairsSelectorProps> = ({ 
   accountType = 'demo',
@@ -33,13 +42,15 @@ const TradingPairsSelector: React.FC<TradingPairsSelectorProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [useAllPairs, setUseAllPairs] = useState(false);
+  const [useAutoSettings, setUseAutoSettings] = useState(false);
   
   // Settings state
   const [settings, setSettings] = useState<RobotSettings>({
     leverage: 20,
     minTradeAmount: 25,
     maxTradeAmount: 250,
-    pairs: []
+    pairs: [],
+    autoSettings: false
   });
   
   const [saveStatus, setSaveStatus] = useState<{
@@ -88,7 +99,8 @@ const TradingPairsSelector: React.FC<TradingPairsSelectorProps> = ({
           minTradeAmount: 25,
           maxTradeAmount: 250,
           pairs: isAllPairs ? 'all' : (Array.isArray(robotSettings.trade_currencies) ? 
-            robotSettings.trade_currencies : [])
+            robotSettings.trade_currencies : []),
+          autoSettings: false
         });
       } catch (err) {
         console.error('Error fetching trading pairs:', err);
@@ -103,8 +115,8 @@ const TradingPairsSelector: React.FC<TradingPairsSelectorProps> = ({
 
   // Toggle pair selection
   const togglePair = (id: string) => {
-    // If all pairs mode is on, do nothing
-    if (useAllPairs) return;
+    // If all pairs mode is on or auto settings is enabled, do nothing
+    if (useAllPairs || useAutoSettings) return;
     
     const updatedPairs = pairs.map(pair =>
       pair.id === id ? { ...pair, isSelected: !pair.isSelected } : pair
@@ -127,6 +139,9 @@ const TradingPairsSelector: React.FC<TradingPairsSelectorProps> = ({
 
   // Toggle between "all pairs" and selected pairs
   const toggleAllPairs = () => {
+    // If auto settings is enabled, do nothing
+    if (useAutoSettings) return;
+    
     const newUseAllPairs = !useAllPairs;
     setUseAllPairs(newUseAllPairs);
     
@@ -138,6 +153,43 @@ const TradingPairsSelector: React.FC<TradingPairsSelectorProps> = ({
       // If switching from "all" to selection, keep all currently selected
       const selectedSymbols = pairs.map(pair => pair.symbol);
       updateSettings('pairs', selectedSymbols);
+    }
+    
+    // Reset save status
+    if (saveStatus.type !== 'none') {
+      setSaveStatus({ message: '', type: 'none' });
+    }
+  };
+
+  // Toggle auto settings mode
+  const toggleAutoSettings = () => {
+    const newUseAutoSettings = !useAutoSettings;
+    setUseAutoSettings(newUseAutoSettings);
+    
+    if (newUseAutoSettings) {
+      // Apply auto settings
+      setUseAllPairs(true);
+      setPairs(pairs.map(pair => ({ ...pair, isSelected: true })));
+      
+      // Store current settings temporarily
+      const previousSettings = { ...settings };
+      
+      // Update settings with auto values
+      setSettings({
+        ...AUTO_SETTINGS,
+        autoSettings: true
+      });
+      
+      // Notify parent component if callback provided
+      if (onSettingsChange) {
+        onSettingsChange({
+          ...AUTO_SETTINGS,
+          autoSettings: true
+        });
+      }
+    } else {
+      // Revert to regular settings - we just turn off auto mode
+      updateSettings('autoSettings', false);
     }
     
     // Reset save status
@@ -162,6 +214,11 @@ const TradingPairsSelector: React.FC<TradingPairsSelectorProps> = ({
 
   // Validate settings before saving
   const validateSettings = (): string | null => {
+    // If auto settings is enabled, skip validation
+    if (useAutoSettings) {
+      return null;
+    }
+    
     if (settings.minTradeAmount < 5 || settings.minTradeAmount > 10000) {
       return 'Minimum trade amount must be between 5 and 10000 USDT';
     }
@@ -202,7 +259,8 @@ const TradingPairsSelector: React.FC<TradingPairsSelectorProps> = ({
         leverage: settings.leverage,
         minTradeAmount: settings.minTradeAmount,
         maxTradeAmount: settings.maxTradeAmount,
-        pairs: settings.pairs
+        pairs: settings.pairs,
+        autoSettings: settings.autoSettings
       };
       
       console.log('Saving settings:', payload);
@@ -237,22 +295,24 @@ const TradingPairsSelector: React.FC<TradingPairsSelectorProps> = ({
 
   const selectedCount = useAllPairs ? pairs.length : pairs.filter(pair => pair.isSelected).length;
 
-  // Parse symbol to get base and quote currencies
   const parseSymbol = (symbol: string) => {
-    if (symbol.includes('/')) {
-      const parts = symbol.split('/');
+    const lower = symbol.toLowerCase();
+  
+    if (lower.endsWith('usdt')) {
+      const base = lower.slice(0, -4).toUpperCase();
       return {
-        base: parts[0],
-        quote: parts[1]
+        base,
+        quote: 'USDT'
       };
     }
-    
-    // If no separator, assume BTC, ETH, etc and USDT as quote
+  
+    // fallback на случай чего-то нестандартного
     return {
-      base: symbol,
-      quote: 'USDT'
+      base: symbol.toUpperCase(),
+      quote: ''
     };
   };
+  
 
   if (loading) {
     return (
@@ -321,16 +381,50 @@ const TradingPairsSelector: React.FC<TradingPairsSelectorProps> = ({
         </div>
       )}
       
-      {/* Leverage section */}
+      {/* Auto Settings toggle */}
       <div className={styles.settingsSection}>
+        <div className={styles.autoSettingsContainer}>
+          <label className={styles.autoSettingsToggle}>
+            <input
+              type="checkbox"
+              checked={useAutoSettings}
+              onChange={toggleAutoSettings}
+              className={styles.toggleInput}
+              disabled={saving}
+            />
+            <div className={`${styles.toggleTrack} ${saving ? styles.disabled : ''} ${useAutoSettings ? styles.active : ''}`}>
+              <div className={styles.toggleIndicator}></div>
+            </div>
+            <span className={styles.autoToggleLabel}>Auto Settings</span>
+          </label>
+          
+          {useAutoSettings && (
+            <div className={styles.autoSettingsInfo}>
+              <p>Auto settings mode is enabled. The robot will use optimized parameters:</p>
+              <ul className={styles.autoSettingsList}>
+                <li>All trading pairs are selected</li>
+                <li>Leverage: 20x</li>
+                <li>Min/Max trade amount: 25 USDT</li>
+              </ul>
+            </div>
+          )}
+        </div>
+      </div>
+      
+      {/* Leverage section */}
+      <div className={`${styles.settingsSection} ${useAutoSettings ? styles.disabledSection : ''}`}>
         <h4 className={styles.sectionTitle}>Leverage</h4>
         <div className={styles.leverageOptions}>
           {LEVERAGE_OPTIONS.map(option => (
             <button
               key={option}
-              className={`${styles.leverageButton} ${settings.leverage === option ? styles.activeLeverage : ''}`}
+              className={`${styles.leverageButton} ${
+                (useAutoSettings ? AUTO_SETTINGS.leverage : settings.leverage) === option 
+                  ? styles.activeLeverage 
+                  : ''
+              }`}
               onClick={() => updateSettings('leverage', option)}
-              disabled={saving}
+              disabled={saving || useAutoSettings}
             >
               {option}x
             </button>
@@ -339,7 +433,7 @@ const TradingPairsSelector: React.FC<TradingPairsSelectorProps> = ({
       </div>
       
       {/* Trade amounts section */}
-      <div className={styles.settingsSection}>
+      <div className={`${styles.settingsSection} ${useAutoSettings ? styles.disabledSection : ''}`}>
         <h4 className={styles.sectionTitle}>Trade Amounts (USDT)</h4>
         <div className={styles.amountsContainer}>
           <div className={styles.amountField}>
@@ -348,10 +442,10 @@ const TradingPairsSelector: React.FC<TradingPairsSelectorProps> = ({
               type="number"
               min="5"
               max="10000"
-              value={settings.minTradeAmount}
+              value={useAutoSettings ? AUTO_SETTINGS.minTradeAmount : settings.minTradeAmount}
               onChange={(e) => updateSettings('minTradeAmount', parseFloat(e.target.value) || 5)}
               className={styles.amountInput}
-              disabled={saving}
+              disabled={saving || useAutoSettings}
             />
           </div>
           <div className={styles.amountField}>
@@ -360,34 +454,34 @@ const TradingPairsSelector: React.FC<TradingPairsSelectorProps> = ({
               type="number"
               min="25"
               max="10000"
-              value={settings.maxTradeAmount}
+              value={useAutoSettings ? AUTO_SETTINGS.maxTradeAmount : settings.maxTradeAmount}
               onChange={(e) => updateSettings('maxTradeAmount', parseFloat(e.target.value) || 25)}
               className={styles.amountInput}
-              disabled={saving}
+              disabled={saving || useAutoSettings}
             />
           </div>
         </div>
       </div>
       
       {/* Trading pairs section */}
-      <div className={styles.settingsSection}>
+      <div className={`${styles.settingsSection} ${useAutoSettings ? styles.disabledSection : ''}`}>
         <div className={styles.pairsHeader}>
           <h4 className={styles.sectionTitle}>Trading Pairs</h4>
           <div className={styles.selectedCount}>
-            {selectedCount} / {pairs.length} Pairs selected
+            {useAutoSettings ? pairs.length : selectedCount} / {pairs.length} Pairs selected
           </div>
         </div>
         
         {/* All pairs toggle */}
-        <label className={styles.allPairsToggle}>
+        <label className={`${styles.allPairsToggle} ${useAutoSettings ? styles.disabled : ''}`}>
           <input
             type="checkbox"
-            checked={useAllPairs}
+            checked={useAutoSettings || useAllPairs}
             onChange={toggleAllPairs}
             className={styles.toggleInput}
-            disabled={saving}
+            disabled={saving || useAutoSettings}
           />
-          <div className={`${styles.toggleTrack} ${saving ? styles.disabled : ''}`}>
+          <div className={`${styles.toggleTrack} ${(saving || useAutoSettings) ? styles.disabled : ''} ${(useAutoSettings || useAllPairs) ? styles.active : ''}`}>
             <div className={styles.toggleIndicator}></div>
           </div>
           <span className={styles.toggleLabel}>Use all available pairs</span>
@@ -402,12 +496,12 @@ const TradingPairsSelector: React.FC<TradingPairsSelectorProps> = ({
                 <label className={styles.toggle}>
                   <input
                     type="checkbox"
-                    checked={useAllPairs || pair.isSelected}
+                    checked={useAutoSettings || useAllPairs || pair.isSelected}
                     onChange={() => togglePair(pair.id)}
                     className={styles.toggleInput}
-                    disabled={saving || useAllPairs}
+                    disabled={saving || useAutoSettings || useAllPairs}
                   />
-                  <div className={`${styles.toggleTrack} ${(saving || useAllPairs) ? styles.disabled : ''}`}>
+                  <div className={`${styles.toggleTrack} ${(saving || useAutoSettings || useAllPairs) ? styles.disabled : ''} ${(useAutoSettings || useAllPairs || pair.isSelected) ? styles.active : ''}`}>
                     <div className={styles.toggleIndicator}></div>
                   </div>
                   <span className={styles.pairName}>{base}/{quote}</span>
