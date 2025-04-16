@@ -14,12 +14,12 @@ const RoboTrading = () => {
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'robot':
-        return <RobotContent />;
+      
       case 'license':
         return <LicenseContent />;
       case 'configuration':
         return <ConfigurationPanel />;
+        case 'robot':
       default:
         return <RobotContent />;
     }
