@@ -10,16 +10,16 @@ import LicenseContent from '../LicenseContent/LicenseContent';
 import { useTranslation } from '@/hooks/useTranslation';
 
 const RoboTrading = () => {
-  const [activeTab, setActiveTab] = useState('configuration');
+  const [activeTab, setActiveTab] = useState('robot');
 
   const renderContent = () => {
     switch (activeTab) {
-      
+      case 'robot':
+        return <RobotContent />;
       case 'license':
         return <LicenseContent />;
       case 'configuration':
         return <ConfigurationPanel />;
-        case 'robot':
       default:
         return <RobotContent />;
     }
