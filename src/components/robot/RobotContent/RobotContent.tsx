@@ -423,7 +423,7 @@ const RobotContent: React.FC = () => {
                               />
                             </div>
                             <div className={styles.tradeInfo}>
-                              <div className={styles.tradeId}>#N/A</div>
+                              <div className={styles.tradeId}>{trade.currency}</div>
                               <div className={styles.tradeDate}>
                                 {formatDate(trade.start_date || '')}
                               </div>
