@@ -239,7 +239,10 @@ const RobotContent: React.FC = () => {
           <h2 className={styles.title}>{t('tradingRobot', 'Trading Robot')}</h2>
           <p className={styles.subtitle}>
             {t('lastDaysStats', 'Last 30 days our users trading statistics.')}
-            {tradeType === 'demo' ? t('demoAccount', 'Demo Account') : t('realAccount', 'Real Account')}.
+            {' '}
+            <span className={styles.accountBadge}>
+              {tradeType === 'demo' ? t('demoAccount', 'Demo Account') : t('realAccount', 'Real Account')}
+            </span>
           </p>
         </div>
         
@@ -345,27 +348,20 @@ const RobotContent: React.FC = () => {
                     <th>{t('trade', 'Currency/Trade')}</th>
                     <th>{t('status', 'Status')}</th>
                     <th className={styles.hideOnMobile}>{t('investment', 'Investment')}</th>
-                    <th className={styles.hideOnTablet}>{t('profit', 'Starting balance')}</th>
-                    <th className={styles.hideOnTablet}>{t('pnl', 'Ending balance')}</th>
+                    <th className={styles.hideOnTablet}>{t('startingBalance', 'Starting balance')}</th>
+                    <th className={styles.hideOnTablet}>{t('endingBalance', 'Ending balance')}</th>
                     <th className={styles.hideOnMobile}>{t('dates', 'Start date / End date')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {tradeHistory.map((trade, index) => {
-                    // Type-safe profit calculation
-                    const profit = typeof trade.profit === 'number' ? trade.profit : 0;
+                    // Determine if trade was profitable
+                    const isProfit = trade.status === 'win';
                     
-                    // Type-safe investment handling
-                    const investment = typeof trade.investment === 'number' ? trade.investment : 0;
-                    
-                    // Safe profit percentage calculation with fallback
-                    let profitPercentage = '0.00';
-                    if (investment !== 0) {
-                      profitPercentage = ((profit / investment) * 100).toFixed(2);
-                    }
-                    
-                    // Determine profit/loss status
-                    const isProfit = trade.status === 'win' || profit > 0;
+                    // Get investment from data
+                    const investment = typeof trade.investment === 'number' 
+                      ? trade.investment 
+                      : (typeof trade.investment === 'string' ? parseFloat(trade.investment) : 0);
                     
                     return (
                       <tr key={trade.id || index} className={index % 2 === 0 ? styles.evenRow : ''}>
@@ -396,17 +392,15 @@ const RobotContent: React.FC = () => {
                           </div>
                         </td>
                         <td className={styles.hideOnTablet}>
-                          {formatCurrency(Math.abs(profit))}
+                          {formatCurrency(trade.starting_balance)}
                         </td>
                         <td className={styles.hideOnTablet}>
-                          <span className={isProfit ? styles.profitText : styles.lossText}>
-                            {isProfit ? '+' : '-'}{profitPercentage}%
-                          </span>
+                          {formatCurrency(trade.ending_balance)}
                         </td>
                         <td className={styles.hideOnMobile}>
                           <div className={styles.dateCell}>
-                            <div>{t('start', 'Start')}: {formatDate(trade.start_date || '')}</div>
-                            <div>{t('end', 'End')}: {formatDate(trade.end_date || '')}</div>
+                            <div>{formatDate(trade.start_date || '')}</div>
+                            <div>{formatDate(trade.end_date || '')}</div>
                           </div>
                         </td>
                       </tr>
@@ -416,23 +410,16 @@ const RobotContent: React.FC = () => {
               </table>
             </div>
 
-            {/* Mobile cards */}
+            {/* Mobile cards for better small screen experience */}
             <div className={styles.mobileCards}>
               {tradeHistory.map((trade, index) => {
-                // Type-safe profit calculation
-                const profit = typeof trade.profit === 'number' ? trade.profit : 0;
+                // Determine if trade was profitable
+                const isProfit = trade.status === 'win';
                 
-                // Type-safe investment handling
-                const investment = typeof trade.investment === 'number' ? trade.investment : 0;
-                
-                // Safe profit percentage calculation with fallback
-                let profitPercentage = '0.00';
-                if (investment !== 0) {
-                  profitPercentage = ((profit / investment) * 100).toFixed(2);
-                }
-                
-                // Determine profit/loss status
-                const isProfit = trade.status === 'win' || profit > 0;
+                // Get investment from data
+                const investment = typeof trade.investment === 'number' 
+                  ? trade.investment 
+                  : (typeof trade.investment === 'string' ? parseFloat(trade.investment) : 0);
                 
                 return (
                   <div key={trade.id || index} className={styles.mobileCard}>
@@ -456,12 +443,22 @@ const RobotContent: React.FC = () => {
                           {formatCurrency(investment)} ({calculateEquivCrypto(investment, trade.icon || 'btc')})
                         </span>
                       </div>
-                      <div className={styles.mobileDetailRow}>
-                        <span className={styles.mobileDetailLabel}>{t('pnl', 'PNL')}:</span>
-                        <span className={`${styles.mobileDetailValue} ${isProfit ? styles.profitText : styles.lossText}`}>
-                          {isProfit ? '+' : '-'}{formatCurrency(Math.abs(profit))} ({profitPercentage}%)
-                        </span>
-                      </div>
+                      {trade.starting_balance && (
+                        <div className={styles.mobileDetailRow}>
+                          <span className={styles.mobileDetailLabel}>{t('startingBalance', 'Starting Balance')}:</span>
+                          <span className={styles.mobileDetailValue}>
+                            {formatCurrency(trade.starting_balance)}
+                          </span>
+                        </div>
+                      )}
+                      {trade.ending_balance && (
+                        <div className={styles.mobileDetailRow}>
+                          <span className={styles.mobileDetailLabel}>{t('endingBalance', 'Ending Balance')}:</span>
+                          <span className={styles.mobileDetailValue}>
+                            {formatCurrency(trade.ending_balance)}
+                          </span>
+                        </div>
+                      )}
                       <div className={styles.mobileDetailRow}>
                         <span className={styles.mobileDetailLabel}>{t('period', 'Period')}:</span>
                         <span className={styles.mobileDetailValue}>

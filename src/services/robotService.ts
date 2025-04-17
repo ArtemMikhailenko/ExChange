@@ -25,10 +25,14 @@ export interface Trade {
   id: number;
   type: string;
   status: string;
-  investment: number;
-  profit: number;
+  investment: number | string;
+  profit?: number;
   start_date: string;
   end_date: string;
+  starting_balance?: string | number | null;
+  ending_balance?: string | number | null;
+  leverage?: string | number | null;
+  currency?: string | null;
   // Additional properties for UI
   icon?: string;
 }

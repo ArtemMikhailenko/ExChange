@@ -4,8 +4,8 @@ const API_BASE_URL = 'https://apiexchange.ymca.one';
 export interface RegisterPayload {
   email: string;
   password: string;
-  password_re_entrered: string; // Required per API documentation
-  telegram?: string; // Optional per API documentation
+  password_re_entrered: string; 
+  telegram?: string; 
   referralCode?: string;
   'g-recaptcha-response'?: string;
 }
