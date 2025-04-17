@@ -54,7 +54,24 @@ const RobotContent: React.FC = () => {
       };
 
       const data = await robotService.fetchTradeHistory(params);
-      setTradeHistory(data.trades || []);
+      
+      // Log the received data for debugging
+      console.log("Received trade history data:", data.trades);
+      
+      // Process trades to ensure they have all required fields
+      const processedTrades = (data.trades || []).map(trade => {
+        // Convert string numeric values to numbers if needed
+        const processedTrade = { ...trade };
+        
+        // Set icon based on currency
+        if (trade.currency) {
+          processedTrade.icon = getCurrencyIcon(trade.currency);
+        }
+        
+        return processedTrade;
+      });
+      
+      setTradeHistory(processedTrades);
       setTotalPages(data.pages || 1);
     } catch (err) {
       console.error('Error fetching trade history:', err);
@@ -159,33 +176,59 @@ const RobotContent: React.FC = () => {
       return '0.00 USDT';
     }
     
-    return numericAmount.toFixed(2) + ' USDT';
+    // For larger numbers, limit to 2 decimal places
+    // For smaller precise numbers, show more decimal places as needed
+    return Math.abs(numericAmount) >= 100 
+      ? numericAmount.toFixed(2) + ' USDT'
+      : parseFloat(numericAmount.toFixed(8)).toString() + ' USDT';
   };
 
-  // Calculate equivalent crypto (this would be based on actual rates in production)
-  const calculateEquivCrypto = (investment: number | string | null | undefined, icon: string) => {
+  // Get appropriate currency icon
+  const getCurrencyIcon = (currency: string | null | undefined): string => {
+    if (!currency) return 'btc';
+    
+    const lowerCaseCurrency = currency.toLowerCase();
+    switch (lowerCaseCurrency) {
+      case 'btc':
+        return 'btc';
+      case 'eth':
+        return 'eth';
+      case 'ltc':
+        return 'ltc';
+      case 'bnb':
+        return 'bnb';
+      case 'trx':
+        return 'trx';
+      default:
+        return lowerCaseCurrency in styles ? lowerCaseCurrency : 'btc';
+    }
+  };
+
+  // Calculate equivalent crypto amount based on the real data
+  const calculateEquivalentAmount = (investment: number | string | null | undefined, currency: string | null | undefined) => {
     // Convert to number if needed, and handle null/undefined
     const numericInvestment = typeof investment === 'string' ? parseFloat(investment) : (investment || 0);
     
     // Check if it's a valid number
-    if (isNaN(numericInvestment)) {
-      return 'eq 0 CRYPTO';
+    if (isNaN(numericInvestment) || !currency) {
+      return '0';
     }
     
-    // This is a simplified mock calculation
-    switch (icon) {
+    // This is a simplified calculation based on approximate exchange rates
+    // In a real app, these would come from the API or calculated based on actual rates
+    switch (currency.toLowerCase()) {
       case 'btc':
-        return `eq ${(numericInvestment / 80000).toFixed(6)} BTC`;
+        return (numericInvestment / 80000).toFixed(6);
       case 'eth':
-        return `eq ${(numericInvestment / 3000).toFixed(4)} ETH`;
+        return (numericInvestment / 3000).toFixed(4);
       case 'ltc':
-        return `eq ${(numericInvestment / 70).toFixed(2)} LTC`;
+        return (numericInvestment / 70).toFixed(2);
       case 'bnb':
-        return `eq ${(numericInvestment / 500).toFixed(4)} BNB`;
+        return (numericInvestment / 500).toFixed(4);
       case 'trx':
-        return `eq ${(numericInvestment / 0.1).toFixed(1)} TRX`;
+        return (numericInvestment / 0.1).toFixed(1);
       default:
-        return `eq ${(numericInvestment / 100).toFixed(2)} CRYPTO`;
+        return (numericInvestment / 100).toFixed(4);
     }
   };
 
@@ -364,14 +407,23 @@ const RobotContent: React.FC = () => {
                       : (typeof trade.investment === 'string' ? parseFloat(trade.investment) : 0);
                     
                     return (
-                      <tr key={trade.id || index} className={index % 2 === 0 ? styles.evenRow : ''}>
+                      <tr key={index} className={index % 2 === 0 ? styles.evenRow : ''}>
                         <td>
                           <div className={styles.currencyCell}>
-                            <div className={`${styles.currencyIcon} ${styles[trade.icon || 'btc']}`}>
-                              {/* Icon applied via CSS background */}
+                            <div className={styles.currencyIcon}>
+                              {/* Load icon from CDN */}
+                              <img 
+                                src={`https://cdnexchange.ymca.one/${trade.currency || 'BTC'}.png`} 
+                                alt={trade.currency || 'Crypto'} 
+                                className={styles.cryptoImg}
+                                onError={(e) => {
+                                  // Fallback if image fails to load
+                                  (e.target as HTMLImageElement).src = `https://cdnexchange.ymca.one/BTC.png`;
+                                }}
+                              />
                             </div>
                             <div className={styles.tradeInfo}>
-                              <div className={styles.tradeId}>#{trade.id || 'N/A'}</div>
+                              <div className={styles.tradeId}>#N/A</div>
                               <div className={styles.tradeDate}>
                                 {formatDate(trade.start_date || '')}
                               </div>
@@ -387,7 +439,7 @@ const RobotContent: React.FC = () => {
                           <div className={styles.investmentCell}>
                             <div>{formatCurrency(investment)}</div>
                             <div className={styles.equivCrypto}>
-                              {calculateEquivCrypto(investment, trade.icon || 'btc')}
+                              {trade.currency ? `eq ${calculateEquivalentAmount(investment, trade.currency)} ${trade.currency}` : ''}
                             </div>
                           </div>
                         </td>
@@ -422,49 +474,73 @@ const RobotContent: React.FC = () => {
                   : (typeof trade.investment === 'string' ? parseFloat(trade.investment) : 0);
                 
                 return (
-                  <div key={trade.id || index} className={styles.mobileCard}>
-                    <div className={styles.mobileCardHeader}>
-                      <div className={styles.currencyCell}>
-                        <div className={`${styles.currencyIcon} ${styles[trade.icon || 'btc']}`}></div>
-                        <div className={styles.tradeInfo}>
-                          <div className={styles.tradeId}>#{trade.id || 'N/A'}</div>
-                          <div className={styles.tradeDate}>{formatDate(trade.start_date || '')}</div>
+                  <div key={index} className={styles.mobileCard}>
+                      <div className={styles.mobileCardHeader}>
+                        <div className={styles.currencyCell}>
+                          <div className={styles.currencyIcon}>
+                            {/* Load icon from CDN */}
+                            <img 
+                              src={`https://cdnexchange.ymca.one/${trade.currency || 'BTC'}.png`} 
+                              alt={trade.currency || 'Crypto'} 
+                              className={styles.cryptoImg}
+                              onError={(e) => {
+                                // Fallback if image fails to load
+                                (e.target as HTMLImageElement).src = `https://cdnexchange.ymca.one/BTC.png`;
+                              }}
+                            />
+                          </div>
+                          <div className={styles.tradeInfo}>
+                            <div className={styles.tradeId}>#N/A</div>
+                            <div className={styles.tradeDate}>{formatDate(trade.start_date || '')}</div>
+                          </div>
                         </div>
+                        <span className={`${styles.statusBadge} ${isProfit ? styles.profit : styles.loss}`}>
+                          {isProfit ? t('profit', 'Profit') : t('loss', 'Loss')}
+                        </span>
                       </div>
-                      <span className={`${styles.statusBadge} ${isProfit ? styles.profit : styles.loss}`}>
-                        {isProfit ? t('profit', 'Profit') : t('loss', 'Loss')}
-                      </span>
-                    </div>
                     
                     <div className={styles.mobileCardDetails}>
                       <div className={styles.mobileDetailRow}>
                         <span className={styles.mobileDetailLabel}>{t('investment', 'Investment')}:</span>
                         <span className={styles.mobileDetailValue}>
-                          {formatCurrency(investment)} ({calculateEquivCrypto(investment, trade.icon || 'btc')})
+                          {formatCurrency(investment)} 
+                          {trade.currency && (
+                            <span className={styles.equivCrypto}>
+                              (eq {calculateEquivalentAmount(investment, trade.currency)} {trade.currency})
+                            </span>
+                          )}
                         </span>
                       </div>
-                      {trade.starting_balance && (
-                        <div className={styles.mobileDetailRow}>
-                          <span className={styles.mobileDetailLabel}>{t('startingBalance', 'Starting Balance')}:</span>
-                          <span className={styles.mobileDetailValue}>
-                            {formatCurrency(trade.starting_balance)}
-                          </span>
-                        </div>
-                      )}
-                      {trade.ending_balance && (
-                        <div className={styles.mobileDetailRow}>
-                          <span className={styles.mobileDetailLabel}>{t('endingBalance', 'Ending Balance')}:</span>
-                          <span className={styles.mobileDetailValue}>
-                            {formatCurrency(trade.ending_balance)}
-                          </span>
-                        </div>
-                      )}
+                      <div className={styles.mobileDetailRow}>
+                        <span className={styles.mobileDetailLabel}>{t('startingBalance', 'Starting Balance')}:</span>
+                        <span className={styles.mobileDetailValue}>
+                          {formatCurrency(trade.starting_balance)}
+                        </span>
+                      </div>
+                      <div className={styles.mobileDetailRow}>
+                        <span className={styles.mobileDetailLabel}>{t('endingBalance', 'Ending Balance')}:</span>
+                        <span className={styles.mobileDetailValue}>
+                          {formatCurrency(trade.ending_balance)}
+                        </span>
+                      </div>
                       <div className={styles.mobileDetailRow}>
                         <span className={styles.mobileDetailLabel}>{t('period', 'Period')}:</span>
                         <span className={styles.mobileDetailValue}>
                           {formatDate(trade.start_date || '')} - {formatDate(trade.end_date || '')}
                         </span>
                       </div>
+                      {trade.leverage && (
+                        <div className={styles.mobileDetailRow}>
+                          <span className={styles.mobileDetailLabel}>{t('leverage', 'Leverage')}:</span>
+                          <span className={styles.mobileDetailValue}>x{trade.leverage}</span>
+                        </div>
+                      )}
+                      {trade.type && (
+                        <div className={styles.mobileDetailRow}>
+                          <span className={styles.mobileDetailLabel}>{t('type', 'Type')}:</span>
+                          <span className={styles.mobileDetailValue}>{trade.type}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 );
