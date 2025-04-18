@@ -149,14 +149,19 @@ export const authService = {
       
       // Standardize the response to include token and user
       if (result.status === 'success') {
-        // Extract token from response data
+        // Get token from response data
         const token = result.data?.token || '';
         
-        // Create user object from user_data if available
-        const user = result.user_data || {
-          id: result.data?.id || '',
-          email: payload.email
-        };
+        // Get user data from response
+        // If user_data exists in the response, use it directly
+        // Otherwise check if there's user info in result.data
+        // If all else fails, create minimal user object
+        const user: User = result.user_data || 
+                    (result.data && 'user' in result.data ? result.data.user : null) || 
+                    {
+                      id: (result.data && 'id' in result.data) ? String(result.data.id) : '',
+                      email: payload.email
+                    };
         
         // Structure the final response
         result.data = {
@@ -213,14 +218,19 @@ export const authService = {
       
       // Standardize the response to include token and user
       if (result.status === 'success') {
-        // Extract token from response data
+        // Get token from response data
         const token = result.data?.token || '';
         
-        // Create user object from user_data if available
-        const user = result.user_data || {
-          id: result.data?.id || '',
-          email: payload.email
-        };
+        // Get user data from response
+        // If user_data exists in the response, use it directly
+        // Otherwise check if there's user info in result.data
+        // If all else fails, create minimal user object
+        const user: User = result.user_data || 
+                    (result.data && 'user' in result.data ? result.data.user : null) || 
+                    {
+                      id: (result.data && 'id' in result.data) ? String(result.data.id) : '',
+                      email: payload.email
+                    };
         
         // Structure the final response
         result.data = {
