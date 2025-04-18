@@ -2,15 +2,19 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { authService } from '@/services/api';
 import { useTranslation } from '@/app/context/TranslationContext';
+import { useAuth } from '@/hooks/useAuth';
 
 interface LoginFormProps {
   isDark: boolean;
   openResetModal: (e: React.MouseEvent) => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ isDark,  openResetModal }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ isDark, openResetModal }) => {
+  const router = useRouter();
+  const { login } = useAuth();
   const [isInputFocused, setIsInputFocused] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -43,7 +47,18 @@ const LoginForm: React.FC<LoginFormProps> = ({ isDark,  openResetModal }) => {
       console.log('Ответ API:', result);
 
       if (result.status === 'success' && result.data) {
+        // Save auth token
         authService.saveAuthToken(result.data.token);
+        
+        // Update auth context
+        await login({
+          email,
+          password,
+          'g-recaptcha-response': recaptchaResponse
+        });
+        
+        // Redirect to balance page after successful login
+        router.push('/balance');
       } else {
         throw new Error(result.error || 'Ошибка входа. Пожалуйста, попробуйте снова.');
       }
