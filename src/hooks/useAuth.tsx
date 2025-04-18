@@ -2,13 +2,7 @@
 
 import { useState, useEffect, createContext, useContext } from 'react';
 import { useRouter } from 'next/navigation';
-import { authService, LoginPayload, RegisterPayload } from '@/services/api';
-
-interface User {
-  id: string | number;
-  email: string;
-  username?: string;
-}
+import { authService, User, LoginPayload, RegisterPayload } from '@/services/api';
 
 interface AuthContextType {
   user: User | null;
@@ -19,6 +13,7 @@ interface AuthContextType {
   register: (data: RegisterPayload) => Promise<boolean>;
   logout: () => void;
   clearError: () => void;
+  refreshSession: () => Promise<void>;
 }
 
 // Create the context with a default value
@@ -31,6 +26,7 @@ export const AuthContext = createContext<AuthContextType>({
   register: async () => false,
   logout: () => {},
   clearError: () => {},
+  refreshSession: async () => {},
 });
 
 // Custom hook to use the auth context
@@ -43,6 +39,49 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  // Function to fetch session from API
+  const fetchSession = async (): Promise<User | null> => {
+    try {
+      // Skip on server
+      if (typeof window === 'undefined') return null;
+      
+      const token = authService.getAuthToken();
+      if (!token) return null;
+      
+      console.log('Fetching session with token:', token.substring(0, 10) + '...');
+      
+      // Use the authService getSession method instead of direct fetch
+      const result = await authService.getSession();
+      
+      if (result.status === 'success' && result.data) {
+        console.log('Session fetched successfully:', result.data);
+        return result.data as User;
+      } else {
+        console.error('Failed to fetch session:', result.error);
+        // If session fetch fails due to invalid token, remove it
+        authService.removeAuthToken();
+        return null;
+      }
+    } catch (err) {
+      console.error('Error fetching session:', err);
+      return null;
+    }
+  };
+
+  // Function to refresh the session (can be called after login or from components)
+  const refreshSession = async (): Promise<void> => {
+    setLoading(true);
+    try {
+      const userData = await fetchSession();
+      setUser(userData);
+    } catch (err) {
+      console.error('Session refresh error:', err);
+      setError('Failed to refresh session');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Check if user is already logged in (on page load)
   useEffect(() => {
     const initAuth = async () => {
@@ -53,33 +92,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           return;
         }
         
-        const token = authService.getAuthToken();
-        
-        if (token) {
-          // Fetch user session data from the API
-          const response = await fetch('https://apiexchange.ymca.one/session', {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            },
-            credentials: 'include'
-          });
-          
-          const data = await response.json();
-          
-          if (data.status === 'success' && data.msg) {
-            // Set user data from the session response
-            setUser({
-              id: data.msg.id,
-              email: data.msg.email,
-              // Add any other user fields from the response
-            });
-          } else {
-            // Token is invalid, remove it
-            authService.removeAuthToken();
-          }
-        }
+        // Check if there's a token and fetch session
+        const userData = await fetchSession();
+        setUser(userData);
       } catch (err) {
         console.error('Auth initialization error:', err);
         setError('Failed to authenticate user');
@@ -105,7 +120,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       if (result.status === 'success' && result.data) {
         authService.saveAuthToken(result.data.token);
-        setUser(result.data.user);
+        
+        // Fetch user session with the new token
+        await refreshSession();
         
         return true;
       } else {
@@ -128,9 +145,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const result = await authService.login(data);
       
       if (result.status === 'success' && result.data) {
+        console.log('Login successful, saving token');
         authService.saveAuthToken(result.data.token);
         
-        setUser(result.data.user);
+        // Fetch user data immediately after login
+        await refreshSession();
         
         return true;
       } else {
@@ -161,6 +180,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     register,
     logout,
     clearError,
+    refreshSession,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
