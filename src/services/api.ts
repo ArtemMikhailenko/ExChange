@@ -1,18 +1,36 @@
 // src/services/api.ts
 const API_BASE_URL = 'https://apiexchange.ymca.one';
-// const API_BASE_URL ='https://virtserver.swaggerhub.com/woronaweb/ExChange/1.0.0'
 
 // User interface definition
 export interface User {
-  id: string | number;
+  id: string;
   email: string;
   username?: string;
+  name?: string | null;
+  nickname?: string | null;
+  confirmed?: string;
+  verified?: string;
+  telegram?: string | null;
+  ref?: string | null;
+  ref_balance?: string;
+  robot_key?: string | null;
+  demo_balance?: string | null;
+  bonus_balance?: string | null;
+  frozen_balance?: string | null;
+  is_blocked?: string | null;
+  blocked?: string;
+  created?: string;
+  sponsor?: string | null;
+  oauth?: string | null;
+  tokens?: string | null;
+  wallets?: string | null;
+  phone?: string | null;
 }
 
 export interface RegisterPayload {
   email: string;
   password: string;
-  password_re_entrered: string; 
+  password_re_entrered?: string; 
   telegram?: string; 
   referralCode?: string;
   'g-recaptcha-response'?: string;
@@ -31,6 +49,7 @@ export interface ApiResponse<T = any> {
   error?: string;
   success?: boolean;
   msg?: string; // Added for API compatibility
+  user_data?: User; // Added for session response
 }
 
 export interface AuthResponse {
@@ -95,9 +114,10 @@ async function handleResponse<T = any>(response: Response): Promise<ApiResponse<
   
   return {
     status: 'success',
-    success: true, // Added for compatibility with useAuth
+    success: true,
     data: data?.data || data,
-    message: data?.message || data?.msg
+    message: data?.message || data?.msg,
+    user_data: data?.user_data
   };
 }
 
@@ -112,10 +132,10 @@ export const authService = {
       const requestPayload = {
         email: payload.email,
         password: payload.password,
-        password_re_entrered: payload.password_re_entrered,
+        password_re_entrered: payload.password_re_entrered || payload.password, // Use the same password if not provided
         telegram: payload.telegram || "",
-        'g-recaptcha-response': payload['g-recaptcha-response'] || ""
-        // Note: referralCode is not in API spec, so it's omitted here
+        'g-recaptcha-response': payload['g-recaptcha-response'] || "",
+        ref: payload.referralCode || "" // Use referralCode as ref parameter
       };
       
       const response = await fetch(`${apiConfig.baseURL}${apiConfig.endpoints.register}`, {
@@ -125,7 +145,27 @@ export const authService = {
         credentials: 'include' // For saving cookies
       });
       
-      return handleResponse<AuthResponse>(response);
+      const result = await handleResponse<AuthResponse>(response);
+      
+      // Standardize the response to include token and user
+      if (result.status === 'success') {
+        // Extract token from response data
+        const token = result.data?.token || '';
+        
+        // Create user object from user_data if available
+        const user = result.user_data || {
+          id: result.data?.id || '',
+          email: payload.email
+        };
+        
+        // Structure the final response
+        result.data = {
+          token: token,
+          user: user
+        };
+      }
+      
+      return result;
     } catch (error) {
       console.error('Registration error:', error);
       
@@ -171,13 +211,21 @@ export const authService = {
       // Log the full result for debugging
       console.log('Login API response:', JSON.stringify(result));
       
-      // If the API doesn't return user info, simulate it for now
-      if (result.status === 'success' && result.data && !result.data.user && result.data.token) {
-        // This is a temporary fix - ideally the API should return user info
-        console.log('No user data in login response, creating dummy user');
-        result.data.user = {
-          id: '1', // Temporary ID
-          email: payload.email // Use the email from login payload
+      // Standardize the response to include token and user
+      if (result.status === 'success') {
+        // Extract token from response data
+        const token = result.data?.token || '';
+        
+        // Create user object from user_data if available
+        const user = result.user_data || {
+          id: result.data?.id || '',
+          email: payload.email
+        };
+        
+        // Structure the final response
+        result.data = {
+          token: token,
+          user: user
         };
       }
       
@@ -235,79 +283,38 @@ export const authService = {
         credentials: 'include'
       });
       
-      // Log response status for debugging
-      console.log('Session API response status:', response.status);
+      // Handle the response
+      const result = await handleResponse<{user_data: User}>(response);
       
-      // For debugging: log the full response
-      const responseClone = response.clone();
-      let responseText;
-      try {
-        responseText = await responseClone.text();
-        console.log('Session API raw response:', responseText);
-      } catch (err) {
-        console.error('Failed to get session response text:', err);
-      }
-      
-      // If we can't get a valid response, use a dummy user for testing
-      if (!response.ok || !responseText) {
-        console.log('Falling back to dummy user data (for testing only)');
+      // Extract user data from response
+      if (result.status === 'success' && result.user_data) {
         return {
           status: 'success',
           success: true,
-          data: {
-            id: 'temp-user-id',
-            email: 'user@example.com'
-          }
+          data: result.user_data
         };
       }
       
-      // Try to parse the actual response
-      try {
-        const data = JSON.parse(responseText);
-        
-        if (data.status === 'success' && data.msg) {
-          return {
-            status: 'success',
-            success: true,
-            data: {
-              id: data.msg.id,
-              email: data.msg.email
-            }
-          };
-        }
-        
-        // If session data doesn't match expected format, use fallback
-        console.log('Session response has unexpected format, using fallback');
-        return {
-          status: 'success',
-          success: true,
-          data: {
-            id: 'temp-user-id',
-            email: 'user@example.com'
-          }
-        };
-      } catch (error) {
-        console.error('Error parsing session response:', error);
-        return {
-          status: 'success', // Use success for now to show the user as logged in
-          success: true,
-          data: {
-            id: 'temp-user-id',
-            email: 'user@example.com'
-          }
-        };
-      }
+      return {
+        status: 'error',
+        success: false,
+        error: 'Failed to get user session data'
+      };
     } catch (error) {
       console.error('Session error:', error);
       
-      // For now, return a success response with dummy data to ensure the UI shows logged in state
+      if (error instanceof ApiError) {
+        return {
+          status: 'error',
+          success: false,
+          error: error.message
+        };
+      }
+      
       return {
-        status: 'success',
-        success: true,
-        data: {
-          id: 'temp-user-id',
-          email: 'user@example.com'
-        }
+        status: 'error',
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to get session'
       };
     }
   },
@@ -397,8 +404,7 @@ export const authService = {
   // Get saved token
   getAuthToken(): string | null {
     if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('auth_token');
-      return token;
+      return localStorage.getItem('auth_token');
     }
     return null;
   },

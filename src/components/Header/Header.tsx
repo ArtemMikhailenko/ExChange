@@ -14,12 +14,26 @@ export default function Header() {
   const { t, lang } = useTranslation();
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, refreshSession } = useAuth();
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mobileExpandedItems, setMobileExpandedItems] = useState<string[]>([]);
   const searchParams = useSearchParams();
   const router = useRouter();
+  
+  // Add session refresh effect on mount
+  useEffect(() => {
+    // Check if we have a token but no user data
+    if (!user && typeof window !== 'undefined' && localStorage.getItem('auth_token')) {
+      console.log('Header detected token but no user, refreshing session...');
+      refreshSession();
+    }
+  }, [refreshSession, user]);
+  
+  // Debug logging for authentication state
+  useEffect(() => {
+    console.log('Auth state in Header:', { isAuthenticated, user });
+  }, [isAuthenticated, user]);
   
   // Scroll state variables
   const [scrolled, setScrolled] = useState(false);
@@ -243,6 +257,21 @@ export default function Header() {
     isHomePage && scrolled ? styles.headerScrolled : '',
     isHomePage && hidden ? styles.headerHidden : ''
   ].filter(Boolean).join(' ');
+
+  // Force authentication for debugging if needed
+  // Comment this out when not needed
+  /*
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !isAuthenticated) {
+      const hasToken = !!localStorage.getItem('auth_token');
+      if (!hasToken) {
+        console.log('Debug: Setting a dummy token');
+        localStorage.setItem('auth_token', 'debug-token');
+        refreshSession();
+      }
+    }
+  }, [isAuthenticated, refreshSession]);
+  */
 
   return (
     <>
