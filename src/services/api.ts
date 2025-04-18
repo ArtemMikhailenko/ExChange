@@ -1,6 +1,7 @@
 // src/services/api.ts
 const API_BASE_URL = 'https://apiexchange.ymca.one';
 // const API_BASE_URL ='https://virtserver.swaggerhub.com/woronaweb/ExChange/1.0.0'
+
 export interface RegisterPayload {
   email: string;
   password: string;
@@ -14,6 +15,11 @@ export interface LoginPayload {
   email: string;
   password: string;
   'g-recaptcha-response'?: string;
+}
+export interface User {
+  id: string | number;
+  email: string;
+  username?: string;
 }
 
 export interface ApiResponse<T = any> {
@@ -45,7 +51,8 @@ export const apiConfig = {
     login: '/user/login',
     googleAuth: '/user/signin/google',
     verify: '/user/verify',
-    resetPassword: '/user/resetPassword'
+    resetPassword: '/user/resetPassword',
+    session: '/session' // Added session endpoint
   }
 };
 
@@ -181,6 +188,57 @@ export const authService = {
           error: 'Network error: Could not connect to the server. Please check your internet connection and try again.'
         };
       }
+      
+      return {
+        status: 'error',
+        success: false,
+        error: error instanceof Error ? error.message : 'An unknown error occurred'
+      };
+    }
+  },
+  
+  // Get current user session
+  async getSession(): Promise<ApiResponse<User>> {
+    try {
+      const token = this.getAuthToken();
+      if (!token) {
+        return {
+          status: 'error',
+          success: false,
+          error: 'No authentication token found'
+        };
+      }
+      
+      const response = await fetch(`${apiConfig.baseURL}${apiConfig.endpoints.session}`, {
+        method: 'GET',
+        headers: {
+          ...apiConfig.headers,
+          'Authorization': `Bearer ${token}`
+        },
+        credentials: 'include'
+      });
+      
+      const data = await response.json();
+      
+      if (data.status === 'success' && data.msg) {
+        return {
+          status: 'success',
+          success: true,
+          data: {
+            id: data.msg.id,
+            email: data.msg.email,
+            // Add any other user fields from the response
+          }
+        };
+      }
+      
+      return {
+        status: 'error',
+        success: false,
+        error: data.msg || 'Failed to get session data'
+      };
+    } catch (error) {
+      console.error('Session error:', error);
       
       return {
         status: 'error',

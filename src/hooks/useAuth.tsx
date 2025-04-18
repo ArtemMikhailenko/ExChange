@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { authService, LoginPayload, RegisterPayload } from '@/services/api';
 
 interface User {
-  id: string;
+  id: string | number;
   email: string;
   username?: string;
 }
@@ -56,10 +56,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const token = authService.getAuthToken();
         
         if (token) {
-          setUser({
-            id: 'user-1',
-            email: 'user@example.com',
+          // Fetch user session data from the API
+          const response = await fetch('https://apiexchange.ymca.one/session', {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            credentials: 'include'
           });
+          
+          const data = await response.json();
+          
+          if (data.status === 'success' && data.msg) {
+            // Set user data from the session response
+            setUser({
+              id: data.msg.id,
+              email: data.msg.email,
+              // Add any other user fields from the response
+            });
+          } else {
+            // Token is invalid, remove it
+            authService.removeAuthToken();
+          }
         }
       } catch (err) {
         console.error('Auth initialization error:', err);
