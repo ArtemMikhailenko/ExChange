@@ -4,6 +4,7 @@
 .layout {
     display: flex;
     min-height: 100vh;
+    flex-direction: column;
   }
   
   /* Container variants */
@@ -21,16 +22,13 @@
   
   /* Sidebar variants */
   .sidebarLight {
-    width: 280px;
-    margin-right: 10px;
+    width: 100%;
     background-color: #ffffff;
     padding: 16px;
   }
   
   .sidebarDark {
-    width: 280px;
-    margin-right: 10px;
-
+    width: 100%;
     background-color: #0e0f14;
     padding: 16px;
   }
@@ -114,7 +112,6 @@
     width: 100%;
     display: flex;
     align-items: center;
-    /* justify-content: center; */
     color: #3182ce;
     padding: 8px 0;
     border-radius: 6px;
@@ -135,7 +132,7 @@
   /* Main content */
   .mainContent {
     flex: 1;
-    padding: 24px;
+    padding: 16px;
   }
   
   .accountHeader {
@@ -175,16 +172,19 @@
     display: flex;
     align-items: center;
     margin-bottom: 24px;
+    flex-wrap: wrap;
   }
   
   .balanceAmount {
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 700;
     margin-right: 8px;
+    margin-bottom: 4px;
   }
   
   .balanceChange {
     margin-right: 8px;
+    margin-bottom: 4px;
   }
   
   .eyeButton {
@@ -206,7 +206,7 @@
   /* Stats grid */
   .statsGrid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 16px;
     margin-bottom: 24px;
     padding-bottom: 24px;
@@ -215,44 +215,16 @@
   .statItem {
     display: flex;
     flex-direction: column;
+    margin-bottom: 8px;
   }
   
-
-  
-  /* Notification bar */
-  .notificationDark {
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    background-color: #2d3748;
-    border-radius: 6px;
-    margin-bottom: 16px;
+  /* Border variants */
+  .borderLight {
+    border-bottom: 1px solid #dee2e6;
   }
   
-  .notificationLight {
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    background-color: #e2e8f0;
-    border-radius: 6px;
-    margin-bottom: 16px;
-  }
-  
-  .enableButton {
-    margin-left: 8px;
-    color: #3182ce;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 4px 8px;
-  }
-  
-  .closeButton {
-    margin-left: auto;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 18px;
+  .borderDark {
+    border-bottom: 1px solid #2d3748;
   }
   
   /* Tabs navigation */
@@ -260,6 +232,13 @@
     display: flex;
     margin-bottom: 24px;
     padding-bottom: 2px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+  }
+  
+  .tabsContainer::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
   }
   
   .tabButtonLight {
@@ -270,6 +249,7 @@
     font-size: 14px;
     cursor: pointer;
     position: relative;
+    white-space: nowrap;
   }
   
   .tabButtonDark {
@@ -280,6 +260,7 @@
     font-size: 14px;
     cursor: pointer;
     position: relative;
+    white-space: nowrap;
   }
   
   .activeTab {
@@ -289,14 +270,13 @@
     color: white;
   }
   
-  
   /* Balances section */
   .balancesSection {
     margin-top: 24px;
   }
   
   .sectionTitle {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 700;
     margin-bottom: 16px;
   }
@@ -331,26 +311,23 @@
   .depositButton {
     padding: 8px 16px;
     background-color: #00c27867;
-    
     color: #00c278;
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    font-size: 14px;
   }
   
   /* Table styles */
   .tableContainer {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
   
-  .tableDark {
+  .tableDark, .tableLight {
     width: 100%;
     border-collapse: collapse;
-  }
-  
-  .tableLight {
-    width: 100%;
-    border-collapse: collapse;
+    min-width: 800px; /* Ensures table doesn't compress too much */
   }
   
   .tableHeader {
@@ -377,52 +354,20 @@
   
   .assetIcon {
     margin-right: 12px;
+    flex-shrink: 0;
   }
   
-  .cryptoIcon {
-    width: 40px;
-    height: 40px;
+  .cryptoIconImg {
+    width: 40px !important;
+    height: 40px !important;
     border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-  }
-  
-  /* Specific crypto icons */
-  .usdc {
-    background-color: #2775ca;
-    color: white;
-  }
-  
-  .sol {
-    background-color: #00ffbd;
-    color: #001d38;
-  }
-  
-  .btc {
-    background-color: #f7931a;
-    color: white;
-  }
-  
-  .usdt {
-    background-color: #26a17b;
-    color: white;
-  }
-  
-  .eth {
-    background-color: #627eea;
-    color: white;
-  }
-  
-  .aave {
-    background-color: #b6509e;
-    color: white;
+    object-fit: contain;
   }
   
   .assetInfo {
     display: flex;
     flex-direction: column;
+    min-width: 80px;
   }
   
   .assetName {
@@ -436,12 +381,14 @@
   
   .balanceCell {
     padding: 12px 16px;
+    white-space: nowrap;
   }
   
   .actionCell {
     padding: 12px 16px;
     display: flex;
     gap: 8px;
+    flex-wrap: wrap;
   }
   
   .actionButton {
@@ -452,6 +399,8 @@
     cursor: pointer;
     border-radius: 4px;
     transition: background-color 0.2s;
+    white-space: nowrap;
+    font-size: 13px;
   }
   
   .actionButton:hover {
@@ -471,4 +420,115 @@
   
   .menuButton:hover {
     background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Loading and error states */
+  .loadingContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 0;
+  }
+  
+  .loadingSpinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(49, 130, 206, 0.2);
+    border-radius: 50%;
+    border-top-color: #3182ce;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .errorMessage {
+    padding: 16px;
+    background-color: rgba(220, 38, 38, 0.1);
+    color: #dc2626;
+    border-radius: 6px;
+    margin: 16px 0;
+    text-align: center;
+  }
+  
+  /* Responsive adjustments */
+  @media (min-width: 768px) {
+    .layout {
+      flex-direction: row;
+    }
+    
+    .sidebarLight, .sidebarDark {
+      width: 280px;
+      margin-right: 10px;
+    }
+    
+    .mainContent {
+      padding: 24px;
+    }
+    
+    .balanceAmount {
+      font-size: 28px;
+    }
+    
+    .statsGrid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .sectionTitle {
+      font-size: 24px;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .statsGrid {
+      grid-template-columns: repeat(5, 1fr);
+    }
+    
+    .actionCell {
+      flex-wrap: nowrap;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .actionCell {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    
+    .actionButton {
+      width: 100%;
+      text-align: left;
+    }
+    
+    .menuButton {
+      position: absolute;
+      right: 16px;
+    }
+    
+    .depositButtonContainer {
+      justify-content: center;
+      margin-top: 16px;
+    }
+    
+    .depositButton {
+      width: 100%;
+    }
+    
+    .balanceRow {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .eyeButton {
+      position: absolute;
+      right: 16px;
+      top: 120px;
+    }
   }
