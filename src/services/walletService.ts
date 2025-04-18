@@ -16,6 +16,7 @@ export const getWalletBalances = async (): Promise<WalletBalancesResponse> => {
   try {
     const response = await fetch(`${API_BASE_URL}/api/wallet/getBalances`, {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
