@@ -27,7 +27,7 @@ const RoboTrading = () => {
 
   const tabIllustrations: Record<string, string> = {
     configuration: '/images/robot/config-img.svg',
-    robot: '/images/robot/config-img2.svg',
+    robot: '/images/robot/config-img2.png',
     license: '/images/robot/config-img.svg',
   };
   

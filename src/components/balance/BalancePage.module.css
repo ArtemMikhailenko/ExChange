@@ -1,0 +1,474 @@
+/* BalancePage.module.css */
+
+/* Theme-agnostic base styles */
+.layout {
+    display: flex;
+    min-height: 100vh;
+  }
+  
+  /* Container variants */
+  .containerLight {
+    background-color: #f8f9fa;
+    color: #212529;
+    min-height: 100vh;
+  }
+  
+  .containerDark {
+    background-color: #0e0f14;
+    color: #e9ecef;
+    min-height: 100vh;
+  }
+  
+  /* Sidebar variants */
+  .sidebarLight {
+    width: 280px;
+    margin-right: 10px;
+    background-color: #ffffff;
+    padding: 16px;
+  }
+  
+  .sidebarDark {
+    width: 280px;
+    margin-right: 10px;
+
+    background-color: #0e0f14;
+    padding: 16px;
+  }
+  
+  /* Account header */
+  .accountsHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  
+  .accountsTitle {
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .accountBadge {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #3182ce;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+  }
+  
+  /* Account box variants */
+  .accountBoxLight {
+    margin-bottom: 16px;
+    padding: 12px;
+    border-radius: 6px;
+    background-color: #f1f3f5;
+  }
+  
+  .accountBoxDark {
+    margin-bottom: 16px;
+    padding: 12px;
+    border-radius: 6px;
+    background-color: #14151b;
+  }
+  
+  .accountInfo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+  
+  .accountIcon {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    background-color: #6b46c1;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    font-weight: 500;
+  }
+  
+  .accountName {
+    font-weight: 500;
+  }
+  
+  /* Text color variants */
+  .textMutedLight {
+    color: #6c757d;
+    font-size: 14px;
+  }
+  
+  .textMutedDark {
+    color: #a0aec0;
+    font-size: 14px;
+  }
+  
+  /* Button styles */
+  .addAccountButton {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+    color: #3182ce;
+    padding: 8px 0;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .addAccountButton:hover {
+    background-color: rgba(49, 130, 206, 0.1);
+  }
+  
+  .buttonIcon {
+    margin-right: 8px;
+  }
+  
+  /* Main content */
+  .mainContent {
+    flex: 1;
+    padding: 24px;
+  }
+  
+  .accountHeader {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  
+  .accountIconLarge {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    background-color: #6b46c1;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+    font-weight: 500;
+  }
+  
+  .pageTitle {
+    font-size: 24px;
+    font-weight: 700;
+  }
+  
+  /* Balance section */
+  .balanceOverview {
+    margin-bottom: 24px;
+  }
+  
+  .balanceLabel {
+    margin-bottom: 8px;
+  }
+  
+  .balanceRow {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  
+  .balanceAmount {
+    font-size: 28px;
+    font-weight: 700;
+    margin-right: 8px;
+  }
+  
+  .balanceChange {
+    margin-right: 8px;
+  }
+  
+  .eyeButton {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+  }
+  
+  .eyeButton:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Stats grid */
+  .statsGrid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+  }
+  
+  .statItem {
+    display: flex;
+    flex-direction: column;
+  }
+  
+
+  
+  /* Notification bar */
+  .notificationDark {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background-color: #2d3748;
+    border-radius: 6px;
+    margin-bottom: 16px;
+  }
+  
+  .notificationLight {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    background-color: #e2e8f0;
+    border-radius: 6px;
+    margin-bottom: 16px;
+  }
+  
+  .enableButton {
+    margin-left: 8px;
+    color: #3182ce;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+  
+  .closeButton {
+    margin-left: auto;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+  }
+  
+  /* Tabs navigation */
+  .tabsContainer {
+    display: flex;
+    margin-bottom: 24px;
+    padding-bottom: 2px;
+  }
+  
+  .tabButtonLight {
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    color: #495057;
+    font-size: 14px;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .tabButtonDark {
+    padding: 12px 16px;
+    background: transparent;
+    border: none;
+    color: #a0aec0;
+    font-size: 14px;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .activeTab {
+    background-color: #202127;
+    font-weight: 500;
+    border-radius: 8px;
+    color: white;
+  }
+  
+  
+  /* Balances section */
+  .balancesSection {
+    margin-top: 24px;
+  }
+  
+  .sectionTitle {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  
+  /* Asset tabs */
+  .assetTabsContainer {
+    display: flex;
+    margin-bottom: 16px;
+  }
+  
+  .assetTab {
+    padding: 8px 16px;
+    background-color: transparent;
+    border: none;
+    border-radius: 24px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .activeAssetTab {
+    background-color: white;
+    color: black;
+  }
+  
+  /* Deposit button */
+  .depositButtonContainer {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+  }
+  
+  .depositButton {
+    padding: 8px 16px;
+    background-color: #00c27867;
+    
+    color: #00c278;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  /* Table styles */
+  .tableContainer {
+    overflow-x: auto;
+  }
+  
+  .tableDark {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .tableLight {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .tableHeader {
+    text-align: left;
+    padding: 12px 16px;
+    font-weight: 500;
+    font-size: 14px;
+    color: #6c757d;
+  }
+  
+  .tableRow {
+    border-bottom: 1px solid #2d3748;
+  }
+  
+  .tableRow:last-child {
+    border-bottom: none;
+  }
+  
+  .assetCell {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+  }
+  
+  .assetIcon {
+    margin-right: 12px;
+  }
+  
+  .cryptoIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+  }
+  
+  /* Specific crypto icons */
+  .usdc {
+    background-color: #2775ca;
+    color: white;
+  }
+  
+  .sol {
+    background-color: #00ffbd;
+    color: #001d38;
+  }
+  
+  .btc {
+    background-color: #f7931a;
+    color: white;
+  }
+  
+  .usdt {
+    background-color: #26a17b;
+    color: white;
+  }
+  
+  .eth {
+    background-color: #627eea;
+    color: white;
+  }
+  
+  .aave {
+    background-color: #b6509e;
+    color: white;
+  }
+  
+  .assetInfo {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .assetName {
+    font-weight: 500;
+  }
+  
+  .assetSymbol {
+    font-size: 12px;
+    color: #6c757d;
+  }
+  
+  .balanceCell {
+    padding: 12px 16px;
+  }
+  
+  .actionCell {
+    padding: 12px 16px;
+    display: flex;
+    gap: 8px;
+  }
+  
+  .actionButton {
+    padding: 6px 12px;
+    border: none;
+    background-color: transparent;
+    color: #3182ce;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+  
+  .actionButton:hover {
+    background-color: rgba(49, 130, 206, 0.1);
+  }
+  
+  .menuButton {
+    padding: 6px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+  }
+  
+  .menuButton:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
