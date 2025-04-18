@@ -6,13 +6,15 @@ import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Sun, Moon, ChevronDown, Globe, Menu, X } from 'lucide-react';
 import { useTheme } from '@/app/context/ThemeContext';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useAuth } from '@/hooks/useAuth';
 import styles from './Header.module.css';
-import { useTranslation } from "@/hooks/useTranslation";
 
 export default function Header() {
   const { t, lang } = useTranslation();
   const pathname = usePathname();
   const { theme, toggleTheme } = useTheme();
+  const { isAuthenticated, user, logout } = useAuth();
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [mobileExpandedItems, setMobileExpandedItems] = useState<string[]>([]);
@@ -30,6 +32,10 @@ export default function Header() {
   // Refs for dropdown containers
   const futuresDropdownRef = useRef<HTMLLIElement>(null);
   const moreDropdownRef = useRef<HTMLLIElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+  
+  // Dropdown state for user menu
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   
   // Timers for dropdown delay
   const dropdownTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -73,6 +79,29 @@ export default function Header() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, [lastScrollY, isHomePage]);
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Close language dropdown if click is outside
+      if (isLanguageDropdownOpen && 
+          !(event.target as Element).closest('[data-dropdown="language"]')) {
+        setIsLanguageDropdownOpen(false);
+      }
+      
+      // Close user menu if click is outside
+      if (isUserMenuOpen && 
+          !(event.target as Element).closest('[data-dropdown="user"]')) {
+        setIsUserMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isLanguageDropdownOpen, isUserMenuOpen]);
 
   // Prevent body scrolling when mobile menu is open
   useEffect(() => {
@@ -122,6 +151,10 @@ export default function Header() {
     setIsLanguageDropdownOpen(!isLanguageDropdownOpen);
   };
 
+  const toggleUserMenu = () => {
+    setIsUserMenuOpen(!isUserMenuOpen);
+  };
+
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -132,6 +165,12 @@ export default function Header() {
     } else {
       setMobileExpandedItems([...mobileExpandedItems, id]);
     }
+  };
+
+  const handleLogout = () => {
+    logout();
+    setIsUserMenuOpen(false);
+    router.push('/login');
   };
 
   // Futures dropdown items
@@ -145,7 +184,7 @@ export default function Header() {
     { 
       label: t('tradingBots'), 
       description: t('tradingBotsDesc'), 
-      href: '/robot',
+      href: '/robo-trading',
       icon: '/images/header/icon2.svg'
     },
     { 
@@ -248,7 +287,7 @@ export default function Header() {
                             alt=""
                             width={40}
                             height={40}
-                            className="object-contain"
+                            className={styles.objectContain}
                           />
                         </div>
                         <div className={styles.dropdownItemContent}>
@@ -296,7 +335,7 @@ export default function Header() {
                             alt=""
                             width={40}
                             height={40}
-                            className="object-contain"
+                            className={styles.objectContain}
                           />
                         </div>
                         <div className={styles.dropdownItemContent}>
@@ -313,15 +352,57 @@ export default function Header() {
           
           {/* Right section: Login / Sign Up / Theme / Language */}
           <div className={styles.rightSection}>
-            <Link href="/login" className={`${styles.authLink} ${styles.loginLink}`}>
-              {t('login')}
-            </Link>
-            <Link href="/signup" className={`${styles.authLink} ${styles.signupLink}`}>
-              {t('signUp')}
-            </Link>
+            {isAuthenticated ? (
+              <div className={styles.userArea} ref={userMenuRef} data-dropdown="user">
+                <button 
+                  onClick={toggleUserMenu} 
+                  className={styles.userButton}
+                >
+                  <div className={styles.userAvatar}>
+                    <Image
+                      src="/images/avatar-placeholder.png"
+                      alt="User Avatar"
+                      width={32}
+                      height={32}
+                      className={styles.objectCover}
+                    />
+                  </div>
+                  <span className={styles.userName}>
+                    {user?.email || 'User'}
+                  </span>
+                  <ChevronDown className={styles.chevronIcon} />
+                </button>
+                
+                {isUserMenuOpen && (
+                  <div className={styles.userDropdown}>
+                    <Link href="/profile" className={styles.userDropdownItem} onClick={() => setIsUserMenuOpen(false)}>
+                      {t('profile')}
+                    </Link>
+                    <Link href="/settings" className={styles.userDropdownItem} onClick={() => setIsUserMenuOpen(false)}>
+                      {t('settings')}
+                    </Link>
+                    <button onClick={handleLogout} className={styles.userDropdownItem}>
+                      {t('logout')}
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <Link href="/login" className={`${styles.authLink} ${styles.loginLink}`}>
+                  {t('login')}
+                </Link>
+                <Link href="/signup" className={`${styles.authLink} ${styles.signupLink}`}>
+                  {t('signUp')}
+                </Link>
+              </>
+            )}
             
             {/* Language selector */}
-            <div className={`${styles.languageDropdown} ${isLanguageDropdownOpen ? styles.languageDropdownOpen : ''}`}>
+            <div 
+              className={`${styles.languageDropdown} ${isLanguageDropdownOpen ? styles.languageDropdownOpen : ''}`} 
+              data-dropdown="language"
+            >
               <button 
                 onClick={toggleLanguageDropdown}
                 className={styles.iconButton}
@@ -431,6 +512,7 @@ export default function Header() {
                         key={item.label} 
                         href={item.href}
                         onClick={() => setIsMobileMenuOpen(false)}
+                        className={styles.mobileNavLink}
                       >
                         {item.label}
                         {item.tag && ` (${item.tag})`}
@@ -476,6 +558,7 @@ export default function Header() {
                         key={item.label} 
                         href={item.href}
                         onClick={() => setIsMobileMenuOpen(false)}
+                        className={styles.mobileNavLink}
                       >
                         {item.label}
                       </Link>
@@ -486,22 +569,64 @@ export default function Header() {
             </ul>
           </nav>
           
-          <div className={styles.mobileAuthButtons}>
-            <Link 
-              href="/login" 
-              className={`${styles.mobileAuthButton} ${styles.mobileLoginButton}`}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {t('login')}
-            </Link>
-            <Link 
-              href="/signup" 
-              className={`${styles.mobileAuthButton} ${styles.mobileSignupButton}`}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {t('signUp')}
-            </Link>
-          </div>
+          {isAuthenticated ? (
+            <div className={styles.mobileUserArea}>
+              <div className={styles.mobileUserInfo}>
+                <div className={styles.userAvatar}>
+                  <Image
+                    src="/images/avatar-placeholder.png"
+                    alt="User Avatar"
+                    width={32}
+                    height={32}
+                    className={styles.objectCover}
+                  />
+                </div>
+                <span className={styles.userName}>
+                  {user?.email || 'User'}
+                </span>
+              </div>
+              
+              <div className={styles.mobileUserLinks}>
+                <Link 
+                  href="/profile" 
+                  className={styles.mobileUserLink}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {t('profile')}
+                </Link>
+                <Link 
+                  href="/settings" 
+                  className={styles.mobileUserLink}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {t('settings')}
+                </Link>
+                <button 
+                  onClick={handleLogout}
+                  className={styles.mobileUserLink}
+                >
+                  {t('logout')}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className={styles.mobileAuthButtons}>
+              <Link 
+                href="/login" 
+                className={`${styles.mobileAuthButton} ${styles.mobileLoginButton}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {t('login')}
+              </Link>
+              <Link 
+                href="/signup" 
+                className={`${styles.mobileAuthButton} ${styles.mobileSignupButton}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {t('signUp')}
+              </Link>
+            </div>
+          )}
           
           {/* Mobile language switcher */}
           <div className={styles.mobileLangSwitcher}>
